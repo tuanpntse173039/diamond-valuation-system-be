@@ -17,18 +17,28 @@ public class DiamondValuation {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @ManyToOne
-    @JoinColumn(name = "diamond_note_id")
+    @JoinColumn(name = "valuation_note_id")
     private ValuationNote valuationNote;
+
     @Column(columnDefinition = "datetime")
     private String creationDate;
+
     @Column(columnDefinition = "text")
     private String comment;
+
     @Column(columnDefinition = "money")
     private String valuationPrice;
+
     @OneToOne(mappedBy = "diamondValuation")
     private ValuationNote valuationNoteId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id")
     private DiamondValuationStatus diamondValuationStatus;
+
+    @ManyToOne
+    @JoinColumn(name = "valuation_staff_id")
+    private Staff staff;
 }

@@ -19,7 +19,9 @@ public class Diamond {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    //private Valuation valuation;
+    @ManyToOne()
+    @JoinColumn(name = "valuation_request_id")
+    private ValuationRequest valuationRequest;
     @Column(columnDefinition = "varchar(10)")
     private String certificateId;
     @Column(columnDefinition = "varchar(1000)")

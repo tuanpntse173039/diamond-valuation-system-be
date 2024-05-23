@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequestStatus;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -56,7 +58,13 @@ public class ValuationRequest {
     private Payment payment;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "valuationrequeststatus_id", nullable = false)
+    @JoinColumn(name = "valuation_request_status_id", nullable = false)
     private ValuationRequestStatus valuationRequestStatus;
+
+    @OneToMany(mappedBy = "valuationRequest")
+    private Set<ValuationNote> valuationNotes = new HashSet<>();
+
+    @OneToMany(mappedBy = "valuationRequest")
+    private Set<Diamond> diamonds = new HashSet<>();
 
 }

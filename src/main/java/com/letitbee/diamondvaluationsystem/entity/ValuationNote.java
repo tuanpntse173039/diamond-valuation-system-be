@@ -23,12 +23,12 @@ public class ValuationNote {
     @OneToOne
     @JoinColumn(name = "diamond_id", nullable = false)
     private Diamond diamond;
-    //@OneToMany()
-    //@JoinColumn(name = "valuation_request_id")
-    // private ValuationRequest valuationRequest;
+    @ManyToOne
+    @JoinColumn(name = "valuation_request_id")
+    private ValuationRequest valuationRequest;
     @Column(columnDefinition = "money")
     private String resultPrice;
-    @OneToOne()
+    @OneToOne
     @JoinColumn(name = "diamond_valuation_id")
     private DiamondValuation diamondValuation;
     private boolean isMode;
