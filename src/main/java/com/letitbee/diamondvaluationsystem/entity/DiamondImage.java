@@ -18,7 +18,7 @@ public class DiamondImage {
     private long id;
     @Column(columnDefinition = "varchar(1000)", nullable = false)
     private String image;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "diamond_id")
     private Diamond diamond;
 

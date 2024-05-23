@@ -40,24 +40,24 @@ public class ValuationRequest {
     @Column(columnDefinition = "text")
     private String feedback;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "staff_id", nullable = false)
     private Staff staff;
 
     //Many To One
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "valuation_request_status_id", nullable = false)
     private ValuationRequestStatus valuationRequestStatus;
 

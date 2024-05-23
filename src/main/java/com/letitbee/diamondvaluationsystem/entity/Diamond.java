@@ -19,7 +19,7 @@ public class Diamond {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "valuation_request_id")
     private ValuationRequest valuationRequest;
     @Column(columnDefinition = "varchar(10)")
@@ -28,29 +28,29 @@ public class Diamond {
     private String proportions;
     @Column(columnDefinition = "varchar(1000)")
     private String clarityCharacteristic;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "diamond_origin_id")
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "color_id")
     private Color color;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "clarity_id")
     private Clarity clarity;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "cut_id")
     private Cut cut;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "polish_id")
     private Polish polish;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "symmetry_id")
     private Symmetry symmetry;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "shape_id")
     private Shape shape;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "fluorescence_id")
     private Fluorescence fluorescence;
     @Column(columnDefinition = "money")

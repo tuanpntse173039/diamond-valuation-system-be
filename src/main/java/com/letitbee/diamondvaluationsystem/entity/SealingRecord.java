@@ -19,7 +19,7 @@ public class SealingRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "valuation_note_id")
     private ValuationNote valuationNote;
     @Column(columnDefinition = "datetime", nullable = false)

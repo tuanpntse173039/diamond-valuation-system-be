@@ -24,7 +24,7 @@ public class ServicePriceList {
     private float maxSize;
     @Column(columnDefinition = "money")
     private String price;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 

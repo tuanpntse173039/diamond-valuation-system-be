@@ -30,7 +30,7 @@ public class Account {
     @Column(columnDefinition = "bit default 1")
     private Boolean is_active;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 

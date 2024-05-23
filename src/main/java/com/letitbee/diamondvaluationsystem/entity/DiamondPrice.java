@@ -46,7 +46,9 @@ public class DiamondPrice {
     private String maxPrice;
     @Column(columnDefinition = "datetime", nullable = false)
     private String effectDate;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Column(columnDefinition = "varchar(10)")
+    private String certificateId;
+    @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
 }

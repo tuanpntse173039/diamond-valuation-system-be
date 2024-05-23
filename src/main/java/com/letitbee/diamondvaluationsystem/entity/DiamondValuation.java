@@ -34,7 +34,7 @@ public class DiamondValuation {
     @OneToOne(mappedBy = "diamondValuation")
     private ValuationNote valuationNoteId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "status_id")
     private DiamondValuationStatus diamondValuationStatus;
 

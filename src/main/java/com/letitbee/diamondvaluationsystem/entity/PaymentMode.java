@@ -21,7 +21,7 @@ public class PaymentMode {
     private long id;
     @Column(columnDefinition = "varchar(50)",nullable = false)
     private String paymentModeName;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 }
