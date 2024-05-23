@@ -34,17 +34,12 @@ public class Account {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @OneToMany(
-            mappedBy = "account",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private Set<Staff> staffs = new HashSet<>();
+    @OneToOne
+    private Staff staff;
 
-    @OneToMany(
-            mappedBy = "account",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private Set<Customer> customers = new HashSet<>();
+    @OneToOne
+    private Customer customer;
+
+
+
 }

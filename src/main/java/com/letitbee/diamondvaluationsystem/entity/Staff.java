@@ -36,7 +36,7 @@ public class Staff {
     @Column(columnDefinition = "varchar(1000)")
     private String certificateLink;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 

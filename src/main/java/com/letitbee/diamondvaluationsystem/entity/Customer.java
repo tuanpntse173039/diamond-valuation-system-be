@@ -37,7 +37,7 @@ public class Customer {
     @Column(columnDefinition = "char(50)")
     private String identityDocument;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 

@@ -21,7 +21,7 @@ public class SealingRecord {
     private long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "valuation_note_id")
-    private ValuationNote valuationNotes;
+    private ValuationNote valuationNote;
     @Column(columnDefinition = "datetime", nullable = false)
     private String creationDate;
     @Column(columnDefinition = "money", nullable = false)

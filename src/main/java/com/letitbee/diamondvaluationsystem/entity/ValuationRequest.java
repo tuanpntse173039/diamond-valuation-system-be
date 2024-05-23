@@ -39,7 +39,7 @@ public class ValuationRequest {
     private String feedback;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @Column(name = "customer_id", nullable = false)
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,6 +57,6 @@ public class ValuationRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "valuationrequeststatus_id", nullable = false)
-    private ValuationRequestStatus status;
+    private ValuationRequestStatus valuationRequestStatus;
 
 }
