@@ -23,13 +23,13 @@ public class Staff {
             strategy = GenerationType.IDENTITY
     )
     private long id;
-    @Column(columnDefinition = "nvarchar(50)")
+    @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String firstName;
-    @Column(columnDefinition = "nvarchar(50)")
+    @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String lastName;
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "varchar(100)", nullable = false)
     private String email;
-    @Column(columnDefinition = "char(20)")
+    @Column(columnDefinition = "char(20)", nullable = false)
     private String phone;
     @Column(columnDefinition = "int", nullable = false)
     private int experience;

@@ -19,7 +19,7 @@ public class DiamondValuation {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "valuation_note_id")
+    @JoinColumn(name = "valuation_note_id", nullable = false)
     private ValuationNote valuationNote;
 
     @Column(columnDefinition = "datetime")
@@ -35,10 +35,10 @@ public class DiamondValuation {
     private ValuationNote valuationNoteId;
 
     @ManyToOne
-    @JoinColumn(name = "status_id")
+    @JoinColumn(name = "status_id", nullable = false)
     private DiamondValuationStatus diamondValuationStatus;
 
     @ManyToOne
-    @JoinColumn(name = "valuation_staff_id")
+    @JoinColumn(name = "valuation_staff_id", nullable = false)
     private Staff staff;
 }

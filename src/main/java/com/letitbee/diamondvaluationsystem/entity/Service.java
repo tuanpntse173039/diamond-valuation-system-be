@@ -25,7 +25,7 @@ public class Service {
     private String serviceName;
     @Column(columnDefinition = "text")
     private String description;
-    @Column(columnDefinition = "int")
+    @Column(columnDefinition = "int", nullable = false)
     private int period;
     @OneToMany(
             mappedBy = "service",

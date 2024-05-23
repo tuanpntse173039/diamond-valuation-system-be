@@ -24,7 +24,7 @@ public class ValuationNote {
     @JoinColumn(name = "diamond_id", nullable = false)
     private Diamond diamond;
     @ManyToOne
-    @JoinColumn(name = "valuation_request_id")
+    @JoinColumn(name = "valuation_request_id", nullable = false)
     private ValuationRequest valuationRequest;
     @Column(columnDefinition = "money")
     private String resultPrice;

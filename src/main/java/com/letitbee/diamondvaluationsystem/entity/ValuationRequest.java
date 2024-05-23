@@ -23,7 +23,7 @@ public class ValuationRequest {
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
     private long id;
-    @Column(columnDefinition = "datetime")
+    @Column(columnDefinition = "datetime", nullable = false)
     private String creationDate;
     @Column(columnDefinition = "datetime")
     private String receiptDate;

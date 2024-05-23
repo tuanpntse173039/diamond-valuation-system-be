@@ -22,19 +22,19 @@ public class Customer {
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
     private long id;
-    @Column(columnDefinition = "nvarchar(50)")
+    @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String firstName;
-    @Column(columnDefinition = "nvarchar(50)")
+    @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String lastName;
-    @Column(columnDefinition = "varchar(100)")
+    @Column(columnDefinition = "varchar(100)", nullable = false)
     private String email;
-    @Column(columnDefinition = "char(20)")
+    @Column(columnDefinition = "char(20)", nullable = false)
     private String phone;
     @Column(columnDefinition = "nvarchar(500)")
     private String address;
     @Column(columnDefinition = "varchar(1000)")
     private String avatar;
-    @Column(columnDefinition = "char(50)")
+    @Column(columnDefinition = "char(50)", nullable = false)
     private String identityDocument;
 
     @OneToOne

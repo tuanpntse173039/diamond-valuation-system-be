@@ -20,7 +20,7 @@ public class SealingRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne
-    @JoinColumn(name = "valuation_note_id")
+    @JoinColumn(name = "valuation_note_id", nullable = false)
     private ValuationNote valuationNote;
     @Column(columnDefinition = "datetime", nullable = false)
     private String creationDate;

@@ -18,11 +18,11 @@ public class ServicePriceList {
             strategy = GenerationType.IDENTITY
     )
     private long id;
-    @Column(columnDefinition = "float")
+    @Column(columnDefinition = "float", nullable = false)
     private float minSize;
-    @Column(columnDefinition = "float")
+    @Column(columnDefinition = "float", nullable = false)
     private float maxSize;
-    @Column(columnDefinition = "money")
+    @Column(columnDefinition = "money", nullable = false)
     private String price;
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)

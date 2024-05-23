@@ -19,46 +19,46 @@ public class Diamond {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     @ManyToOne
-    @JoinColumn(name = "valuation_request_id")
+    @JoinColumn(name = "valuation_request_id", nullable = false)
     private ValuationRequest valuationRequest;
+
     @Column(columnDefinition = "varchar(10)")
     private String certificateId;
+
     @Column(columnDefinition = "varchar(1000)")
     private String proportions;
+
     @Column(columnDefinition = "varchar(1000)")
     private String clarityCharacteristic;
-    @ManyToOne
-    @JoinColumn(name = "diamond_origin_id")
-    private DiamondOrigin diamondOrigin;
+
+    private String diamondOrigin;
+
+    @Column(nullable = true)
     private float caratWeight;
-    @ManyToOne
-    @JoinColumn(name = "color_id")
-    private Color color;
-    @ManyToOne
-    @JoinColumn(name = "clarity_id")
-    private Clarity clarity;
-    @ManyToOne
-    @JoinColumn(name = "cut_id")
-    private Cut cut;
-    @ManyToOne
-    @JoinColumn(name = "polish_id")
-    private Polish polish;
-    @ManyToOne
-    @JoinColumn(name = "symmetry_id")
-    private Symmetry symmetry;
-    @ManyToOne
-    @JoinColumn(name = "shape_id")
-    private Shape shape;
-    @ManyToOne
-    @JoinColumn(name = "fluorescence_id")
-    private Fluorescence fluorescence;
+
+    private String color;
+
+    private String clarity;
+
+    private String cut;
+
+    private String polish;
+
+    private String symmetry;
+
+    private String shape;
+
+    private String fluorescence;
+
     @Column(columnDefinition = "money")
     private String fairPrice;
     @Column(columnDefinition = "money")
     private String minPrice;
     @Column(columnDefinition = "money")
     private String maxPrice;
+    @Column(nullable = true)
     private boolean isStatus;
     @OneToMany(mappedBy = "diamond")
     private Set<DiamondImage> diamondImage = new HashSet<>();

@@ -22,8 +22,8 @@ public class ValuationRequestStatus {
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
     private long id;
-    @Column(columnDefinition = "varchar(20)")
-    private String statusName;
+    @Column(columnDefinition = "varchar(20)", nullable = false)
+    private String name;
 
     @OneToMany(
             mappedBy = "valuationRequestStatus",

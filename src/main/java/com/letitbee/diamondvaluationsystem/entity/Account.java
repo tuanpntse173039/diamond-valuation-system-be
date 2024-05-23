@@ -34,10 +34,10 @@ public class Account {
     @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
-    @OneToOne
+    @OneToOne(mappedBy = "account")
     private Staff staff;
 
-    @OneToOne
+    @OneToOne(mappedBy = "account")
     private Customer customer;
 
 
