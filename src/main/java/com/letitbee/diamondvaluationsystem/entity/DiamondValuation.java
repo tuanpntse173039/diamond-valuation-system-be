@@ -26,7 +26,7 @@ public class DiamondValuation {
     private String comment;
     @Column(columnDefinition = "money")
     private String valuationPrice;
-    @OneToOne
+    @OneToOne(mappedBy = "diamondValuation")
     private ValuationNote valuationNoteId;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "status_id")
