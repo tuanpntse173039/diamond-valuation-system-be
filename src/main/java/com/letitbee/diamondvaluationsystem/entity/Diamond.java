@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.entity;
 
+import com.letitbee.diamondvaluationsystem.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,35 +34,48 @@ public class Diamond {
     @Column(columnDefinition = "varchar(1000)")
     private String clarityCharacteristic;
 
-    private String diamondOrigin;
+    @Enumerated(EnumType.STRING)
+    private DiamondOrigin diamondOrigin;
 
     @Column(nullable = true)
     private float caratWeight;
 
-    private String color;
+    @Enumerated(EnumType.STRING)
+    private Color color;
 
-    private String clarity;
+    @Enumerated(EnumType.STRING)
+    private Clarity clarity;
 
-    private String cut;
+    @Enumerated(EnumType.STRING)
+    private Cut cut;
 
-    private String polish;
+    @Enumerated(EnumType.STRING)
+    private Polish polish;
 
-    private String symmetry;
+    @Enumerated(EnumType.STRING)
+    private Symmetry symmetry;
 
-    private String shape;
+    @Enumerated(EnumType.STRING)
+    private Shape shape;
 
-    private String fluorescence;
+    @Enumerated(EnumType.STRING)
+    private Fluorescence fluorescence;
 
     @Column(columnDefinition = "money")
     private String fairPrice;
+
     @Column(columnDefinition = "money")
     private String minPrice;
+
     @Column(columnDefinition = "money")
     private String maxPrice;
+
     @Column(nullable = true)
     private boolean isStatus;
+
     @OneToMany(mappedBy = "diamond")
     private Set<DiamondImage> diamondImage = new HashSet<>();
+
     @OneToOne(mappedBy = "diamond")
     private ValuationNote valuationNote;
 }

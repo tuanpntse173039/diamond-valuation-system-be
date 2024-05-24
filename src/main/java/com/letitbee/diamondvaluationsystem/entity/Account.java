@@ -23,9 +23,9 @@ public class Account {
             strategy = GenerationType.IDENTITY
     )
     private long id;
-    @Column(nullable = false,columnDefinition = "nvarchar(50)",unique = true)
+    @Column(nullable = false, columnDefinition = "nvarchar(50)",unique = true)
     private String name;
-    @Column(nullable = false,columnDefinition = "nvarchar(50)")
+    @Column(nullable = false, columnDefinition = "nvarchar(50)")
     private String password;
     @Column(columnDefinition = "bit default 1")
     private Boolean is_active;
@@ -39,7 +39,6 @@ public class Account {
 
     @OneToOne(mappedBy = "account")
     private Customer customer;
-
 
 
 }
