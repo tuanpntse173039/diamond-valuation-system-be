@@ -19,19 +19,12 @@ public class DiamondDTO {
     private String clarityCharacteristic;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
-    @Enumerated(EnumType.STRING)
     private Color color;
-    @Enumerated(EnumType.STRING)
     private Clarity clarity;
-    @Enumerated(EnumType.STRING)
     private Cut cut;
-    @Enumerated(EnumType.STRING)
     private Polish polish;
-    @Enumerated(EnumType.STRING)
     private Symmetry symmetry;
-    @Enumerated(EnumType.STRING)
     private Shape shape;
-    @Enumerated(EnumType.STRING)
     private Fluorescence fluorescence;
     private String fairPrice;
     private String minPrice;
