@@ -15,4 +15,5 @@ public class StaffDTO {
     private String certificateLink;
     private AccountDTO account_id;
     private Set<ValuationRequestDTO> valuationRequests;
+    private Set<DiamondValuationDTO> diamondValuations;
 }
