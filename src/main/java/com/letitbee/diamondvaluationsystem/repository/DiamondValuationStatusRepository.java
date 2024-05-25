@@ -1,8 +1,7 @@
 package com.letitbee.diamondvaluationsystem.repository;
 
-import com.letitbee.diamondvaluationsystem.entity.Diamond;
-import com.letitbee.diamondvaluationsystem.entity.DiamondValuationStatus;
+import com.letitbee.diamondvaluationsystem.entity.ValuationNoteStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface DiamondValuationStatusRepository extends JpaRepository<DiamondValuationStatus, Long> {
+public interface DiamondValuationStatusRepository extends JpaRepository<ValuationNoteStatus, Long> {
 }

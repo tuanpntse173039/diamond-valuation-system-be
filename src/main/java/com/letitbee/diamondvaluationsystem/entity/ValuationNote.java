@@ -28,14 +28,22 @@ public class ValuationNote {
     private ValuationRequest valuationRequest;
     @Column(columnDefinition = "money")
     private String resultPrice;
+
     @OneToOne
     @JoinColumn(name = "diamond_valuation_id")
     private DiamondValuation diamondValuation;
+
     private boolean isMode;
+
     @OneToMany(mappedBy = "valuationNote")
     private Set<SealingRecord> sealingRecords = new HashSet<>();
+
     @Column(columnDefinition = "varchar(1000)")
     private String sealingRecordLink;
+
     @OneToMany(mappedBy = "valuationNote")
     private Set<DiamondValuation> diamondValuations = new HashSet<>();
+
+    @ManyToOne
+    private ValuationNoteStatus valuationNoteStatus;
 }

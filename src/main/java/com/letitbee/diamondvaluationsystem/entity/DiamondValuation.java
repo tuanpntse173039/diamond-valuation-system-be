@@ -34,9 +34,7 @@ public class DiamondValuation {
     @OneToOne(mappedBy = "diamondValuation")
     private ValuationNote valuationNoteId;
 
-    @ManyToOne
-    @JoinColumn(name = "status_id", nullable = false)
-    private DiamondValuationStatus diamondValuationStatus;
+    private boolean status;
 
     @ManyToOne
     @JoinColumn(name = "valuation_staff_id", nullable = false)

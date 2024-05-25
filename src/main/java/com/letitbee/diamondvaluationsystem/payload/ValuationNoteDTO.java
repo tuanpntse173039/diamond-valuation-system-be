@@ -15,6 +15,6 @@ public class ValuationNoteDTO {
     private DiamondValuation diamondValuation;
     private SealingRecord sealingRecord;
     private ValuationRequestDTO valuationRequest;
-    private Set<DiamondDTO> diamonds;
+    private DiamondDTO diamond;
     private Set<DiamondValuationDTO> diamondValuations;
 }

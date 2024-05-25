@@ -16,12 +16,12 @@ import java.util.Set;
 @Entity
 @Table
 
-public class DiamondValuationStatus {
+public class ValuationNoteStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(columnDefinition = "varchar(20)", nullable = false)
     private String name;
-    @OneToMany(mappedBy = "diamondValuationStatus")
-    private Set<DiamondValuation> diamondValuations = new HashSet<>();
+    @OneToMany(mappedBy = "valuationNoteStatus")
+    private Set<ValuationNote> valuationNotes = new HashSet<>();
 }

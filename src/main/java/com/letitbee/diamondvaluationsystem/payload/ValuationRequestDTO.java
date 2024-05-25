@@ -19,4 +19,5 @@ public class ValuationRequestDTO {
     private Set<DiamondDTO> diamonds;
     private ServiceDTO services;
     private ValuationRequestStatusDTO valuationRequestStatus;
+    private CustomerNoRequestDTO customerNoRequestDTO;
 }
