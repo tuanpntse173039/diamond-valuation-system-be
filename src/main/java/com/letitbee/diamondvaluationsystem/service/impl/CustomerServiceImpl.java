@@ -4,7 +4,7 @@ import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import com.letitbee.diamondvaluationsystem.payload.CustomerNoRequestDTO;
-import com.letitbee.diamondvaluationsystem.payload.CustomerResponse;
+import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
 import org.modelmapper.ModelMapper;
@@ -28,7 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerResponse getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -41,7 +41,8 @@ public class CustomerServiceImpl implements CustomerService {
                 map(customer -> mapToNoRequestDTO(customer)).
                 toList();
 
-        CustomerResponse customerResponse = new CustomerResponse();
+        Response customerResponse = new Response();
+
         customerResponse.setContent(customerDTOList);
         customerResponse.setPageNumber(page.getNumber());
         customerResponse.setPageSize(page.getSize());
@@ -69,6 +70,5 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     private CustomerNoRequestDTO mapToNoRequestDTO(Customer customer) {return mapper.map(customer, CustomerNoRequestDTO.class);}
-
 
 }

@@ -1,12 +1,13 @@
 package com.letitbee.diamondvaluationsystem.service;
 
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
-import com.letitbee.diamondvaluationsystem.payload.PostResponse;
+import com.letitbee.diamondvaluationsystem.payload.Response;
 
 public interface PostService {
+
     PostDTO createPost(PostDTO postDto);
 
-    PostResponse getAllPost(int pageNo, int pageSize, String sortBy, String sortDir);
+    Response<PostDTO> getAllPost(int pageNo, int pageSize, String sortBy, String sortDir);
 
     PostDTO getPostById(long id);
 
