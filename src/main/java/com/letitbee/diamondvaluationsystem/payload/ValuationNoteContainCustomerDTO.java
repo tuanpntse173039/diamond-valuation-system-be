@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class ValuationNoteContainCustomerDTO {
-    private ValuationNote valuationNote;
+    private ValuationNoteDTO valuationNoteDTO;
     private CustomerDTO customerDTO;
 }

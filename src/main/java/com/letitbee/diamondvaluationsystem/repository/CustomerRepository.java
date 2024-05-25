@@ -1,4 +1,7 @@
 package com.letitbee.diamondvaluationsystem.repository;
 
-public interface CustomerRepository {
+import com.letitbee.diamondvaluationsystem.entity.Customer;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 }

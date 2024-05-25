@@ -1,5 +1,7 @@
 package com.letitbee.diamondvaluationsystem.service;
 
+import com.letitbee.diamondvaluationsystem.payload.ValuationNoteDTO;
+
 public interface ValuationNoteService {
     ValuationNoteDTO getAllValuationNotes(int pageNo, int pageSize, String sortBy, String sortDir);
 
