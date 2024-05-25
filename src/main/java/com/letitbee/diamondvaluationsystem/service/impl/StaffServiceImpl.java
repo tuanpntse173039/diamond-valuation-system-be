@@ -40,7 +40,7 @@ public class StaffServiceImpl implements StaffService {
         List<Staff> listOfStaff = staffs.getContent();
         List<StaffDTO> content =  listOfStaff.stream().map(staff -> mapToDto(staff)).collect(Collectors.toList());
 
-        Response staffResponse = new Response();
+        Response<StaffDTO> staffResponse = new Response<>();
 
         staffResponse.setContent(content);
         staffResponse.setPageNumber(staffs.getNumber());

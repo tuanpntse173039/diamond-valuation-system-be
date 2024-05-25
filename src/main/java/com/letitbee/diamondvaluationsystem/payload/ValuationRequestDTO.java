@@ -20,4 +20,5 @@ public class ValuationRequestDTO {
     private ServiceDTO services;
     private ValuationRequestStatusDTO valuationRequestStatus;
     private CustomerNoRequestDTO customerNoRequestDTO;
+    private StaffNoValuationDTO staffDTO;
 }

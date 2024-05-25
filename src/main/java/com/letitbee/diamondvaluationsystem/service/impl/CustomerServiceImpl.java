@@ -28,7 +28,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public Response getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response<CustomerNoRequestDTO> getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -41,16 +41,16 @@ public class CustomerServiceImpl implements CustomerService {
                 map(customer -> mapToNoRequestDTO(customer)).
                 toList();
 
-        Response customerResponse = new Response();
+        Response<CustomerNoRequestDTO> response = new Response<>();
 
-        customerResponse.setContent(customerDTOList);
-        customerResponse.setPageNumber(page.getNumber());
-        customerResponse.setPageSize(page.getSize());
-        customerResponse.setTotalPage(page.getTotalPages());
-        customerResponse.setTotalElement(page.getTotalElements());
-        customerResponse.setLast(page.isLast());
+        response.setContent(customerDTOList);
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalPage(page.getTotalPages());
+        response.setTotalElement(page.getTotalElements());
+        response.setLast(page.isLast());
 
-        return customerResponse;
+        return response;
     }
 
     @Override
