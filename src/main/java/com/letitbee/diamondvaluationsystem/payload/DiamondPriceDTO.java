@@ -1,20 +1,21 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
+import com.letitbee.diamondvaluationsystem.enums.*;
 import lombok.Data;
 
 @Data
 public class DiamondPriceDTO {
     private long id;
     private String creationDate;
-    private String origin;
+    private DiamondOrigin diamondOrigin;
     private float caratWeight;
-    private String shape;
-    private String color;
-    private String clarity;
-    private String cut;
-    private String polish;
-    private String symmetry;
-    private String fluorescence;
+    private Color color;
+    private Clarity clarity;
+    private Cut cut;
+    private Polish polish;
+    private Symmetry symmetry;
+    private Shape shape;
+    private Fluorescence fluorescence;
     private String fairPrice;
     private String minPrice;
     private String maxPrice;
