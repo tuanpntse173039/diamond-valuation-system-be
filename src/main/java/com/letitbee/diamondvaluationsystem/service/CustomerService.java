@@ -1,11 +1,12 @@
 package com.letitbee.diamondvaluationsystem.service;
 
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
+import com.letitbee.diamondvaluationsystem.payload.CustomerNoRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 
 public interface CustomerService {
 
-    Response getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir);
+    Response<CustomerNoRequestDTO> getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir);
 
     CustomerDTO getCustomerById(long id);
 
