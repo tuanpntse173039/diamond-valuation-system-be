@@ -45,7 +45,7 @@ public class ValuationRequest {
     private Customer customer;
 
     @ManyToOne
-    @JoinColumn(name = "staff_id", nullable = false)
+    @JoinColumn(name = "staff_id", nullable = true)
     private Staff staff;
 
     //Many To One
@@ -53,7 +53,7 @@ public class ValuationRequest {
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
-    @ManyToOne
+    @OneToOne
     @JoinColumn(name = "payment_id", nullable = false)
     private Payment payment;
 

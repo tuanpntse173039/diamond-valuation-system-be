@@ -1,9 +1,10 @@
 package com.letitbee.diamondvaluationsystem.service;
 
+import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationNoteDTO;
 
 public interface ValuationNoteService {
-    ValuationNoteDTO getAllValuationNotes(int pageNo, int pageSize, String sortBy, String sortDir);
+    Response<ValuationNoteDTO> getAllValuationNotes(int pageNo, int pageSize, String sortBy, String sortDir);
 
     ValuationNoteDTO getValuationNoteById(Long id);
 
