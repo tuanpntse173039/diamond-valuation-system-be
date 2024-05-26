@@ -11,5 +11,6 @@ public class DiamondValuationDTO {
     private String creationDate;
     private String comment;
     private String valuationPrice;
-    private DiamondValuationStatusDTO diamondValuationStatusDTO;
+    private boolean status;
+    private StaffNoValuationDTO staffNoValuationDTO;
 }

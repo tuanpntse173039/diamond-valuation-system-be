@@ -13,7 +13,7 @@ public class ValuationNoteDTO {
     private boolean isMode;
     private String sealingRecordLink;
     private DiamondValuation diamondValuation;
-    private SealingRecord sealingRecord;
+    private Set<SealingRecord> sealingRecord;
     private ValuationRequestDTO valuationRequest;
     private DiamondDTO diamond;
     private Set<DiamondValuationDTO> diamondValuations;

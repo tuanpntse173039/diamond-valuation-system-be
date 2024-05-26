@@ -67,12 +67,16 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
     @Override
     public ValuationRequestDTO getValuationRequestById(Long id) {
-        return null;
+        ValuationRequest valuationRequest = valuationRequestRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Valuation request", "id", id));
+        return mapToDTO(valuationRequest);
     }
 
     @Override
     public ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto) {
-        return null;
+        ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
+        valuationRequestRepository.save(valuationRequest);
+        return mapToDTO(valuationRequest);
     }
 
     @Override

@@ -36,10 +36,10 @@ public class Payment {
     )
     private Set<PaymentMode> paymentModes = new HashSet<>();
 
-    @OneToMany(
+    @OneToOne(
             mappedBy = "payment",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<ValuationRequest> valuationRequests = new HashSet<>();
+    private ValuationRequest valuationRequests;
 }
