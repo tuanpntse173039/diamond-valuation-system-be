@@ -1,10 +1,12 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
+import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
+import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import org.modelmapper.ModelMapper;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 @Service
 public class StaffServiceImpl implements StaffService {
     private StaffRepository staffRepository;
+    private AccountRepository accountRepository;
     private ModelMapper mapper;
 
     @Autowired
@@ -74,7 +77,10 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public void deleteStaffById(Long id) {
         Staff staff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id));
-        staffRepository.delete(staff);
+
+        accountRepository.findById(staff.getAccount()).;
+
+        accountRepository.delete(account);
     }
 
     //convert Entity to DTO
