@@ -33,4 +33,20 @@ public class AccountServiceImpl implements AccountService {
         Account newAccount = accountRepository.save(account);
         return mapToDto(newAccount);
     }
+
+    @Override
+    public String login(AccountDTO accountDTO) {
+        return "";
+    }
+
+    @Override
+    public String registerCustomer(AccountDTO accountDTO) {
+        return "";
+    }
+
+    @Override
+    public String registerStaff(AccountDTO accountDTO) {
+        return "";
+    }
+
 }

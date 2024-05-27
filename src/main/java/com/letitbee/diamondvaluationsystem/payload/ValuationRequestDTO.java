@@ -18,8 +18,8 @@ public class ValuationRequestDTO {
     private String feedback;
     private Set<DiamondDTO> diamonds;
     private PaymentDTO paymentDTO;
-    private ServiceDTO services;
+    private ServiceDTO service;
     private ValuationRequestStatusDTO valuationRequestStatus;
-    private CustomerNoRequestDTO customerNoRequestDTO;
-    private StaffNoValuationDTO staffDTO;
+    private long customerID;
+    private long staffID;
 }
