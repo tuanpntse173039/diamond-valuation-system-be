@@ -36,7 +36,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String login(AccountDTO accountDTO) {
-        return "";
+        return "a";
     }
 
     @Override
