@@ -1,4 +1,3 @@
-
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Customer;
@@ -69,8 +68,11 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    public ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto) {
+    public ValuationRequestDTO createValuationRequest(long customerId, ValuationRequestDTO valuationRequestDto) {
+        Customer customer = customerRepository.findById(customerId).
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));
         ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
+        valuationRequest.setCustomer(customer);
         valuationRequestRepository.save(valuationRequest);
         return mapToDTO(valuationRequest);
     }

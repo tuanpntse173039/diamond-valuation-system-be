@@ -1,7 +1,6 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
-import com.letitbee.diamondvaluationsystem.payload.CustomerNoRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
@@ -22,7 +21,7 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResponseEntity<Response<CustomerNoRequestDTO>> getAllCustomer(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+    public ResponseEntity<Response<CustomerDTO>> getAllCustomer(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                                                                          @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
                                                                          @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
                                                                          @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir) {
