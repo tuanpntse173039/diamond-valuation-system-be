@@ -14,6 +14,6 @@ public class StaffDTO {
     private int experience;
     private String certificateLink;
     private Set<ValuationRequestDTO> valuationRequests;
-    private Set<DiamondValuationDTO> diamondValuations;
-    private RoleDTO roleDTO;
+    private Set<DiamondValuationAssignDTO> diamondValuations;
+    private AccountDTO accountDTO;
 }

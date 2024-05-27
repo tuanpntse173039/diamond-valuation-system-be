@@ -15,4 +15,5 @@ public class CustomerDTO {
       private String avatar;
       private String identityDocument;
       private Set<ValuationRequestDTO> valuationRequests;
+      private AccountDTO accountDTO;
 }

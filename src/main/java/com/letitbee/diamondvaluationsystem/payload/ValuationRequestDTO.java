@@ -1,6 +1,6 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
-import com.letitbee.diamondvaluationsystem.entity.ValuationNote;
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import lombok.Data;
 
 import java.util.Set;
@@ -16,10 +16,9 @@ public class ValuationRequestDTO {
     private String receiptLink;
     private String returnLink;
     private String feedback;
-    private Set<DiamondDTO> diamonds;
+    private RequestStatus status;
     private PaymentDTO payment;
     private ServiceDTO service;
-    private ValuationRequestStatusDTO valuationRequestStatus;
-    private long customerID;
-    private long staffID;
+    private CustomerDTO customer;
+    private StaffDTO staff;
 }

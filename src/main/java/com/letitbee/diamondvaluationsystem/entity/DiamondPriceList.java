@@ -5,7 +5,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.Fetch;
 
 @Getter
 @Setter
@@ -14,7 +13,7 @@ import org.hibernate.annotations.Fetch;
 @Entity
 @Table
 
-public class DiamondPrice {
+public class DiamondPriceList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -46,8 +45,6 @@ public class DiamondPrice {
     private String maxPrice;
     @Column(columnDefinition = "datetime", nullable = false)
     private String effectDate;
-    @Column(columnDefinition = "varchar(10)")
-    private String certificateId;
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;

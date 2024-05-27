@@ -34,7 +34,7 @@ public class Payment {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    private Set<PaymentMode> paymentModes = new HashSet<>();
+    private Set<PaymentMethod> paymentMethods = new HashSet<>();
 
     @OneToOne(
             mappedBy = "payment",

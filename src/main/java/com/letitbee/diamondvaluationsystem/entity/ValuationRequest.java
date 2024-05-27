@@ -1,12 +1,12 @@
 package com.letitbee.diamondvaluationsystem.entity;
 
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequestStatus;
-import java.util.Date;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -40,6 +40,9 @@ public class ValuationRequest {
     @Column(columnDefinition = "text")
     private String feedback;
 
+    @Enumerated(EnumType.STRING)
+    private RequestStatus status;
+
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
@@ -57,14 +60,7 @@ public class ValuationRequest {
     @JoinColumn(name = "payment_id", nullable = true)
     private Payment payment;
 
-    @ManyToOne
-    @JoinColumn(name = "valuation_request_status_id", nullable = false)
-    private ValuationRequestStatus valuationRequestStatus;
-
     @OneToMany(mappedBy = "valuationRequest")
-    private Set<ValuationNote> valuationNotes = new HashSet<>();
-
-    @OneToMany(mappedBy = "valuationRequest")
-    private Set<Diamond> diamonds = new HashSet<>();
+    private Set<ValuationRequestDetail> valuationRequestDetails = new HashSet<>();
 
 }
