@@ -13,14 +13,14 @@ import lombok.Setter;
 @Entity
 @Table
 
-public class DiamondValuation {
+public class DiamondValuationAssign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @ManyToOne
     @JoinColumn(name = "valuation_note_id", nullable = false)
-    private ValuationNote valuationNote;
+    private ValuationRequestDetail valuationRequestDetail;
 
     @Column(columnDefinition = "datetime")
     private String creationDate;
@@ -32,7 +32,7 @@ public class DiamondValuation {
     private String valuationPrice;
 
     @OneToOne(mappedBy = "diamondValuation")
-    private ValuationNote valuationNoteId;
+    private ValuationRequestDetail valuationRequestDetailId;
 
     private boolean status;
 

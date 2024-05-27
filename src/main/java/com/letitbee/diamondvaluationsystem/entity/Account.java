@@ -30,9 +30,9 @@ public class Account {
     @Column(columnDefinition = "bit default 1")
     private Boolean is_active;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    private Role role;
+//    @ManyToOne
+//    @JoinColumn(name = "role_id", nullable = false)
+//    private Role role;
 
     @OneToOne(mappedBy = "account")
     private Staff staff;

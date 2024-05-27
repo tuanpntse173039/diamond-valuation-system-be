@@ -9,5 +9,5 @@ public class AccountDTO {
     private String password;
     private String email;
     private Boolean is_active;
-    private RoleDTO role_id;
+    private String role;//enum
 }

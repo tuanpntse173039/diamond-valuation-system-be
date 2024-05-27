@@ -1,17 +1,14 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondImage;
-import com.letitbee.diamondvaluationsystem.entity.ValuationNote;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.*;
-import jakarta.persistence.*;
 import lombok.Data;
 
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class DiamondDTO {
+public class DiamondValuationNoteDTO {
     private long id;
     private ValuationRequest valuationRequest;
     private String certificateId;
@@ -30,5 +27,5 @@ public class DiamondDTO {
     private String minPrice;
     private String maxPrice;
     private boolean isStatus;
-    private Set<DiamondImage> diamondImage;
+    private Set<DiamondImageDTO> diamondImages;
 }

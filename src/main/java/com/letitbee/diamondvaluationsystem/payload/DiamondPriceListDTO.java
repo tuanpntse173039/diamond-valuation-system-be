@@ -4,7 +4,7 @@ import com.letitbee.diamondvaluationsystem.enums.*;
 import lombok.Data;
 
 @Data
-public class DiamondPriceDTO {
+public class DiamondPriceListDTO {
     private long id;
     private String creationDate;
     private DiamondOrigin diamondOrigin;
@@ -20,5 +20,4 @@ public class DiamondPriceDTO {
     private String minPrice;
     private String maxPrice;
     private String effectDate;
-    private String certificateId;
 }

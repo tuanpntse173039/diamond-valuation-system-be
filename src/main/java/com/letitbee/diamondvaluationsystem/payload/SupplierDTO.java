@@ -9,5 +9,5 @@ public class SupplierDTO {
     private long id;
     private String name;
     private String icon;
-    private Set<DiamondPriceDTO> diamondPrices;
+    private Set<DiamondPriceListDTO> diamondPrices;
 }

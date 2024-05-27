@@ -16,14 +16,10 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table
-public class Diamond {
+public class DiamondValuationNote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @ManyToOne
-    @JoinColumn(name = "valuation_request_id", nullable = false)
-    private ValuationRequest valuationRequest;
 
     @Column(columnDefinition = "varchar(10)")
     private String certificateId;
@@ -77,5 +73,5 @@ public class Diamond {
     private Set<DiamondImage> diamondImage = new HashSet<>();
 
     @OneToOne(mappedBy = "diamond")
-    private ValuationNote valuationNote;
+    private ValuationRequestDetail valuationRequestDetail;
 }

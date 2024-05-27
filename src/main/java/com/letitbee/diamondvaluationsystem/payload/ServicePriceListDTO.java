@@ -8,5 +8,6 @@ public class ServicePriceListDTO {
     private String name;
     private float minSize;
     private float maxSize;
-    private String price;
+    private String initPrice;
+    private String unitPrice;
 }

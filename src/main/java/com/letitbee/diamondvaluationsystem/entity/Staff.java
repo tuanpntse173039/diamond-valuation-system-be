@@ -48,5 +48,5 @@ public class Staff {
     private Set<ValuationRequest> valuationRequestSet = new HashSet<>();
 
     @OneToMany(mappedBy = "staff", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<DiamondValuation> diamondValuations = new HashSet<>();
+    private Set<DiamondValuationAssign> diamondValuationAssigns = new HashSet<>();
 }

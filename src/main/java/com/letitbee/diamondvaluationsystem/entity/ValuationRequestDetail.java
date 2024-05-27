@@ -16,34 +16,41 @@ import java.util.Set;
 @Entity
 @Table
 
-public class ValuationNote {
+public class ValuationRequestDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @OneToOne
-    @JoinColumn(name = "diamond_id", nullable = false)
-    private Diamond diamond;
-    @ManyToOne
-    @JoinColumn(name = "valuation_request_id", nullable = false)
-    private ValuationRequest valuationRequest;
-    @Column(columnDefinition = "money")
-    private String resultPrice;
-
-    @OneToOne
-    @JoinColumn(name = "diamond_valuation_id")
-    private DiamondValuation diamondValuation;
 
     private boolean isMode;
 
-    @OneToMany(mappedBy = "valuationNote")
-    private Set<SealingRecord> sealingRecords = new HashSet<>();
+    @Column(columnDefinition = "money")
+    private String resultPrice;
 
     @Column(columnDefinition = "varchar(1000)")
     private String sealingRecordLink;
 
-    @OneToMany(mappedBy = "valuationNote")
-    private Set<DiamondValuation> diamondValuations = new HashSet<>();
+    @Column(columnDefinition = "float", nullable = false)
+    private float size;
+
+    @Column(columnDefinition = "varchar(20)", nullable = false)
+    private String status;
+
+    @Column(columnDefinition = "bit default 1")
+    private boolean isDiamond;
+
+    @OneToOne
+    @JoinColumn(name = "diamond_id", nullable = false)
+    private DiamondValuationNote diamondValuationNote;
 
     @ManyToOne
-    private ValuationNoteStatus valuationNoteStatus;
+    @JoinColumn(name = "valuation_request_id", nullable = false)
+    private ValuationRequest valuationRequest;
+
+    @OneToOne
+    @JoinColumn(name = "diamond_valuation_id")
+    private DiamondValuationAssign diamondValuationAssign;
+
+    @OneToMany(mappedBy = "valuationNote")
+    private Set<DiamondValuationAssign> diamondValuationAssigns = new HashSet<>();
+
 }

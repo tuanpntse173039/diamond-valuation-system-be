@@ -20,6 +20,6 @@ public class DiamondImage {
     private String image;
     @ManyToOne
     @JoinColumn(name = "diamond_id")
-    private Diamond diamond;
+    private DiamondValuationNote diamondValuationNote;
 
 }
