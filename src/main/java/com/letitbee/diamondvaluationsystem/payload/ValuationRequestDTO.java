@@ -17,8 +17,8 @@ public class ValuationRequestDTO {
     private String returnLink;
     private String feedback;
     private Set<DiamondDTO> diamonds;
-    private PaymentDTO paymentDTO;
-    private ServiceDTO services;
+    private PaymentDTO payment;
+    private ServiceDTO service;
     private ValuationRequestStatusDTO valuationRequestStatus;
     private long customerID;
     private long staffID;

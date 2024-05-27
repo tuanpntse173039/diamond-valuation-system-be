@@ -54,7 +54,7 @@ public class ValuationRequest {
     private Service service;
 
     @OneToOne
-    @JoinColumn(name = "payment_id", nullable = false)
+    @JoinColumn(name = "payment_id", nullable = true)
     private Payment payment;
 
     @ManyToOne
