@@ -17,9 +17,6 @@ public class AccountServiceImpl implements AccountService {
         this.mapper = mapper;
     }
 
-
-
-
     private AccountDTO mapToDto(Account account){
         AccountDTO accountDto = mapper.map(account, AccountDTO.class);
         return accountDto;
@@ -32,6 +29,8 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountDTO createAccount(AccountDTO accountDto) {
-        return null;
+        Account account = mapToEntity(accountDto);
+        Account newAccount = accountRepository.save(account);
+        return mapToDto(newAccount);
     }
 }

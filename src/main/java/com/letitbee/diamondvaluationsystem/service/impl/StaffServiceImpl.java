@@ -62,13 +62,6 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO createStaff(StaffDTO staffDto) {
-        Staff staff = mapToEntity(staffDto);
-        Staff newStaff = staffRepository.save(staff);
-        return mapToDto(newStaff);
-    }
-
-    @Override
     public StaffDTO updateStaff(StaffDTO staffDto, Long id) {
         Staff staff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id));
         return null;
@@ -77,10 +70,9 @@ public class StaffServiceImpl implements StaffService {
     @Override
     public void deleteStaffById(Long id) {
         Staff staff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id));
-
-        accountRepository.findById(staff.getAccount()).;
-
-        accountRepository.delete(account);
+        Account accountWithStaffID =  staff.getAccount();
+        accountWithStaffID.setIs_active(false);
+        accountRepository.save(accountWithStaffID);
     }
 
     //convert Entity to DTO
