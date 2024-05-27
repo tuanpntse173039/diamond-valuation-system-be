@@ -3,11 +3,8 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
-import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
-import com.letitbee.diamondvaluationsystem.payload.CustomerNoRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
-import com.letitbee.diamondvaluationsystem.payload.StaffNoValuationDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
@@ -22,14 +19,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @Service
 public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestRepository valuationRequestRepository;
     private CustomerRepository customerRepository;
     private StaffRepository staffRepository;
-
     private ModelMapper mapper;
 
     public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository, CustomerRepository customerRepository, StaffRepository staffRepository, ModelMapper mapper) {
@@ -87,19 +82,21 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
         ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);
         //find customer
-        Customer customer = customerRepository.findCustomerByValuationRequestSetContaining(valuationRequest)
-        .orElseThrow(() -> new NoSuchElementException("Not found customer with this valuation request"));
-        //map customer to DTO
-        CustomerNoRequestDTO customerNoRequestDTO = mapper.map(customer, CustomerNoRequestDTO.class);
+        Customer customer = customerRepository.findByValuationRequestSetContaining(valuationRequest)
+                .orElseThrow(() -> new NoSuchElementException("Not found customer with this valuation request"));
+        //get customerId
+        long customerId = customer.getId();
         //set customer to DTO
-        valuationRequestDTO.setCustomerNoRequestDTO(customerNoRequestDTO);
-
+        valuationRequestDTO.setCustomerID(customerId);
         //find valuation staff
         Staff staff = staffRepository.findStaffByValuationRequestSetContaining(valuationRequest).orElse(null);
+
         //map staff to DTO
-        StaffNoValuationDTO staffNoValuationDTO = mapper.map(staff, StaffNoValuationDTO.class);
-        //set staff to valuation request
-        valuationRequestDTO.setStaffDTO(staffNoValuationDTO);
+        if (staff != null) {
+            long staffId = staff.getId();
+            //set staff to valuation request
+            valuationRequestDTO.setId(staffId);
+        }
         return valuationRequestDTO;
     }
 

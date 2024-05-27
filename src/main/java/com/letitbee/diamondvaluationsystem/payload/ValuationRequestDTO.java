@@ -20,6 +20,6 @@ public class ValuationRequestDTO {
     private PaymentDTO paymentDTO;
     private ServiceDTO services;
     private ValuationRequestStatusDTO valuationRequestStatus;
-    private CustomerNoRequestDTO customerNoRequestDTO;
-    private StaffNoValuationDTO staffDTO;
+    private long customerID;
+    private long staffID;
 }
