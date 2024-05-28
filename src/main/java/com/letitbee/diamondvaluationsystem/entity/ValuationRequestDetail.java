@@ -51,7 +51,7 @@ public class ValuationRequestDetail {
     @JoinColumn(name = "diamond_valuation_id")
     private DiamondValuationAssign diamondValuationAssign;
 
-    @OneToMany(mappedBy = "valuationNote")
+    @OneToMany(mappedBy = "valuationRequestDetail")
     private Set<DiamondValuationAssign> diamondValuationAssigns = new HashSet<>();
 
 }

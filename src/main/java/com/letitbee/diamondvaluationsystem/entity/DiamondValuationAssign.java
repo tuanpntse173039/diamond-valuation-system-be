@@ -31,7 +31,7 @@ public class DiamondValuationAssign {
     @Column(columnDefinition = "money")
     private String valuationPrice;
 
-    @OneToOne(mappedBy = "diamondValuation")
+    @OneToOne(mappedBy = "diamondValuationAssign")
     private ValuationRequestDetail valuationRequestDetailId;
 
     private boolean status;

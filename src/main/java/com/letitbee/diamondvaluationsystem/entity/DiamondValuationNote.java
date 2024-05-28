@@ -69,9 +69,9 @@ public class DiamondValuationNote {
     @Column(nullable = true)
     private boolean isStatus;
 
-    @OneToMany(mappedBy = "diamond")
+    @OneToMany(mappedBy = "diamondValuationNote")
     private Set<DiamondImage> diamondImage = new HashSet<>();
 
-    @OneToOne(mappedBy = "diamond")
+    @OneToOne(mappedBy = "diamondValuationNote")
     private ValuationRequestDetail valuationRequestDetail;
 }
