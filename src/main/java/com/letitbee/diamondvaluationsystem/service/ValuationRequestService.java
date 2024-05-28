@@ -9,8 +9,9 @@ public interface ValuationRequestService {
 
     ValuationRequestDTO getValuationRequestById(Long id);
 
-    ValuationRequestDTO createValuationRequest(long id, ValuationRequestDTO valuationRequestDto);
+    ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto);
 
+    ValuationRequestDTO updateValuationRequest(long id, ValuationRequestDTO valuationRequestDTO);
     void deleteValuationRequestById(Long id);
 
 }

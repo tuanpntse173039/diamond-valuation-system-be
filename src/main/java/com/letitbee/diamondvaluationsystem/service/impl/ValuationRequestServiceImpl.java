@@ -3,11 +3,14 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
+import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
+import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.modelmapper.ModelMapper;
@@ -23,12 +26,14 @@ import java.util.NoSuchElementException;
 @Service
 public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestRepository valuationRequestRepository;
+    private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private CustomerRepository customerRepository;
     private StaffRepository staffRepository;
     private ModelMapper mapper;
 
-    public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository, CustomerRepository customerRepository, StaffRepository staffRepository, ModelMapper mapper) {
+    public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository, ValuationRequestDetailRepository valuationRequestDetailRepository, CustomerRepository customerRepository, StaffRepository staffRepository, ModelMapper mapper) {
         this.valuationRequestRepository = valuationRequestRepository;
+        this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.customerRepository = customerRepository;
         this.staffRepository = staffRepository;
         this.mapper = mapper;
@@ -68,13 +73,41 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    public ValuationRequestDTO createValuationRequest(long customerId, ValuationRequestDTO valuationRequestDto) {
-        Customer customer = customerRepository.findById(customerId).
-                orElseThrow(() -> new ResourceNotFoundException("Customer", "id", customerId));
+    public ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto) {
         ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
-        valuationRequest.setCustomer(customer);
         valuationRequestRepository.save(valuationRequest);
+        for(int i = 0; i < valuationRequest.getDiamondAmount(); i++) {
+            ValuationRequestDetail valuationRequestDetail = new ValuationRequestDetail();
+            valuationRequestDetail.setValuationRequest(valuationRequest);
+            valuationRequestDetail.setStatus(RequestDetailStatus.PENDING);
+            valuationRequestDetail.setSize(0);
+            valuationRequestDetail.setMode(false);
+            valuationRequestDetailRepository.save(valuationRequestDetail);
+        }
         return mapToDTO(valuationRequest);
+    }
+
+    @Override
+    public ValuationRequestDTO updateValuationRequest(long id, ValuationRequestDTO valuationRequestDTO) {
+        ValuationRequest valuationRequest = valuationRequestRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id));
+        //get staff
+        Staff staff = staffRepository.findById(valuationRequestDTO.getStaffID()).orElse(null);
+
+        //update valuation request
+        valuationRequest.setStaff(staff);
+        valuationRequest.setFeedback(valuationRequestDTO.getFeedback());
+        valuationRequest.setReturnDate(valuationRequestDTO.getReturnDate());
+        valuationRequest.setReceiptDate(valuationRequestDTO.getReceiptDate());
+        valuationRequest.setReturnLink(valuationRequestDTO.getReturnLink());
+        valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
+
+        //save to database
+        valuationRequestRepository.save(valuationRequest);
+        //map to dto
+        valuationRequestDTO = mapToDTO(valuationRequest);
+        return valuationRequestDTO;
     }
 
     @Override
@@ -84,26 +117,16 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
         ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);
-        //find customer
-        Customer customer = customerRepository.findByValuationRequestSetContaining(valuationRequest)
-                .orElseThrow(() -> new NoSuchElementException("Not found customer with this valuation request"));
-        //get customerId
-        long customerId = customer.getId();
-        //set customer to DTO
-        valuationRequestDTO.setCustomerID(customerId);
-        //find valuation staff
-        Staff staff = staffRepository.findStaffByValuationRequestSetContaining(valuationRequest).orElse(null);
 
-        //map staff to DTO
-        if (staff != null) {
-            long staffId = staff.getId();
-            //set staff to valuation request
-            valuationRequestDTO.setId(staffId);
-        }
         return valuationRequestDTO;
     }
 
     private ValuationRequest mapToEntity(ValuationRequestDTO valuationRequestDTO) {
-        return mapper.map(valuationRequestDTO, ValuationRequest.class);
+        ValuationRequest valuationRequest = mapper.map(valuationRequestDTO, ValuationRequest.class);
+        long staffId = valuationRequestDTO.getStaffID();
+        if(staffId == 0) {
+            valuationRequest.setStaff(null);
+        }
+        return valuationRequest;
     }
 }

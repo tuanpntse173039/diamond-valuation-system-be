@@ -30,7 +30,7 @@ public class ValuationRequestDetail {
     @Column(columnDefinition = "varchar(1000)")
     private String sealingRecordLink;
 
-    @Column(columnDefinition = "float", nullable = false)
+    @Column(columnDefinition = "float")
     private float size;
 
     @Enumerated(EnumType.STRING)
@@ -51,7 +51,9 @@ public class ValuationRequestDetail {
     @JoinColumn(name = "diamond_valuation_id")
     private DiamondValuationAssign diamondValuationAssign;
 
-    @OneToMany(mappedBy = "valuationRequestDetail")
+    @OneToMany(mappedBy = "valuationRequestDetail",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<DiamondValuationAssign> diamondValuationAssigns = new HashSet<>();
 
 }

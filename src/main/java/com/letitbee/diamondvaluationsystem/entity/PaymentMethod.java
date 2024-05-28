@@ -24,6 +24,8 @@ public class PaymentMethod {
     private long id;
     @Column(columnDefinition = "varchar(50)",nullable = false)
     private String paymentModeName;
-    @OneToMany
+    @OneToMany(mappedBy = "paymentMethod",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Payment> payment = new HashSet<>();
 }

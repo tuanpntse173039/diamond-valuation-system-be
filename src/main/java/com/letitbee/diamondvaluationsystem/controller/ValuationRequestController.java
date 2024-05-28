@@ -11,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@RequestMapping("api/v1")
+@RequestMapping("api/v1/valuation-requests")
 public class ValuationRequestController {
     private ValuationRequestService valuationRequestService;
 
@@ -19,7 +19,7 @@ public class ValuationRequestController {
         this.valuationRequestService = valuationRequestService;
     }
 
-    @GetMapping("/valuation-requests")
+    @GetMapping
     public ResponseEntity<Response<ValuationRequestDTO>>
     getAllValuationRequest(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                            @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
@@ -28,14 +28,21 @@ public class ValuationRequestController {
         return new ResponseEntity<>(valuationRequestService.getAllValuationRequests(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 
-    @GetMapping("/valuation-requests/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<ValuationRequestDTO> getValuationRequest(@PathVariable("id") long id) {
         return ResponseEntity.ok(valuationRequestService.getValuationRequestById(id));
     }
 
-    @PostMapping("/customers/{id}/valuation-requests")
-    public ResponseEntity<ValuationRequestDTO> createValuationRequest( @PathVariable("id") long id,
+    @PostMapping
+    public ResponseEntity<ValuationRequestDTO> createValuationRequest(
             @RequestBody ValuationRequestDTO valuationRequestDT) {
-        return ResponseEntity.ok(valuationRequestService.createValuationRequest(id, valuationRequestDT));
+        return ResponseEntity.ok(valuationRequestService.createValuationRequest(valuationRequestDT));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ValuationRequestDTO> updateValuationRequest(
+            @PathVariable("id") long id,
+            @RequestBody ValuationRequestDTO valuationRequestDT) {
+        return ResponseEntity.ok(valuationRequestService.updateValuationRequest(id, valuationRequestDT));
     }
 }

@@ -69,7 +69,9 @@ public class DiamondValuationNote {
     @Column(nullable = true)
     private boolean isStatus;
 
-    @OneToMany(mappedBy = "diamondValuationNote")
+    @OneToMany(mappedBy = "diamondValuationNote",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<DiamondImage> diamondImage = new HashSet<>();
 
     @OneToOne(mappedBy = "diamondValuationNote")

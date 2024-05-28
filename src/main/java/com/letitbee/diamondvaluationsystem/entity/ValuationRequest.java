@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Cascade;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +48,7 @@ public class ValuationRequest {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "staff_id", nullable = true)
     private Staff staff;
 
@@ -56,10 +57,13 @@ public class ValuationRequest {
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
-    @OneToMany(mappedBy = "valuationRequest")
+    @OneToMany(mappedBy = "valuationRequest",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<Payment> payment = new HashSet<>();
 
-    @OneToMany(mappedBy = "valuationRequest")
+    @OneToMany(mappedBy = "valuationRequest", cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private Set<ValuationRequestDetail> valuationRequestDetails = new HashSet<>();
 
 }
