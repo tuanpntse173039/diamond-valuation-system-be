@@ -5,6 +5,8 @@ import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,14 +30,12 @@ import java.util.NoSuchElementException;
 public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestRepository valuationRequestRepository;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
-    private CustomerRepository customerRepository;
     private StaffRepository staffRepository;
     private ModelMapper mapper;
 
-    public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository, ValuationRequestDetailRepository valuationRequestDetailRepository, CustomerRepository customerRepository, StaffRepository staffRepository, ModelMapper mapper) {
+    public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository, ValuationRequestDetailRepository valuationRequestDetailRepository, StaffRepository staffRepository, ModelMapper mapper) {
         this.valuationRequestRepository = valuationRequestRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
-        this.customerRepository = customerRepository;
         this.staffRepository = staffRepository;
         this.mapper = mapper;
     }
@@ -75,8 +76,9 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     @Override
     public ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto) {
         ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
+        valuationRequest.setStatus(RequestStatus.PENDING);
         valuationRequestRepository.save(valuationRequest);
-        for(int i = 0; i < valuationRequest.getDiamondAmount(); i++) {
+        for (int i = 0; i < valuationRequest.getDiamondAmount(); i++) {
             ValuationRequestDetail valuationRequestDetail = new ValuationRequestDetail();
             valuationRequestDetail.setValuationRequest(valuationRequest);
             valuationRequestDetail.setStatus(RequestDetailStatus.PENDING);
@@ -94,7 +96,10 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         Staff staff = staffRepository.findById(valuationRequestDTO.getStaffID()).orElse(null);
 
         //update valuation request
-        valuationRequest.setStaff(staff);
+        if (staff != null) {
+            valuationRequest.setStaff(staff);
+            valuationRequest.setStatus(RequestStatus.PROCESSING);
+        }
         valuationRequest.setFeedback(valuationRequestDTO.getFeedback());
         valuationRequest.setReturnDate(valuationRequestDTO.getReturnDate());
         valuationRequest.setReceiptDate(valuationRequestDTO.getReceiptDate());
@@ -109,20 +114,30 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    public void deleteValuationRequestById(Long id) {
-
+    public ValuationRequestDTO deleteValuationRequestById(Long id) {
+        ValuationRequest valuationRequest = valuationRequestRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id));
+        if (!valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.PENDING.toString()) ) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Can't cancel this valuation request!");
+        }
+        valuationRequest.setStatus(RequestStatus.CANCEL);
+        valuationRequestRepository.save(valuationRequest);
+        //load valuation request again database
+        valuationRequest = valuationRequestRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id));
+        return mapToDTO(valuationRequest);
     }
 
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
-        ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);
-
-        return valuationRequestDTO;
+        return mapper.map(valuationRequest, ValuationRequestDTO.class);
     }
 
     private ValuationRequest mapToEntity(ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = mapper.map(valuationRequestDTO, ValuationRequest.class);
         long staffId = valuationRequestDTO.getStaffID();
-        if(staffId == 0) {
+        if (staffId == 0) {
             valuationRequest.setStaff(null);
         }
         return valuationRequest;

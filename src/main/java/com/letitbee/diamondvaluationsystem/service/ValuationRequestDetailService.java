@@ -1,14 +1,14 @@
 package com.letitbee.diamondvaluationsystem.service;
 
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 
 public interface ValuationRequestDetailService {
-    Response<ValuationRequestDetailDTO> getAllValuationNotes(int pageNo, int pageSize, String sortBy, String sortDir);
+    Response<ValuationRequestDetailDTO> getAllValuationRequestDetail(int pageNo, int pageSize, String sortBy, String sortDir);
 
-    ValuationRequestDetailDTO getValuationNoteById(Long id);
+    ValuationRequestDetailDTO getValuationRequestDetailById(Long id);
 
-    ValuationRequestDetailDTO createValuationNote(ValuationRequestDetailDTO valuationRequestDetailDto);
+    ValuationRequestDetailDTO updateValuationRequestDetail(long id, ValuationRequestDetailDTO valuationRequestDetailDTO);
 
-    void deleteValuationNoteById(Long id);
 }
