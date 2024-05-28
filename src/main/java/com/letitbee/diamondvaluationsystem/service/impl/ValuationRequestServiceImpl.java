@@ -80,8 +80,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
             ValuationRequestDetail valuationRequestDetail = new ValuationRequestDetail();
             valuationRequestDetail.setValuationRequest(valuationRequest);
             valuationRequestDetail.setStatus(RequestDetailStatus.PENDING);
-            valuationRequestDetail.setSize(0);
-            valuationRequestDetail.setMode(false);
             valuationRequestDetailRepository.save(valuationRequestDetail);
         }
         return mapToDTO(valuationRequest);

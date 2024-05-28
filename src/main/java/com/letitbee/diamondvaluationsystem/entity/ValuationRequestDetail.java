@@ -22,8 +22,6 @@ public class ValuationRequestDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    private boolean isMode;
-
     @Column(columnDefinition = "money")
     private String resultPrice;
 
