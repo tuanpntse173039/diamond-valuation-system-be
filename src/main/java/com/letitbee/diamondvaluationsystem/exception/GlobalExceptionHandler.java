@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
         detail.setDetail(webRequest.getDescription(false));
         return new ResponseEntity<>(detail, HttpStatus.INTERNAL_SERVER_ERROR);
     }
-
+//
 //    @ExceptionHandler(AccessDeniedException.class)
 //    public ResponseEntity<ErrorDetail> handleAccessDeniedException(AccessDeniedException exception,
 //                                                                    WebRequest webRequest){

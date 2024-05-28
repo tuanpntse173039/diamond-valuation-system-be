@@ -62,9 +62,11 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO updateStaff(StaffDTO staffDto, Long id) {
-        Staff staff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id));
-
+    public StaffDTO updateStaffInformation(StaffDTO staffDto, Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
+        Staff staff = staffRepository.findStaffByAccount(account)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "AccountId", id));
         staff.setFirstName(staffDto.getFirstName());
         staff.setLastName(staffDto.getLastName());
         staff.setPhone(staffDto.getPhone());
@@ -74,6 +76,23 @@ public class StaffServiceImpl implements StaffService {
 
         return mapToDto(staffRepository.save(staff));
     }
+
+    @Override
+    public StaffDTO createStaffInformation(StaffDTO staffDto, Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
+        Staff staff = staffRepository.findStaffByAccount(account)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "AccountId", id));
+        staff.setFirstName(staffDto.getFirstName());
+        staff.setLastName(staffDto.getLastName());
+        staff.setPhone(staffDto.getPhone());
+        staff.setExperience(staffDto.getExperience());
+        staff.setCertificateLink(staffDto.getCertificateLink());
+        staff.setEmail(staffDto.getEmail());
+
+        return mapToDto(staffRepository.save(staff));
+    }
+
 
     @Override
     public void deleteStaffById(Long id) {
@@ -81,19 +100,6 @@ public class StaffServiceImpl implements StaffService {
         Account accountWithStaffID =  staff.getAccount();
         accountWithStaffID.setIs_active(false);
         accountRepository.save(accountWithStaffID);
-    }
-
-    @Override
-    public StaffDTO createStaffInformation(StaffDTO staffDto, Long id) {
-        Staff staff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id));
-
-        staff.setFirstName(staffDto.getFirstName());
-        staff.setLastName(staffDto.getLastName());
-        staff.setPhone(staffDto.getPhone());
-        staff.setExperience(staffDto.getExperience());
-        staff.setCertificateLink(staffDto.getCertificateLink());
-        staff.setEmail(staffDto.getEmail());
-        return mapToDto(staffRepository.save(staff));
     }
 
     //convert Entity to DTO

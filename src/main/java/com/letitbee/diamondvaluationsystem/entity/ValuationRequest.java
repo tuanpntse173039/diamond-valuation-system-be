@@ -33,13 +33,15 @@ public class ValuationRequest {
     @Column(columnDefinition = "int", nullable = false)
     private int diamondAmount;
     @Column(columnDefinition = "money")
-    private String totalPrice;
+    private String totalServicePrice;
     @Column(columnDefinition = "varchar(1000)")
     private String receiptLink;
     @Column(columnDefinition = "varchar(1000)")
     private String returnLink;
     @Column(columnDefinition = "text")
     private String feedback;
+    @Column(columnDefinition = "varchar(1000)")
+    private String cancelReason;
 
     @Enumerated(EnumType.STRING)
     private RequestStatus status;

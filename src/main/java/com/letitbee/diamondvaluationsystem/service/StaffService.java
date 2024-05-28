@@ -8,7 +8,9 @@ public interface StaffService {
 
     StaffDTO getStaffById(Long id);
 
-    StaffDTO updateStaff(StaffDTO staffDto, Long id);
+    StaffDTO updateStaffInformation(StaffDTO staffDto, Long id);
+
+    StaffDTO createStaffInformation(StaffDTO staffDto, Long id);
 
     void deleteStaffById(Long id);
 

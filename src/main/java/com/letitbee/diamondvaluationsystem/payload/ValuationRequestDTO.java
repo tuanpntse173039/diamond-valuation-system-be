@@ -16,6 +16,7 @@ public class ValuationRequestDTO {
     private String receiptLink;
     private String returnLink;
     private String feedback;
+    private String cancelReason;
     private RequestStatus status;
     private Set<PaymentDTO> payment;
     private Set<ValuationRequestDetailDTO> valuationRequestDetails;

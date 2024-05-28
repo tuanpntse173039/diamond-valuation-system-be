@@ -22,6 +22,8 @@ public class ValuationRequestDetail {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    private boolean isMode;
+
     @Column(columnDefinition = "money")
     private String resultPrice;
 
@@ -37,8 +39,10 @@ public class ValuationRequestDetail {
     @Column(columnDefinition = "bit default 1")
     private boolean isDiamond;
 
-    @OneToOne
-    @JoinColumn(name = "diamond_id", nullable = true)
+    @Column(columnDefinition = "money")
+    private String servicePrice;
+
+    @OneToOne(mappedBy = "valuationRequestDetail")
     private DiamondValuationNote diamondValuationNote;
 
     @ManyToOne

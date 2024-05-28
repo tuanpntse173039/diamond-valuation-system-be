@@ -1,7 +1,15 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
 import com.letitbee.diamondvaluationsystem.enums.Role;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AccountResponse {
     private long id;
     private String username;

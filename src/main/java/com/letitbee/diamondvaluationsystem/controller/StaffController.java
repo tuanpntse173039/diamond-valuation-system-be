@@ -18,7 +18,7 @@ public class StaffController {
     }
 
     @GetMapping
-    public ResponseEntity<Response> getAllStaffs(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+    public ResponseEntity<Response<StaffDTO>> getAllStaffs(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                                                  @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
                                                  @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
                                                  @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir) {
@@ -30,16 +30,16 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getStaffById(id));
     }
 
-    @PutMapping("/{staffId}")
-    public ResponseEntity<StaffDTO> updateStaff(@RequestBody StaffDTO staffDTO,@PathVariable("staffId") long id){
-        StaffDTO staff = staffService.updateStaff(staffDTO, id);
-        return new ResponseEntity<>(staff, HttpStatus.OK);
+    @PostMapping("/{accountId}")
+    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("accountId") long id){
+        StaffDTO response = staffService.createStaffInformation(staffDto, id);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PostMapping("/{staffId}")
-    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("staffId") long id){
-        StaffDTO staff = staffService.createStaffInformation(staffDto, id);
-        return new ResponseEntity<>(staff, HttpStatus.CREATED);
+    @PutMapping("/{accountId}")
+    public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("accountId") long id){
+        StaffDTO response = staffService.updateStaffInformation(staffDto, id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{staffId}")

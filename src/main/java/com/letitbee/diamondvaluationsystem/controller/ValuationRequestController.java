@@ -45,4 +45,11 @@ public class ValuationRequestController {
             @RequestBody ValuationRequestDTO valuationRequestDT) {
         return ResponseEntity.ok(valuationRequestService.updateValuationRequest(id, valuationRequestDT));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<ValuationRequestDTO> deleteValuationRequest(
+            @PathVariable("id") long id) {
+        return ResponseEntity.ok(valuationRequestService.deleteValuationRequestById(id));
+    }
+
 }

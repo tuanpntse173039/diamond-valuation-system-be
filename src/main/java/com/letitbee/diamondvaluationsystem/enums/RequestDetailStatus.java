@@ -4,6 +4,7 @@ public enum RequestDetailStatus {
     PENDING("Pending"),
     CANCEL("Cancel"),
     ASSESSING("Assessing"),
+    ASSESSED("Assessed"),
     VALUATING("Valuating"),
     VALUATED("Valuated"),
     APPROVED("Approved"),;

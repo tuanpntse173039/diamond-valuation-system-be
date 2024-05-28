@@ -74,6 +74,7 @@ public class DiamondValuationNote {
             orphanRemoval = true)
     private Set<DiamondImage> diamondImage = new HashSet<>();
 
-    @OneToOne(mappedBy = "diamondValuationNote")
+    @OneToOne
+    @JoinColumn(name = "valuation_request_detail_id")
     private ValuationRequestDetail valuationRequestDetail;
 }

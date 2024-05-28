@@ -25,7 +25,7 @@ public class Account {
     )
     private long id;
     @Column(nullable = false, columnDefinition = "nvarchar(50)",unique = true)
-    private String name;
+    private String username;
     @Column(nullable = false, columnDefinition = "nvarchar(50)")
     private String password;
     @Column(columnDefinition = "bit default 1")
