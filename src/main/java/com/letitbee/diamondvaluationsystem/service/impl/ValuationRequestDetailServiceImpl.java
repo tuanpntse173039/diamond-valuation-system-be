@@ -2,13 +2,17 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondValuationAssign;
 import com.letitbee.diamondvaluationsystem.entity.DiamondValuationNote;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationNoteRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
+import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -18,16 +22,19 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class ValuationRequestDetailServiceImpl implements ValuationRequestDetailService {
 
     private ModelMapper mapper;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
+    private ValuationRequestRepository valuationRequestRepository;
 
-    public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository) {
+    public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository, ValuationRequestRepository valuationRequestRepository) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
+        this.valuationRequestRepository = valuationRequestRepository;
     }
 
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
@@ -89,7 +96,40 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
+
+        if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
+        || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
+            ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
+
+        } // update valuation request if valuation request detail status is cancel or assessing
         return mapToDTO(valuationRequestDetail);
+    }
+    private void updateValuationRequestStatus(ValuationRequest valuationRequest, RequestStatus requestStatus) {
+        valuationRequest.setStatus(RequestStatus.VALUATING);
+        valuationRequestRepository.save(valuationRequest);
+    }
+
+    private void changeValuationRequestStatusToValuating(ValuationRequest valuationRequest) {
+        if(valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())) {
+            RequestStatus requestStatus = RequestStatus.VALUATING;
+            updateValuationRequestStatus(valuationRequest, requestStatus);
+        } // update valuation request if its status is "received"
+    }
+    private void changeValuationRequestStatusToComplete(ValuationRequest valuationRequest) {
+        Set<ValuationRequestDetail> valuationRequestDetailSet = valuationRequest.getValuationRequestDetails();
+
+        boolean checkStatusDetail = true;
+        //check status in all valuation request detail
+        for(ValuationRequestDetail valuationRequestDetail : valuationRequestDetailSet) {
+            if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
+                    || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.APPROVED.toString())) {
+                checkStatusDetail = false;
+            }
+        }
+        if(checkStatusDetail) {
+            RequestStatus requestStatus = RequestStatus.COMPLETED;
+            updateValuationRequestStatus(valuationRequest, requestStatus);
+        } // update valuation request if its all detail status is cancel or approve
     }
 
 }
