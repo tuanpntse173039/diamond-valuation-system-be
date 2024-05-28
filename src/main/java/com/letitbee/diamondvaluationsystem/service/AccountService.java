@@ -1,14 +1,13 @@
 package com.letitbee.diamondvaluationsystem.service;
 
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
+import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
 
 public interface AccountService {
-    AccountDTO createAccount(AccountDTO accountDto);
 
     String login(AccountDTO accountDTO);
 
-    String registerCustomer(AccountDTO accountDTO);
+    AccountResponse register(AccountDTO accountDTO);
 
-    String registerStaff(AccountDTO accountDTO);
-
+    String updatePassword(String newPassword, Long id);
 }

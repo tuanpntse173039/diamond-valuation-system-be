@@ -1,11 +1,13 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
+import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
+import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
@@ -25,6 +27,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     private CustomerRepository customerRepository;
     private ValuationRequestRepository valuationRequestRepository;
+    private AccountRepository accountRepository;
     private ModelMapper mapper;
 
     public CustomerServiceImpl(CustomerRepository customerRepository, ValuationRequestRepository valuationRequestRepository, ModelMapper mapper) {
@@ -66,6 +69,47 @@ public class CustomerServiceImpl implements CustomerService {
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id));
         return mapToDTO(customer);
     }
+
+    @Override
+    public CustomerDTO createCustomerInformation(CustomerDTO customerDto, Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
+
+        Customer customer = customerRepository.
+                findByAccount(account).
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id));
+
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        customer.setPhone(customerDto.getPhone());
+        customer.setEmail(customerDto.getEmail());
+        customer.setAddress(customerDto.getAddress());
+        customer.setAvatar(customerDto.getAvatar());
+        customer.setIdentityDocument(customerDto.getIdentityDocument());
+
+        return mapToDTO(customerRepository.save(customer));
+    }
+
+    @Override
+    public CustomerDTO updateCustomerInformation(CustomerDTO customerDto, Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
+
+        Customer customer = customerRepository.
+                findByAccount(account).
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id));
+
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        customer.setPhone(customerDto.getPhone());
+        customer.setEmail(customerDto.getEmail());
+        customer.setAddress(customerDto.getAddress());
+        customer.setAvatar(customerDto.getAvatar());
+        customer.setIdentityDocument(customerDto.getIdentityDocument());
+
+        return mapToDTO(customerRepository.save(customer));
+    }
+
 
     private CustomerDTO mapToDTO(Customer customer) {
         CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);

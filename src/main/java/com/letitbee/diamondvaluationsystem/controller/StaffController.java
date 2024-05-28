@@ -18,7 +18,7 @@ public class StaffController {
     }
 
     @GetMapping
-    public ResponseEntity<Response> getAllStaffs(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+    public ResponseEntity<Response<StaffDTO>> getAllStaffs(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                                                  @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
                                                  @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
                                                  @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir) {
@@ -28,6 +28,18 @@ public class StaffController {
     @GetMapping("/{staffId}")
     public ResponseEntity<StaffDTO> getStaffById(@PathVariable("staffId") long id) {
         return ResponseEntity.ok(staffService.getStaffById(id));
+    }
+
+    @PostMapping("/{accountId}")
+    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("accountId") long id){
+        StaffDTO response = staffService.createStaffInformation(staffDto, id);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PutMapping("/{accountId}")
+    public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("accountId") long id){
+        StaffDTO response = staffService.updateStaffInformation(staffDto, id);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @DeleteMapping("/{staffId}")
