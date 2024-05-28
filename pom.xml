@@ -11,7 +11,7 @@
 	<groupId>com.letitbee</groupId>
 	<artifactId>DiamondValuationSystemBE</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>DiamondValuationSystemBE</name>
 	<description>DiamondValuationSystemBE</description>
 	<properties>
