@@ -107,7 +107,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
 
         //save to database
-        valuationRequestRepository.save(valuationRequest);
+        valuationRequest = valuationRequestRepository.save(valuationRequest);
         //map to dto
         valuationRequestDTO = mapToDTO(valuationRequest);
         return valuationRequestDTO;
@@ -118,15 +118,11 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         ValuationRequest valuationRequest = valuationRequestRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id));
-        if (!valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.PENDING.toString()) ) {
+        if (!valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.PENDING.toString())) {
             throw new APIException(HttpStatus.BAD_REQUEST, "Can't cancel this valuation request!");
         }
         valuationRequest.setStatus(RequestStatus.CANCEL);
-        valuationRequestRepository.save(valuationRequest);
-        //load valuation request again database
-        valuationRequest = valuationRequestRepository
-                .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id));
+        valuationRequest = valuationRequestRepository.save(valuationRequest);
         return mapToDTO(valuationRequest);
     }
 
