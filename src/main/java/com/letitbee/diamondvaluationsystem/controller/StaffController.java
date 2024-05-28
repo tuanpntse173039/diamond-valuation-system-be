@@ -37,7 +37,7 @@ public class StaffController {
     }
 
     @PostMapping("/{staffId}")
-    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("staffId") long id{
+    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("staffId") long id){
         StaffDTO staff = staffService.createStaffInformation(staffDto, id);
         return new ResponseEntity<>(staff, HttpStatus.CREATED);
     }
