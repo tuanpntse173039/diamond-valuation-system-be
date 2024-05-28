@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -21,7 +24,6 @@ public class PaymentMethod {
     private long id;
     @Column(columnDefinition = "varchar(50)",nullable = false)
     private String paymentModeName;
-    @ManyToOne
-    @JoinColumn(name = "payment_id", nullable = false)
-    private Payment payment;
+    @OneToMany
+    private Set<Payment> payment = new HashSet<>();
 }

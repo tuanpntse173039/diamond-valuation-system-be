@@ -29,17 +29,11 @@ public class Payment {
     @Column(columnDefinition = "varchar(50)")
     private String externalTransaction;
 
-    @OneToMany(
-            mappedBy = "payment",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private Set<PaymentMethod> paymentMethods = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "payment_method_id", nullable = false)
+    private PaymentMethod paymentMethod;
 
-    @OneToOne(
-            mappedBy = "payment",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-    private ValuationRequest valuationRequests;
+    @ManyToOne
+    @JoinColumn(name = "valuation_request_id", nullable = false)
+    private ValuationRequest valuationRequest;
 }

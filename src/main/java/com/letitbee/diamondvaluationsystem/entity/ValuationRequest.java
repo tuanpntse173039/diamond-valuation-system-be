@@ -56,9 +56,8 @@ public class ValuationRequest {
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 
-    @OneToOne
-    @JoinColumn(name = "payment_id", nullable = true)
-    private Payment payment;
+    @OneToMany(mappedBy = "valuationRequest")
+    private Set<Payment> payment = new HashSet<>();
 
     @OneToMany(mappedBy = "valuationRequest")
     private Set<ValuationRequestDetail> valuationRequestDetails = new HashSet<>();

@@ -40,7 +40,7 @@ public class ValuationRequestDetail {
     private boolean isDiamond;
 
     @OneToOne
-    @JoinColumn(name = "diamond_id", nullable = false)
+    @JoinColumn(name = "diamond_id", nullable = true)
     private DiamondValuationNote diamondValuationNote;
 
     @ManyToOne
