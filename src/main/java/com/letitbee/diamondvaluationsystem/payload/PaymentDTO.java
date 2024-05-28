@@ -7,5 +7,5 @@ public class PaymentDTO {
     private String paytime;
     private String amount;
     private String externalTransaction;
-    private PaymentMethodDTO paymentMethodDTO;
+    private PaymentMethodDTO paymentMethod;
 }

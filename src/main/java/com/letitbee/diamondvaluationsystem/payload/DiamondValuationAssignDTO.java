@@ -9,5 +9,5 @@ public class DiamondValuationAssignDTO {
     private String comment;
     private String valuationPrice;
     private boolean status;
-    private StaffDTO staffDTO;
+    private StaffDTO staff;
 }
