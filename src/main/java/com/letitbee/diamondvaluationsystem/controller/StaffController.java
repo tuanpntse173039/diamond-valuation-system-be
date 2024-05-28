@@ -30,6 +30,18 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getStaffById(id));
     }
 
+    @PutMapping("/{staffId}")
+    public ResponseEntity<StaffDTO> updateStaff(@RequestBody StaffDTO staffDTO,@PathVariable("staffId") long id){
+        StaffDTO staff = staffService.updateStaff(staffDTO, id);
+        return new ResponseEntity<>(staff, HttpStatus.OK);
+    }
+
+    @PostMapping("/{staffId}")
+    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("staffId") long id{
+        StaffDTO staff = staffService.createStaffInformation(staffDto, id);
+        return new ResponseEntity<>(staff, HttpStatus.CREATED);
+    }
+
     @DeleteMapping("/{staffId}")
     public ResponseEntity<String> deleteStaffById(@PathVariable("staffId") long id) {
         staffService.deleteStaffById(id);

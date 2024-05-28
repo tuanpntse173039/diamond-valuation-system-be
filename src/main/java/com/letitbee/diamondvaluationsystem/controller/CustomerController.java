@@ -4,12 +4,10 @@ import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("api/v1/customers")
@@ -32,5 +30,17 @@ public class CustomerController {
     @GetMapping("/{customerId}")
     public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable("customerId") long id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));
+    }
+
+    @PostMapping("/{customerId}")
+    public ResponseEntity<CustomerDTO> createCustomerInformation(@RequestBody CustomerDTO customerDto, @PathVariable("customerId") long id) {
+        CustomerDTO customer = customerService.createCustomerInformation(customerDto, id);
+        return new ResponseEntity<>(customer, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/{customerId}")
+    public ResponseEntity<CustomerDTO> updateCustomerInformation(@RequestBody CustomerDTO customerDto, @PathVariable("customerId") long id) {
+        CustomerDTO customer = customerService.updateCustomerInformation(customerDto, id);
+        return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 }

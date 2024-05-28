@@ -67,6 +67,40 @@ public class CustomerServiceImpl implements CustomerService {
         return mapToDTO(customer);
     }
 
+    @Override
+    public CustomerDTO createCustomerInformation(CustomerDTO customerDto, Long id) {
+        Customer customer = customerRepository.
+                findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id));
+
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        customer.setPhone(customerDto.getPhone());
+        customer.setEmail(customerDto.getEmail());
+        customer.setAddress(customerDto.getAddress());
+        customer.setAvatar(customerDto.getAvatar());
+        customer.setIdentityDocument(customerDto.getIdentityDocument());
+
+        return mapToDTO(customerRepository.save(customer));
+    }
+
+    @Override
+    public CustomerDTO updateCustomerInformation(CustomerDTO customerDto, Long id) {
+        Customer customer = customerRepository.
+                findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id));
+
+        customer.setFirstName(customerDto.getFirstName());
+        customer.setLastName(customerDto.getLastName());
+        customer.setPhone(customerDto.getPhone());
+        customer.setEmail(customerDto.getEmail());
+        customer.setAddress(customerDto.getAddress());
+        customer.setAvatar(customerDto.getAvatar());
+        customer.setIdentityDocument(customerDto.getIdentityDocument());
+
+        return mapToDTO(customerRepository.save(customer));
+    }
+
     private CustomerDTO mapToDTO(Customer customer) {
         CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);
         //get List valuation request

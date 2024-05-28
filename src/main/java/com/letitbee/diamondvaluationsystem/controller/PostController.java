@@ -42,10 +42,7 @@ public class PostController {
     //update post by id
     @PutMapping("/{id}")
     public ResponseEntity<PostDTO> updatePost(@RequestBody PostDTO postDto ,@PathVariable(name = "id") long id){
-
-
         PostDTO postResponse = postService.updatePost(postDto,id);
-
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
