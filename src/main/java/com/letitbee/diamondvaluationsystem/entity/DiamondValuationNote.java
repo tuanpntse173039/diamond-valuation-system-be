@@ -66,9 +66,6 @@ public class DiamondValuationNote {
     @Column(columnDefinition = "money")
     private double maxPrice;
 
-    @Column(nullable = true)
-    private boolean isStatus;
-
     @OneToMany(mappedBy = "diamondValuationNote",
             cascade = CascadeType.ALL,
             orphanRemoval = true)

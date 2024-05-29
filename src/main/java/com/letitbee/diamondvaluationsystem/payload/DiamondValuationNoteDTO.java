@@ -26,6 +26,5 @@ public class DiamondValuationNoteDTO {
     private double fairPrice;
     private double minPrice;
     private double maxPrice;
-    private boolean isStatus;
     private Set<DiamondImageDTO> diamondImages;
 }
