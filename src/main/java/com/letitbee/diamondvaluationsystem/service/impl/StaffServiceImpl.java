@@ -33,7 +33,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Response getAllStaffs(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response<StaffDTO> getAllStaffs(int pageNo, int pageSize, String sortBy, String sortDir) {
 
         //create Pageable intance
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -63,10 +63,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffDTO updateStaffInformation(StaffDTO staffDto, Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
-        Staff staff = staffRepository.findStaffByAccount(account)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff", "AccountId", id));
+        Staff staff = staffRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id));
         staff.setFirstName(staffDto.getFirstName());
         staff.setLastName(staffDto.getLastName());
         staff.setPhone(staffDto.getPhone());
@@ -78,11 +76,11 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO createStaffInformation(StaffDTO staffDto, Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
-        Staff staff = staffRepository.findStaffByAccount(account)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff", "AccountId", id));
+    public StaffDTO createStaffInformation(StaffDTO staffDto) {
+        Account account = mapper.map(staffDto.getAccount(), Account.class);
+        Staff staff = new Staff();
+
+        staff.setAccount(account);
         staff.setFirstName(staffDto.getFirstName());
         staff.setLastName(staffDto.getLastName());
         staff.setPhone(staffDto.getPhone());

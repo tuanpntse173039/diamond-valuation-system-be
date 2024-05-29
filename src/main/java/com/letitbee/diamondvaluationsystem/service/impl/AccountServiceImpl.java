@@ -56,9 +56,9 @@ public class AccountServiceImpl implements AccountService {
         //return account to client without password
         AccountResponse newAccount = new AccountResponse();
         newAccount.setId(mapper.map(account, AccountDTO.class).getId());
-        newAccount.setUsername(mapper.map(account, AccountDTO.class).getUsername());
-        newAccount.setRole(mapper.map(account, AccountDTO.class).getRole());
-        newAccount.setIs_active(mapper.map(account, AccountDTO.class).getIs_active());
+        newAccount.setUsername(accountDTO.getUsername());
+        newAccount.setRole(accountDTO.getRole());
+        newAccount.setIs_active(accountDTO.getIs_active());
         return newAccount;
     }
 

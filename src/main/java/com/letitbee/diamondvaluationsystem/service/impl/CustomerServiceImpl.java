@@ -71,14 +71,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO createCustomerInformation(CustomerDTO customerDto, Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
+    public CustomerDTO createCustomerInformation(CustomerDTO customerDto) {
+        Account account = mapper.map(customerDto.getAccount(), Account.class);
+        Customer customer = new Customer();
 
-        Customer customer = customerRepository.
-                findByAccount(account).
-                orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id));
-
+        customer.setAccount(account);
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPhone(customerDto.getPhone());
@@ -92,12 +89,10 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerDTO updateCustomerInformation(CustomerDTO customerDto, Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
 
         Customer customer = customerRepository.
-                findByAccount(account).
-                orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id));
+                findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id));
 
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());

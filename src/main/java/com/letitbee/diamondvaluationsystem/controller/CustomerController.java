@@ -32,14 +32,14 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
-    @PostMapping("/{accountId}")
-    public ResponseEntity<CustomerDTO> createCustomerInformation(@RequestBody CustomerDTO customerDto, @PathVariable("accountId") long id){
-        CustomerDTO customer = customerService.createCustomerInformation(customerDto, id);
+    @PostMapping()
+    public ResponseEntity<CustomerDTO> createCustomerInformation(@RequestBody CustomerDTO customerDto){
+        CustomerDTO customer = customerService.createCustomerInformation(customerDto);
         return new ResponseEntity<>(customer, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{accountId}")
-    public ResponseEntity<CustomerDTO> updateCustomerInformation(@RequestBody CustomerDTO customerDto, @PathVariable("accountId") long id){
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerDTO> updateCustomerInformation(@RequestBody CustomerDTO customerDto, @PathVariable("id") long id){
         CustomerDTO customer = customerService.updateCustomerInformation(customerDto, id);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
