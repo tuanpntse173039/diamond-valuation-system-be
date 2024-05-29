@@ -26,7 +26,7 @@ public class ServicePriceList {
     private String initPrice;
     @Column(columnDefinition = "money", nullable = false)
     private String unitPrice;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;
 

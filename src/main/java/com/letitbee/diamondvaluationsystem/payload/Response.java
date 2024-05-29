@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -12,4 +13,5 @@ public class Response<T> {
     private long totalElement;
     private int totalPage;
     private boolean last;
+
 }

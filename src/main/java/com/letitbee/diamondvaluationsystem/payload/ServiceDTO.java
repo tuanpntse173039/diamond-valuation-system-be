@@ -10,5 +10,5 @@ public class ServiceDTO {
      private String name;
      private String description;
      private int period;
-     private Set<ServicePriceListDTO> servicePriceList;
+     private Set<ServicePriceListDTO> servicePriceLists;
 }
