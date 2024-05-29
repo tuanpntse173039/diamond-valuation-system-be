@@ -26,10 +26,10 @@ public class StaffServiceImpl implements StaffService {
     private AccountRepository accountRepository;
     private ModelMapper mapper;
 
-    @Autowired
-    public StaffServiceImpl(StaffRepository staffRepository, ModelMapper modelMapper) {
+    public StaffServiceImpl(StaffRepository staffRepository, AccountRepository accountRepository, ModelMapper mapper) {
         this.staffRepository = staffRepository;
-        this.mapper = modelMapper;
+        this.accountRepository = accountRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -63,10 +63,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffDTO updateStaffInformation(StaffDTO staffDto, Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
-        Staff staff = staffRepository.findStaffByAccount(account)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff", "AccountId", id));
+        Staff staff = staffRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "Id", id));
         staff.setFirstName(staffDto.getFirstName());
         staff.setLastName(staffDto.getLastName());
         staff.setPhone(staffDto.getPhone());
@@ -78,17 +76,16 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO createStaffInformation(StaffDTO staffDto, Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
-        Staff staff = staffRepository.findStaffByAccount(account)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff", "AccountId", id));
+    public StaffDTO createStaffInformation(StaffDTO staffDto) {
+        Account account = mapper.map(staffDto.getAccount(), Account.class) ;
+        Staff staff = new Staff();
         staff.setFirstName(staffDto.getFirstName());
         staff.setLastName(staffDto.getLastName());
         staff.setPhone(staffDto.getPhone());
         staff.setExperience(staffDto.getExperience());
         staff.setCertificateLink(staffDto.getCertificateLink());
         staff.setEmail(staffDto.getEmail());
+        staff.setAccount(account);
 
         return mapToDto(staffRepository.save(staff));
     }

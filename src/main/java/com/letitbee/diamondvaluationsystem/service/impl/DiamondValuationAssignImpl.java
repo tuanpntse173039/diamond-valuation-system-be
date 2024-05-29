@@ -15,6 +15,12 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
 
     private ModelMapper mapper;
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
+
+    public DiamondValuationAssignImpl(ModelMapper mapper, DiamondValuationAssignRepository diamondValuationAssignRepository) {
+        this.mapper = mapper;
+        this.diamondValuationAssignRepository = diamondValuationAssignRepository;
+    }
+
     @Override
     public DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = mapToEntity(diamondValuationAssignDTO);

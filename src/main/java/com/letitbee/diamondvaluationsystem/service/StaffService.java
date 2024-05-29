@@ -10,7 +10,7 @@ public interface StaffService {
 
     StaffDTO updateStaffInformation(StaffDTO staffDto, Long id);
 
-    StaffDTO createStaffInformation(StaffDTO staffDto, Long id);
+    StaffDTO createStaffInformation(StaffDTO staffDto);
 
     void deleteStaffById(Long id);
 }

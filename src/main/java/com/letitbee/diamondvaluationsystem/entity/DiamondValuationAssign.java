@@ -19,7 +19,7 @@ public class DiamondValuationAssign {
     private long id;
 
     @ManyToOne
-    @JoinColumn(name = "valuation_note_id", nullable = false)
+    @JoinColumn(name = "valuation_request_detail_id", nullable = false)
     private ValuationRequestDetail valuationRequestDetail;
 
     @Column(columnDefinition = "datetime")

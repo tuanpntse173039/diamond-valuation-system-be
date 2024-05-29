@@ -97,15 +97,18 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
-        if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
-        || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
-            ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
-
+        ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
+        if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
+                || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
+            valuationRequest = valuationRequestDetail.getValuationRequest();
+            changeValuationRequestStatusToValuating(valuationRequest);
         } // update valuation request if valuation request detail status is cancel or assessing
+        changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
+                                                                  //if all detail is approve or cancel
         return mapToDTO(valuationRequestDetail);
     }
     private void updateValuationRequestStatus(ValuationRequest valuationRequest, RequestStatus requestStatus) {
-        valuationRequest.setStatus(RequestStatus.VALUATING);
+        valuationRequest.setStatus(requestStatus);
         valuationRequestRepository.save(valuationRequest);
     }
 

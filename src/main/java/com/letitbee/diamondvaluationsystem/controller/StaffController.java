@@ -30,20 +30,20 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getStaffById(id));
     }
 
-    @PostMapping("/{accountId}")
-    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("accountId") long id){
-        StaffDTO response = staffService.createStaffInformation(staffDto, id);
+    @PostMapping
+    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto){
+        StaffDTO response = staffService.createStaffInformation(staffDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{accountId}")
-    public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("accountId") long id){
+    @PutMapping("/{id}")
+    public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("id") long id){
         StaffDTO response = staffService.updateStaffInformation(staffDto, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @DeleteMapping("/{staffId}")
-    public ResponseEntity<String> deleteStaffById(@PathVariable("staffId") long id) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteStaffById(@PathVariable("id") long id) {
         staffService.deleteStaffById(id);
         return new ResponseEntity<>("Staff deleted successfully", HttpStatus.OK);
     }
