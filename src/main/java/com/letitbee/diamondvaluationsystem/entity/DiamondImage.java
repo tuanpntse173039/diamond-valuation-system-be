@@ -19,7 +19,7 @@ public class DiamondImage {
     @Column(columnDefinition = "varchar(1000)", nullable = false)
     private String image;
     @ManyToOne
-    @JoinColumn(name = "diamond_id")
+    @JoinColumn(name = "diamond_valuation_note_id")
     private DiamondValuationNote diamondValuationNote;
 
 }

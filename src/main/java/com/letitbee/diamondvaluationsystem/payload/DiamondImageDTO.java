@@ -6,4 +6,5 @@ import lombok.Data;
 public class DiamondImageDTO {
     private long id;
     private String image;
+    private long diamondValuationNoteID;
 }

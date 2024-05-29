@@ -24,4 +24,9 @@ public enum RequestStatus {
     public String toString() {
         return displayName;
     }
+
+    
+    public boolean equals(RequestStatus requestStatus) {
+        return this.toString().equalsIgnoreCase(requestStatus.toString());
+    }
 }

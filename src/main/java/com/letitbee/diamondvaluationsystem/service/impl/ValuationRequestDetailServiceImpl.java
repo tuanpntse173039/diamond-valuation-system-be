@@ -30,6 +30,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private ModelMapper mapper;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private ValuationRequestRepository valuationRequestRepository;
+    private DiamondValuationNoteRepository diamondValuationNoteRepository;
 
     public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository, ValuationRequestRepository valuationRequestRepository) {
         this.mapper = mapper;
@@ -94,6 +95,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         );
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
 
+        //create diamond note when know diamond is real
+        createDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
@@ -133,6 +136,15 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             RequestStatus requestStatus = RequestStatus.COMPLETED;
             updateValuationRequestStatus(valuationRequest, requestStatus);
         } // update valuation request if its all detail status is cancel or approve
+    }
+
+    private void createDiamondValuationNote(ValuationRequestDetailDTO valuationRequestDetailDTO
+            , ValuationRequestDetail valuationRequestDetail) {
+        if(!valuationRequestDetail.isDiamond() && valuationRequestDetailDTO.isDiamond()) {
+            DiamondValuationNote diamondValuationNote = new DiamondValuationNote();
+            diamondValuationNote.setValuationRequestDetail(valuationRequestDetail);
+            diamondValuationNoteRepository.save(diamondValuationNote);
+        }
     }
 
 }
