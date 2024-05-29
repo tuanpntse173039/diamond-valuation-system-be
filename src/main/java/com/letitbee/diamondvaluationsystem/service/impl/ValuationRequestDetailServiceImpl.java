@@ -4,13 +4,11 @@ import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
+import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
-import com.letitbee.diamondvaluationsystem.repository.DiamondValuationNoteRepository;
-import com.letitbee.diamondvaluationsystem.repository.ServicePriceListRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
+import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -30,6 +28,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private ValuationRequestRepository valuationRequestRepository;
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
     private ServicePriceListRepository servicePriceListRepository;
+    private DiamondPriceListRepository diamondPriceListRepository;
 
     public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository, ValuationRequestRepository valuationRequestRepository, DiamondValuationNoteRepository diamondValuationNoteRepository, ServicePriceListRepository servicePriceListRepository) {
         this.mapper = mapper;
@@ -105,7 +104,11 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                 || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
             changeValuationRequestStatusToValuating(valuationRequest);
-        } // update valuation request if valuation request detail status is cancel or assessing
+        } else if (
+                valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())) {
+            updateDiamondValuationNote(valuationRequestDetailDTO);//update diamond valuation note price when status id assessed
+        }
+        // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
         //if all detail is approve or cancel
         return mapToDTO(valuationRequestDetail);
@@ -163,6 +166,25 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             totalPrice += servicePrice;
             valuationRequest.setTotalServicePrice(totalPrice);
             valuationRequestRepository.save(valuationRequest);
+    }
+    private void updateDiamondValuationNote(ValuationRequestDetailDTO diamondRequestDetailDTO) {
+        DiamondValuationNoteDTO diamondValuationNoteDTO = diamondRequestDetailDTO.getDiamondValuationNote();
+        List<Object[]> field = diamondPriceListRepository.findSelectedFieldsByDiamondProperties(
+                diamondValuationNoteDTO.getDiamondOrigin(),
+                diamondValuationNoteDTO.getCaratWeight(),
+                diamondValuationNoteDTO.getColor() ,
+                diamondValuationNoteDTO.getClarity(),
+                diamondValuationNoteDTO.getCut(),
+                diamondValuationNoteDTO.getPolish(),
+                diamondValuationNoteDTO.getSymmetry(),
+                diamondValuationNoteDTO.getShape(),
+                diamondValuationNoteDTO.getFluorescence());
+        if (field != null && !field.isEmpty()) {
+            diamondValuationNoteDTO.setFairPrice((double) field.get(0)[1]);
+            diamondValuationNoteDTO.setMinPrice((double) field.get(0)[2]);
+            diamondValuationNoteDTO.setMaxPrice((double) field.get(0)[3]);
+        }
+        diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
     }
 
 }

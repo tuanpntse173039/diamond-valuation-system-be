@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
+import com.letitbee.diamondvaluationsystem.entity.DiamondPriceList;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondPriceListRepository;
@@ -24,7 +25,8 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
 
     @Override
     public DiamondPriceListDTO createDiamondPriceList(DiamondPriceListDTO diamondPriceListDTO) {
-        return null;
+        DiamondPriceList diamondPriceList = mapToEntity(diamondPriceListDTO);
+        return mapToDto(diamondPriceListRepository.save(diamondPriceList));
     }
 
     @Override
@@ -43,9 +45,9 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
         if (field != null && !field.isEmpty()) {
             DiamondPriceListDTO diamondPriceList = new DiamondPriceListDTO();
             diamondPriceList.setCreationDate((String) field.get(0)[0]);
-            diamondPriceList.setFairPrice(String.valueOf((float) field.get(0)[1]));
-            diamondPriceList.setMinPrice(String.valueOf((float) field.get(0)[2]));
-            diamondPriceList.setMaxPrice(String.valueOf((float) field.get(0)[3]));
+            diamondPriceList.setFairPrice((double) field.get(0)[1]);
+            diamondPriceList.setMinPrice((double) field.get(0)[2]);
+            diamondPriceList.setMaxPrice((double) field.get(0)[3]);
             diamondPriceList.setEffectDate((String) field.get(0)[4]);
             diamondPriceList.setDiamondOrigin(diamondPriceListDTO.getDiamondOrigin());
             diamondPriceList.setCaratWeight(diamondPriceListDTO.getCaratWeight());
@@ -61,11 +63,11 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
         return null;
     }
 
-    private DiamondPriceListDTO mapToDto(Object[] field) {
+    private DiamondPriceListDTO mapToDto(DiamondPriceList field) {
         return mapper.map(field, DiamondPriceListDTO.class);
     }
-    private Object[] mapToEntity(DiamondPriceListDTO diamondPriceListDTO) {
-        return mapper.map(diamondPriceListDTO, Object[].class);
+    private DiamondPriceList mapToEntity(DiamondPriceListDTO diamondPriceListDTO) {
+        return mapper.map(diamondPriceListDTO, DiamondPriceList.class);
     }
 
 
