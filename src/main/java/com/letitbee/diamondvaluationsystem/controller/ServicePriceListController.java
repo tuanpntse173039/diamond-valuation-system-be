@@ -28,6 +28,7 @@ public class ServicePriceListController
         return new ResponseEntity<>(servicePriceListService.getServicePriceListById(serviceId, id), HttpStatus.OK);
     }
 
+    @PostMapping("services/{serviceId}/service-price-list")
     public ResponseEntity<ServicePriceListDTO> createServicePriceList(@PathVariable(name = "serviceId") long serviceId,
                                                                      @RequestBody ServicePriceListDTO servicePriceListDto) {
         return new ResponseEntity<>(servicePriceListService.createServicePriceList(serviceId, servicePriceListDto), HttpStatus.CREATED);

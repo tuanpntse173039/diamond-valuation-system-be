@@ -7,7 +7,6 @@ import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
 import com.letitbee.diamondvaluationsystem.repository.ServiceRepository;
 import com.letitbee.diamondvaluationsystem.service.ServiceService;
 import org.modelmapper.ModelMapper;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,6 +15,11 @@ public class ServiceServiceImpl implements ServiceService {
 
     private ServiceRepository serviceRepository;
     private ModelMapper mapper;
+
+    public ServiceServiceImpl(ServiceRepository serviceRepository, ModelMapper mapper) {
+        this.serviceRepository = serviceRepository;
+        this.mapper = mapper;
+    }
 
     @Override
     public List<ServiceDTO> getAllService() {
