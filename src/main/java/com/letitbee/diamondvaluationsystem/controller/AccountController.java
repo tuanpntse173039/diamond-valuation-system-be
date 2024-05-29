@@ -24,7 +24,7 @@ public class AccountController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updatePassword(@PathVariable(name = "newPassword") String newPassword, @PathVariable(name = "id") long id){
+    public ResponseEntity<String> updatePassword(@RequestBody String newPassword, @PathVariable(name = "id") long id){
         String response = accountService.updatePassword(newPassword, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

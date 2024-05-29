@@ -17,7 +17,7 @@ public class RoleController {
 
         Map<String, String> roles = new HashMap<>();
         for (Role role : Role.values()) {
-            roles.put(role.name(), role.getDisplayName());
+            roles.put(role.name(), role.name());
         }
         return roles;
     }

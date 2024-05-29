@@ -27,7 +27,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     private CustomerRepository customerRepository;
     private ValuationRequestRepository valuationRequestRepository;
-    private AccountRepository accountRepository;
     private ModelMapper mapper;
 
     public CustomerServiceImpl(CustomerRepository customerRepository, ValuationRequestRepository valuationRequestRepository, ModelMapper mapper) {
@@ -71,14 +70,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO createCustomerInformation(CustomerDTO customerDto, Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
+    public CustomerDTO createCustomerInformation(CustomerDTO customerDto) {
+        Account account = mapper.map(customerDto.getAccount(), Account.class);
+        Customer customer = new Customer();
 
-        Customer customer = customerRepository.
-                findByAccount(account).
-                orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id));
-
+        customer.setAccount(account);
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPhone(customerDto.getPhone());
@@ -86,17 +82,14 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setAddress(customerDto.getAddress());
         customer.setAvatar(customerDto.getAvatar());
         customer.setIdentityDocument(customerDto.getIdentityDocument());
-
-        return mapToDTO(customerRepository.save(customer));
+        customer = customerRepository.save(customer);
+        return mapToDTO(customer);
     }
 
     @Override
     public CustomerDTO updateCustomerInformation(CustomerDTO customerDto, Long id) {
-        Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
-
         Customer customer = customerRepository.
-                findByAccount(account).
+                findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id));
 
         customer.setFirstName(customerDto.getFirstName());
