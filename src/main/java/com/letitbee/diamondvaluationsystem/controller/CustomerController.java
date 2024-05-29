@@ -32,7 +32,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomerById(id));
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<CustomerDTO> createCustomerInformation(@RequestBody CustomerDTO customerDto){
         CustomerDTO customer = customerService.createCustomerInformation(customerDto);
         return new ResponseEntity<>(customer, HttpStatus.CREATED);
