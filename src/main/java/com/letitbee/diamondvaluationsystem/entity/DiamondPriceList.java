@@ -38,11 +38,11 @@ public class DiamondPriceList {
     @Column(columnDefinition = "varchar(50)", nullable = false)
     private String fluorescence;
     @Column(columnDefinition = "money", nullable = false)
-    private String fairPrice;
+    private double fairPrice;
     @Column(columnDefinition = "money", nullable = false)
-    private String minPrice;
+    private double minPrice;
     @Column(columnDefinition = "money", nullable = false)
-    private String maxPrice;
+    private double maxPrice;
     @Column(columnDefinition = "datetime", nullable = false)
     private String effectDate;
     @ManyToOne

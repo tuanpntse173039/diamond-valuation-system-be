@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.DiamondImageDTO;
 import com.letitbee.diamondvaluationsystem.service.DiamondImageService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,7 +17,7 @@ public class DiamondImageController {
 
     @PostMapping
     public ResponseEntity<DiamondImageDTO> createDiamondImage(@RequestBody DiamondImageDTO diamondImageDTO) {
-        return ResponseEntity.ok(diamondImageService.createDiamondImage(diamondImageDTO));
+        return new ResponseEntity<>(diamondImageService.createDiamondImage(diamondImageDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

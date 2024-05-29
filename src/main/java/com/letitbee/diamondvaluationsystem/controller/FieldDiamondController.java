@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("api/v1/field-diamonds")
@@ -76,10 +78,10 @@ public class FieldDiamondController {
     }
 
     @GetMapping("/fluorescences")
-    public Map<String, String> getFluorescences() {
-        Map<String, String> fluorescences = new HashMap<>();
+    public Set<Fluorescence> getFluorescences() {
+        Set<Fluorescence> fluorescences = new HashSet<>();
         for (Fluorescence fluorescence : Fluorescence.values()) {
-            fluorescences.put(fluorescence.name(), fluorescence.getDisplayName());
+            fluorescences.add(fluorescence);
         }
         return fluorescences;
     }

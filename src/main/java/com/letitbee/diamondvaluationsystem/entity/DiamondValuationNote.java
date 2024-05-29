@@ -58,13 +58,13 @@ public class DiamondValuationNote {
     private Fluorescence fluorescence;
 
     @Column(columnDefinition = "money")
-    private String fairPrice;
+    private double fairPrice;
 
     @Column(columnDefinition = "money")
-    private String minPrice;
+    private double minPrice;
 
     @Column(columnDefinition = "money")
-    private String maxPrice;
+    private double maxPrice;
 
     @Column(nullable = true)
     private boolean isStatus;

@@ -76,6 +76,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     @Override
     public ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto) {
         ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
+        valuationRequest.setTotalServicePrice(0);
         valuationRequest.setStatus(RequestStatus.PENDING);
         valuationRequestRepository.save(valuationRequest);
         for (int i = 0; i < valuationRequest.getDiamondAmount(); i++) {

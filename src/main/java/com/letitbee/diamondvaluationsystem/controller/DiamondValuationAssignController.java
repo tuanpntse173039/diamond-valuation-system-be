@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,10 +15,11 @@ public class DiamondValuationAssignController {
         this.diamondValuationAssignService = diamondValuationAssignService;
     }
 
-    @PostMapping("")
+    @PostMapping
     public ResponseEntity<DiamondValuationAssignDTO> createDiamondValuationAssign
             (@RequestBody DiamondValuationAssignDTO diamondValuationAssignDTO) {
-        return ResponseEntity.ok(diamondValuationAssignService.createDiamondValuationAssign(diamondValuationAssignDTO));
+        return new ResponseEntity<>(diamondValuationAssignService.createDiamondValuationAssign(diamondValuationAssignDTO),
+                HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

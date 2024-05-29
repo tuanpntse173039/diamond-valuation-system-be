@@ -29,7 +29,7 @@ public class DiamondValuationAssign {
     private String comment;
 
     @Column(columnDefinition = "money")
-    private String valuationPrice;
+    private double valuationPrice;
 
     @OneToOne(mappedBy = "diamondValuationAssign")
     private ValuationRequestDetail valuationRequestDetailId;

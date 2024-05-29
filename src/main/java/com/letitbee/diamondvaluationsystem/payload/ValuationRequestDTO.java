@@ -12,7 +12,7 @@ public class ValuationRequestDTO {
     private String receiptDate;
     private String returnDate;
     private int diamondAmount;
-    private String totalPrice;
+    private double totalServicePrice;
     private String receiptLink;
     private String returnLink;
     private String feedback;

@@ -33,7 +33,7 @@ public class ValuationRequest {
     @Column(columnDefinition = "int", nullable = false)
     private int diamondAmount;
     @Column(columnDefinition = "money")
-    private String totalServicePrice;
+    private double totalServicePrice;
     @Column(columnDefinition = "varchar(1000)")
     private String receiptLink;
     @Column(columnDefinition = "varchar(1000)")

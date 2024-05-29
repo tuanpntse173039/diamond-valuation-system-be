@@ -25,7 +25,7 @@ public class ValuationRequestDetail {
     private boolean isMode;
 
     @Column(columnDefinition = "money")
-    private String resultPrice;
+    private double resultPrice;
 
     @Column(columnDefinition = "varchar(1000)")
     private String sealingRecordLink;
@@ -40,7 +40,7 @@ public class ValuationRequestDetail {
     private boolean isDiamond;
 
     @Column(columnDefinition = "money")
-    private String servicePrice;
+    private double servicePrice;
 
     @OneToOne(mappedBy = "valuationRequestDetail")
     private DiamondValuationNote diamondValuationNote;

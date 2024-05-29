@@ -36,7 +36,7 @@ public class ValuationRequestController {
     @PostMapping
     public ResponseEntity<ValuationRequestDTO> createValuationRequest(
             @RequestBody ValuationRequestDTO valuationRequestDT) {
-        return ResponseEntity.ok(valuationRequestService.createValuationRequest(valuationRequestDT));
+        return new ResponseEntity<>(valuationRequestService.createValuationRequest(valuationRequestDT), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")

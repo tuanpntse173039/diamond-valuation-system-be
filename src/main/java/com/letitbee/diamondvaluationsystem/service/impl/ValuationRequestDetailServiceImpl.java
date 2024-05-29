@@ -1,9 +1,6 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
-import com.letitbee.diamondvaluationsystem.entity.DiamondValuationAssign;
-import com.letitbee.diamondvaluationsystem.entity.DiamondValuationNote;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
+import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
@@ -11,6 +8,7 @@ import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationNoteRepository;
+import com.letitbee.diamondvaluationsystem.repository.ServicePriceListRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService;
@@ -31,11 +29,14 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private ValuationRequestRepository valuationRequestRepository;
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
+    private ServicePriceListRepository servicePriceListRepository;
 
-    public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository, ValuationRequestRepository valuationRequestRepository) {
+    public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository, ValuationRequestRepository valuationRequestRepository, DiamondValuationNoteRepository diamondValuationNoteRepository, ServicePriceListRepository servicePriceListRepository) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.valuationRequestRepository = valuationRequestRepository;
+        this.diamondValuationNoteRepository = diamondValuationNoteRepository;
+        this.servicePriceListRepository = servicePriceListRepository;
     }
 
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
@@ -90,61 +91,78 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
         valuationRequestDetail.setSealingRecordLink(valuationRequestDetailDTO.getSealingRecordLink());
         valuationRequestDetail.setMode(valuationRequestDetailDTO.isMode());
-        valuationRequestDetail.setDiamondValuationAssign(
-                mapper.map(valuationRequestDetailDTO.getDiamondValuationAssign(), DiamondValuationAssign.class)
-        );
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
+        valuationRequestDetail.setServicePrice(999);
 
         //create diamond note when know diamond is real
         createDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
+        //update Service Price
+        updateServicePrice(valuationRequestDetailDTO.getSize(), valuationRequestDetail);
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
         if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                 || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
-            valuationRequest = valuationRequestDetail.getValuationRequest();
             changeValuationRequestStatusToValuating(valuationRequest);
         } // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
-                                                                  //if all detail is approve or cancel
+        //if all detail is approve or cancel
         return mapToDTO(valuationRequestDetail);
     }
+
     private void updateValuationRequestStatus(ValuationRequest valuationRequest, RequestStatus requestStatus) {
         valuationRequest.setStatus(requestStatus);
         valuationRequestRepository.save(valuationRequest);
     }
 
     private void changeValuationRequestStatusToValuating(ValuationRequest valuationRequest) {
-        if(valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())) {
+        if (valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())) {
             RequestStatus requestStatus = RequestStatus.VALUATING;
             updateValuationRequestStatus(valuationRequest, requestStatus);
         } // update valuation request if its status is "received"
     }
+
     private void changeValuationRequestStatusToComplete(ValuationRequest valuationRequest) {
         Set<ValuationRequestDetail> valuationRequestDetailSet = valuationRequest.getValuationRequestDetails();
 
         boolean checkStatusDetail = true;
         //check status in all valuation request detail
-        for(ValuationRequestDetail valuationRequestDetail : valuationRequestDetailSet) {
-            if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
+        for (ValuationRequestDetail valuationRequestDetail : valuationRequestDetailSet) {
+            if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                     || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.APPROVED.toString())) {
                 checkStatusDetail = false;
             }
         }
-        if(checkStatusDetail) {
+        if (checkStatusDetail) {
             RequestStatus requestStatus = RequestStatus.COMPLETED;
             updateValuationRequestStatus(valuationRequest, requestStatus);
         } // update valuation request if its all detail status is cancel or approve
+
     }
 
     private void createDiamondValuationNote(ValuationRequestDetailDTO valuationRequestDetailDTO
             , ValuationRequestDetail valuationRequestDetail) {
-        if(!valuationRequestDetail.isDiamond() && valuationRequestDetailDTO.isDiamond()) {
+        if (!valuationRequestDetail.isDiamond() && valuationRequestDetailDTO.isDiamond()) {
             DiamondValuationNote diamondValuationNote = new DiamondValuationNote();
             diamondValuationNote.setValuationRequestDetail(valuationRequestDetail);
             diamondValuationNoteRepository.save(diamondValuationNote);
         }
+    }
+
+    private void updateServicePrice(float sizeDTO,
+                                    ValuationRequestDetail valuationRequestDetail) {
+            com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequestDetail.getValuationRequest().getService();
+            ServicePriceList servicePriceList = servicePriceListRepository.findByMinSizeLessThanEqualAndMaxSizeGreaterThanEqualAndService(sizeDTO, sizeDTO, service);
+            double servicePrice = servicePriceList.getInitPrice() +
+                    servicePriceList.getUnitPrice() * (sizeDTO - servicePriceList.getMinSize());
+            valuationRequestDetail.setServicePrice(servicePrice);
+
+            ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
+            double totalPrice = valuationRequest.getTotalServicePrice();
+            totalPrice += servicePrice;
+            valuationRequest.setTotalServicePrice(totalPrice);
+            valuationRequestRepository.save(valuationRequest);
     }
 
 }

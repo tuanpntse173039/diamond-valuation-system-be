@@ -16,8 +16,8 @@ public class DiamondPriceListDTO {
     private Symmetry symmetry;
     private Shape shape;
     private Fluorescence fluorescence;
-    private String fairPrice;
-    private String minPrice;
-    private String maxPrice;
+    private double fairPrice;
+    private double minPrice;
+    private double maxPrice;
     private String effectDate;
 }

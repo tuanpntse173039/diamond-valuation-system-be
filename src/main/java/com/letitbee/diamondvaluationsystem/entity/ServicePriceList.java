@@ -23,9 +23,9 @@ public class ServicePriceList {
     @Column(columnDefinition = "float", nullable = false)
     private float maxSize;
     @Column(columnDefinition = "money", nullable = false)
-    private String initPrice;
+    private double initPrice;
     @Column(columnDefinition = "money", nullable = false)
-    private String unitPrice;
+    private double unitPrice;
     @ManyToOne
     @JoinColumn(name = "service_id", nullable = false)
     private Service service;

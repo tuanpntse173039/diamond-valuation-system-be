@@ -23,9 +23,9 @@ public class DiamondValuationNoteDTO {
     private Symmetry symmetry;
     private Shape shape;
     private Fluorescence fluorescence;
-    private String fairPrice;
-    private String minPrice;
-    private String maxPrice;
+    private double fairPrice;
+    private double minPrice;
+    private double maxPrice;
     private boolean isStatus;
     private Set<DiamondImageDTO> diamondImages;
 }
