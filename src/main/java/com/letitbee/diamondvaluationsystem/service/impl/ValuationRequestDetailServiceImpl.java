@@ -179,10 +179,12 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 diamondValuationNoteDTO.getSymmetry(),
                 diamondValuationNoteDTO.getShape(),
                 diamondValuationNoteDTO.getFluorescence());
-        if (diamondPriceList != null) {
-//            diamondValuationNoteDTO.setFairPrice(diamondPriceList.getFairPrice());
-//            diamondValuationNoteDTO.setMinPrice(diamondPriceList.getMinPrice());
-//            diamondValuationNoteDTO.setMaxPrice(diamondPriceList.getMaxPrice());
+        if (diamondPriceList != null && !diamondPriceList.isEmpty()){
+            //get current diamond price
+            DiamondPriceList diamondPrice = diamondPriceList.stream().findFirst().get();
+            diamondValuationNoteDTO.setFairPrice(diamondPrice.getFairPrice());
+            diamondValuationNoteDTO.setMaxPrice(diamondPrice.getMaxPrice());
+            diamondValuationNoteDTO.setMinPrice(diamondPrice.getMinPrice());
         }
         diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
     }
