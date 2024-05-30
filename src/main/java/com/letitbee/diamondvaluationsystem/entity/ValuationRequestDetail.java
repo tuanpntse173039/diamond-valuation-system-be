@@ -25,7 +25,7 @@ public class ValuationRequestDetail {
     private boolean isMode;
 
     @Column(columnDefinition = "money")
-    private double resultPrice;
+    private double valuationPrice;
 
     @Column(columnDefinition = "varchar(1000)")
     private String sealingRecordLink;
