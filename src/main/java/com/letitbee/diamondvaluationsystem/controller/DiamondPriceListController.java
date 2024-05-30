@@ -19,7 +19,7 @@ public class DiamondPriceListController {
 
 
 
-    @PostMapping("/p")
+    @GetMapping("/field")
     public ResponseEntity<DiamondPriceListDTO> getDiamondPriceListByField(@RequestBody DiamondPriceListDTO diamondPriceListDTO) {
         DiamondPriceListDTO response = diamondPriceListService.getDiamondPriceListByField(diamondPriceListDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);
