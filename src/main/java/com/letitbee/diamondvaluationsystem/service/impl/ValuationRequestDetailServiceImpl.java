@@ -169,7 +169,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     }
     private void updateDiamondValuationNote(ValuationRequestDetailDTO diamondRequestDetailDTO) {
         DiamondValuationNoteDTO diamondValuationNoteDTO = diamondRequestDetailDTO.getDiamondValuationNote();
-        List<Object[]> field = diamondPriceListRepository.findSelectedFieldsByDiamondProperties(
+        List<DiamondPriceList> diamondPriceList = diamondPriceListRepository.findSelectedFieldsByDiamondProperties(
                 diamondValuationNoteDTO.getDiamondOrigin(),
                 diamondValuationNoteDTO.getCaratWeight(),
                 diamondValuationNoteDTO.getColor() ,
@@ -179,10 +179,10 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 diamondValuationNoteDTO.getSymmetry(),
                 diamondValuationNoteDTO.getShape(),
                 diamondValuationNoteDTO.getFluorescence());
-        if (field != null && !field.isEmpty()) {
-            diamondValuationNoteDTO.setFairPrice((double) field.get(0)[1]);
-            diamondValuationNoteDTO.setMinPrice((double) field.get(0)[2]);
-            diamondValuationNoteDTO.setMaxPrice((double) field.get(0)[3]);
+        if (diamondPriceList != null) {
+//            diamondValuationNoteDTO.setFairPrice(diamondPriceList.getFairPrice());
+//            diamondValuationNoteDTO.setMinPrice(diamondPriceList.getMinPrice());
+//            diamondValuationNoteDTO.setMaxPrice(diamondPriceList.getMaxPrice());
         }
         diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
     }

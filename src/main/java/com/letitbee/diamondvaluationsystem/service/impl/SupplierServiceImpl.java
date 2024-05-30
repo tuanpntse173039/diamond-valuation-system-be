@@ -69,8 +69,7 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public SupplierDTO updateSupplier(SupplierDTO supplierDto, long id) {
         Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Supplier", "id", id));
-        supplier.setName(supplierDto.getName());
-        supplier.setIcon(supplierDto.getIcon());
+        supplier.setImage(supplierDto.getImage());
         return mapToDto(supplierRepository.save(supplier));
     }
 

@@ -10,7 +10,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface DiamondPriceListRepository extends JpaRepository<DiamondPriceList, Long> {
-    @Query("SELECT d.creationDate, d.fairPrice, d.minPrice, d.maxPrice, d.effectDate " +
+    @Query("SELECT d " +
             "FROM DiamondPriceList d " +
             "WHERE d.origin = :diamondOrigin " +
             "AND d.caratWeight = :caratWeight " +
@@ -20,8 +20,9 @@ public interface DiamondPriceListRepository extends JpaRepository<DiamondPriceLi
             "AND d.polish = :polish " +
             "AND d.symmetry = :symmetry " +
             "AND d.shape = :shape " +
-            "AND d.fluorescence = :fluorescence")
-    List<Object[]> findSelectedFieldsByDiamondProperties(
+            "AND d.fluorescence = :fluorescence" +
+            "ORDER BY d.crea")
+    List<DiamondPriceList> findSelectedFieldsByDiamondProperties(
             @Param("diamondOrigin") DiamondOrigin diamondOrigin,
             @Param("caratWeight") float caratWeight,
             @Param("color") Color color,

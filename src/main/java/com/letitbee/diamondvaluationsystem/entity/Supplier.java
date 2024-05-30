@@ -17,7 +17,10 @@ public class Supplier {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(columnDefinition = "nvarchar(50)")
-    private String name;
-    @Column(columnDefinition = "nvarchar(1000)")
-    private String icon;
+    private String image;
+
+    @ManyToOne()
+    @JoinColumn(name = "diamond_market_id", nullable = false)
+    private DiamondMarket diamondMarket;
+
 }

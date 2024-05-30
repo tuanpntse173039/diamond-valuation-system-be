@@ -39,7 +39,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setProportions(diamondValuationNoteDTO.getProportions());
         diamondValuationNote.setShape(diamondValuationNoteDTO.getShape());
         diamondValuationNote.setSymmetry(diamondValuationNoteDTO.getSymmetry());
-        diamondValuationNote.setStatus(diamondValuationNoteDTO.isStatus());
 
         diamondValuationNote = diamondValuationNoteRepository.save(diamondValuationNote);
         return mapToDTO(diamondValuationNote);
