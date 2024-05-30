@@ -31,36 +31,30 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
 
     @Override
     public DiamondPriceListDTO getDiamondPriceListByField(DiamondPriceListDTO diamondPriceListDTO) {
-        List<Object[]> field = diamondPriceListRepository.findSelectedFieldsByDiamondProperties(
-                diamondPriceListDTO.getDiamondOrigin(),
-                diamondPriceListDTO.getCaratWeight(),
-                diamondPriceListDTO.getColor() ,
-                diamondPriceListDTO.getClarity(),
-                diamondPriceListDTO.getCut(),
-                diamondPriceListDTO.getPolish(),
-                diamondPriceListDTO.getSymmetry(),
-                diamondPriceListDTO.getShape(),
-                diamondPriceListDTO.getFluorescence());
 
-        if (field != null && !field.isEmpty()) {
-            DiamondPriceListDTO diamondPriceList = new DiamondPriceListDTO();
-            diamondPriceList.setCreationDate((String) field.get(0)[0]);
-            diamondPriceList.setFairPrice((double) field.get(0)[1]);
-            diamondPriceList.setMinPrice((double) field.get(0)[2]);
-            diamondPriceList.setMaxPrice((double) field.get(0)[3]);
-            diamondPriceList.setPercentChange((String) field.get(0)[4]);
-            diamondPriceList.setDiamondOrigin(diamondPriceListDTO.getDiamondOrigin());
-            diamondPriceList.setCaratWeight(diamondPriceListDTO.getCaratWeight());
-            diamondPriceList.setColor(diamondPriceListDTO.getColor());
-            diamondPriceList.setClarity(diamondPriceListDTO.getClarity());
-            diamondPriceList.setCut(diamondPriceListDTO.getCut());
-            diamondPriceList.setPolish(diamondPriceListDTO.getPolish());
-            diamondPriceList.setSymmetry(diamondPriceListDTO.getSymmetry());
-            diamondPriceList.setShape(diamondPriceListDTO.getShape());
-            diamondPriceList.setFluorescence(diamondPriceListDTO.getFluorescence());
-            return diamondPriceList;
-        }
+//
+//        if (field != null && !field.isEmpty()) {
+//            DiamondPriceListDTO diamondPriceList = new DiamondPriceListDTO();
+//            diamondPriceList.setCreationDate((String) field.get(0)[0]);
+//            diamondPriceList.setFairPrice((double) field.get(0)[1]);
+//            diamondPriceList.setMinPrice((double) field.get(0)[2]);
+//            diamondPriceList.setMaxPrice((double) field.get(0)[3]);
+//            diamondPriceList.setPercentChange((String) field.get(0)[4]);
+//            diamondPriceList.setDiamondOrigin(diamondPriceListDTO.getDiamondOrigin());
+//            diamondPriceList.setCaratWeight(diamondPriceListDTO.getCaratWeight());
+//            diamondPriceList.setColor(diamondPriceListDTO.getColor());
+//            diamondPriceList.setClarity(diamondPriceListDTO.getClarity());
+//            diamondPriceList.setCut(diamondPriceListDTO.getCut());
+//            diamondPriceList.setPolish(diamondPriceListDTO.getPolish());
+//            diamondPriceList.setSymmetry(diamondPriceListDTO.getSymmetry());
+//            diamondPriceList.setShape(diamondPriceListDTO.getShape());
+//            diamondPriceList.setFluorescence(diamondPriceListDTO.getFluorescence());
+//            return diamondPriceList;
+//        }
+//        return null;
+//    }
         return null;
+
     }
 
     private DiamondPriceListDTO mapToDto(DiamondPriceList field) {
