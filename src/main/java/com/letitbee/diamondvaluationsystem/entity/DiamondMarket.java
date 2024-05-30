@@ -1,5 +1,7 @@
 package com.letitbee.diamondvaluationsystem.entity;
 
+import com.letitbee.diamondvaluationsystem.enums.Clarity;
+import com.letitbee.diamondvaluationsystem.enums.Color;
 import com.letitbee.diamondvaluationsystem.enums.DiamondOrigin;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,14 +25,14 @@ public class DiamondMarket {
     private long id;
     @Column(columnDefinition = "varchar(1000)", nullable = false)
     private String diamondImage;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String origin;
     @Column(nullable = false)
     private float caratWeight;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String color;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String clarity;
+    @Enumerated(EnumType.STRING)
+    private DiamondOrigin diamondOrigin;
+    @Enumerated(EnumType.STRING)
+    private Color color;
+    @Enumerated(EnumType.STRING)
+    private Clarity clarity;
     @Column(nullable = false)
     private double cutScore;
     @Column(columnDefinition = "money", nullable = false)
