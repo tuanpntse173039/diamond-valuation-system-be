@@ -16,8 +16,6 @@ public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(columnDefinition = "nvarchar(50)")
-    private String name;
     @Column(columnDefinition = "nvarchar(1000)")
-    private String icon;
+    private String image;
 }
