@@ -43,9 +43,7 @@ public class DiamondPriceList {
     private double minPrice;
     @Column(columnDefinition = "money", nullable = false)
     private double maxPrice;
-    @Column(columnDefinition = "datetime", nullable = false)
-    private String effectDate;
-    @ManyToOne
-    @JoinColumn(name = "supplier_id", nullable = false)
-    private Supplier supplier;
+    @Column(columnDefinition = "varchar(20)", nullable = false)
+    private String percentChange;
+
 }
