@@ -36,7 +36,9 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         diamondValuationAssign.setValuationPrice(diamondValuationAssignDTO.getValuationPrice());
         diamondValuationAssign.setComment(diamondValuationAssignDTO.getComment());
         diamondValuationAssign.setStatus(diamondValuationAssignDTO.isStatus());
-        diamondValuationAssign.setCreationDate((new Date()).toString());
+        if (diamondValuationAssign.isStatus()) {
+            diamondValuationAssign.setCreationDate((new Date()).toString());
+        } // update date when status is true
         //save to database
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
         return mapToDTO(diamondValuationAssign);

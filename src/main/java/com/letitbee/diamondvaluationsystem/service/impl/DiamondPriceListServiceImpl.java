@@ -48,7 +48,7 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
             diamondPriceList.setFairPrice((double) field.get(0)[1]);
             diamondPriceList.setMinPrice((double) field.get(0)[2]);
             diamondPriceList.setMaxPrice((double) field.get(0)[3]);
-            diamondPriceList.setEffectDate((String) field.get(0)[4]);
+            diamondPriceList.setPercentChange((String) field.get(0)[4]);
             diamondPriceList.setDiamondOrigin(diamondPriceListDTO.getDiamondOrigin());
             diamondPriceList.setCaratWeight(diamondPriceListDTO.getCaratWeight());
             diamondPriceList.setColor(diamondPriceListDTO.getColor());
