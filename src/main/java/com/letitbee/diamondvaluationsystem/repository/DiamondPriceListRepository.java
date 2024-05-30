@@ -20,7 +20,8 @@ public interface DiamondPriceListRepository extends JpaRepository<DiamondPriceLi
             "AND d.polish = :polish " +
             "AND d.symmetry = :symmetry " +
             "AND d.shape = :shape " +
-            "AND d.fluorescence = :fluorescence")
+            "AND d.fluorescence = :fluorescence " +
+            "ORDER BY d.creationDate DESC ")
     List<DiamondPriceList> findSelectedFieldsByDiamondProperties(
             @Param("diamondOrigin") DiamondOrigin diamondOrigin,
             @Param("caratWeight") float caratWeight,
