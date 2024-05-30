@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/diamond-price-list")
+@RequestMapping("/api/v1/diamond-price-lists")
 public class DiamondPriceListController {
 
     private DiamondPriceListService diamondPriceListService;
@@ -17,7 +17,9 @@ public class DiamondPriceListController {
         this.diamondPriceListService = diamondPriceListService;
     }
 
-    @GetMapping
+
+
+    @PostMapping("/p")
     public ResponseEntity<DiamondPriceListDTO> getDiamondPriceListByField(@RequestBody DiamondPriceListDTO diamondPriceListDTO) {
         DiamondPriceListDTO response = diamondPriceListService.getDiamondPriceListByField(diamondPriceListDTO);
         return new ResponseEntity<>(response, HttpStatus.OK);

@@ -3,14 +3,15 @@ package com.letitbee.diamondvaluationsystem.payload;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.Set;
 
 @Data
 public class ValuationRequestDTO {
     private long id;
-    private String creationDate;
-    private String receiptDate;
-    private String returnDate;
+    private Date creationDate;
+    private Date receiptDate;
+    private Date returnDate;
     private int diamondAmount;
     private double totalServicePrice;
     private String receiptLink;

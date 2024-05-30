@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -28,9 +30,9 @@ public class Post {
     @Column(columnDefinition = "nvarchar(500)")
     private String thumbnail;
     @Column(columnDefinition = "datetime")
-    private String publishedDate;
+    private Date publishedDate;
     @Column(columnDefinition = "datetime")
-    private String creationDate;
+    private Date creationDate;
     @Column(columnDefinition = "nvarchar(100)")
     private String reference;
  }

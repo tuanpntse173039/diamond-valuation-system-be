@@ -91,12 +91,14 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         valuationRequestDetail.setSealingRecordLink(valuationRequestDetailDTO.getSealingRecordLink());
         valuationRequestDetail.setMode(valuationRequestDetailDTO.isMode());
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
-        valuationRequestDetail.setServicePrice(999);
 
+        //update valuation price base on mode
+        updateValuationPriceBaseOnMode(valuationRequestDetail.isMode(), valuationRequestDetail, valuationRequestDetailDTO);
         //create diamond note when know diamond is real
         createDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
         //update Service Price
         updateServicePrice(valuationRequestDetailDTO.getSize(), valuationRequestDetail);
+
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
@@ -110,7 +112,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         }
         // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
-        //if all detail is approve or cancel
+                                                                    //if all detail is approve or cancel
         return mapToDTO(valuationRequestDetail);
     }
 
@@ -132,8 +134,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         boolean checkStatusDetail = true;
         //check status in all valuation request detail
         for (ValuationRequestDetail valuationRequestDetail : valuationRequestDetailSet) {
-            if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
-                    || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.APPROVED.toString())) {
+            if (!(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
+                    || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.APPROVED.toString()))) {
                 checkStatusDetail = false;
             }
         }
@@ -187,6 +189,27 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             diamondValuationNoteDTO.setMinPrice(diamondPrice.getMinPrice());
         }
         diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
+    }
+
+    private void updateValuationPriceBaseOnMode(boolean mode, ValuationRequestDetail valuationRequestDetail,
+                                                ValuationRequestDetailDTO valuationRequestDetailDTO) {
+        Set<DiamondValuationAssign> diamondValuationAssigns =  valuationRequestDetail.getDiamondValuationAssigns();
+        if(diamondValuationAssigns != null) {
+            if (mode) {
+                int i = 0;
+                double valuationPrice = 0;
+                for (DiamondValuationAssign diamondValuationAssign : diamondValuationAssigns) {
+                    i++;
+                    valuationPrice += diamondValuationAssign.getValuationPrice() / i;
+                }
+            } else {
+                if(valuationRequestDetail.getDiamondValuationAssign() != null) {
+                    double valuationPrice = valuationRequestDetail.getDiamondValuationAssign().getValuationPrice();
+                    DiamondValuationAssign diamondValuationAssign = mapper.map(valuationRequestDetailDTO.getDiamondValuationAssign(), DiamondValuationAssign.class);
+                    valuationRequestDetail.setDiamondValuationAssign(diamondValuationAssign);
+                }
+            }
+        }
     }
 
 }

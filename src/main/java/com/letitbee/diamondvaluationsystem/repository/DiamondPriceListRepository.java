@@ -12,7 +12,7 @@ import java.util.List;
 public interface DiamondPriceListRepository extends JpaRepository<DiamondPriceList, Long> {
     @Query("SELECT d " +
             "FROM DiamondPriceList d " +
-            "WHERE d.origin = :diamondOrigin " +
+            "WHERE d.diamondOrigin = :diamondOrigin " +
             "AND d.caratWeight = :caratWeight " +
             "AND d.color = :color " +
             "AND d.clarity = :clarity " +

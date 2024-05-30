@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("api/v1/service-price-lists")
 public class ServicePriceListController
 {
     private ServicePriceListService servicePriceListService;
@@ -33,4 +33,5 @@ public class ServicePriceListController
                                                                      @RequestBody ServicePriceListDTO servicePriceListDto) {
         return new ResponseEntity<>(servicePriceListService.createServicePriceList(serviceId, servicePriceListDto), HttpStatus.CREATED);
     }
+
 }

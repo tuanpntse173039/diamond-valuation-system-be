@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -23,7 +25,7 @@ public class DiamondValuationAssign {
     private ValuationRequestDetail valuationRequestDetail;
 
     @Column(columnDefinition = "datetime")
-    private String creationDate;
+    private Date creationDate;
 
     @Column(columnDefinition = "text")
     private String comment;

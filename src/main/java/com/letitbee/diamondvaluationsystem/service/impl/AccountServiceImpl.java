@@ -51,7 +51,7 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(accountDTO.getPassword());
         account.setRole(accountDTO.getRole());
         account.setIs_active(true);
-        accountRepository.save(account);
+        account = accountRepository.save(account);
 
         //return account to client without password
         AccountResponse newAccount = new AccountResponse();

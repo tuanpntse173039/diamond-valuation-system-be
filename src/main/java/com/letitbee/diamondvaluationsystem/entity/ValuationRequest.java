@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.Cascade;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -25,11 +26,11 @@ public class ValuationRequest {
     )
     private long id;
     @Column(columnDefinition = "datetime", nullable = false)
-    private String creationDate;
+    private Date creationDate;
     @Column(columnDefinition = "datetime")
-    private String receiptDate;
+    private Date receiptDate;
     @Column(columnDefinition = "datetime")
-    private String returnDate;
+    private Date returnDate;
     @Column(columnDefinition = "int", nullable = false)
     private int diamondAmount;
     @Column(columnDefinition = "money")

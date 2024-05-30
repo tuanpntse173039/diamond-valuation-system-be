@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,7 +24,7 @@ public class Payment {
     )
     private long id;
     @Column(columnDefinition = "datetime",nullable = false)
-    private String paytime;
+    private Date paytime;
     @Column(columnDefinition = "money",nullable = false)
     private String amount;
     @Column(columnDefinition = "varchar(50)")

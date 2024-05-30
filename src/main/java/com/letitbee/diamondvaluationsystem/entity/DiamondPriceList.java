@@ -1,10 +1,13 @@
 package com.letitbee.diamondvaluationsystem.entity;
 
+import com.letitbee.diamondvaluationsystem.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.Date;
 
 @Getter
 @Setter
@@ -18,25 +21,32 @@ public class DiamondPriceList {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(columnDefinition = "datetime", nullable = false)
-    private String creationDate;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String origin;
+    private Date creationDate;
     @Column(nullable = false)
     private float caratWeight;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String shape;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String color;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String clarity;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String cut;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String polish;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String symmetry;
-    @Column(columnDefinition = "varchar(50)", nullable = false)
-    private String fluorescence;
+    @Enumerated(EnumType.STRING)
+    private DiamondOrigin diamondOrigin;
+
+    @Enumerated(EnumType.STRING)
+    private Color color;
+
+    @Enumerated(EnumType.STRING)
+    private Clarity clarity;
+
+    @Enumerated(EnumType.STRING)
+    private Cut cut;
+
+    @Enumerated(EnumType.STRING)
+    private Polish polish;
+
+    @Enumerated(EnumType.STRING)
+    private Symmetry symmetry;
+
+    @Enumerated(EnumType.STRING)
+    private Shape shape;
+
+    @Enumerated(EnumType.STRING)
+    private Fluorescence fluorescence;
     @Column(columnDefinition = "money", nullable = false)
     private double fairPrice;
     @Column(columnDefinition = "money", nullable = false)

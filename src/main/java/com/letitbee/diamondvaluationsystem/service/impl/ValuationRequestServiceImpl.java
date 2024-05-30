@@ -23,6 +23,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -76,8 +77,8 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     @Override
     public ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto) {
         ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
-        valuationRequest.setTotalServicePrice(0);
         valuationRequest.setStatus(RequestStatus.PENDING);
+        valuationRequest.setCreationDate(new Date());
         valuationRequestRepository.save(valuationRequest);
         for (int i = 0; i < valuationRequest.getDiamondAmount(); i++) {
             ValuationRequestDetail valuationRequestDetail = new ValuationRequestDetail();
