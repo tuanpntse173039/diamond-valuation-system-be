@@ -43,10 +43,10 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
         if (field != null && !field.isEmpty()) {
             DiamondPriceListDTO diamondPriceList = new DiamondPriceListDTO();
             diamondPriceList.setCreationDate((String) field.get(0)[0]);
-            diamondPriceList.setFairPrice(String.valueOf((float) field.get(0)[1]));
-            diamondPriceList.setMinPrice(String.valueOf((float) field.get(0)[2]));
-            diamondPriceList.setMaxPrice(String.valueOf((float) field.get(0)[3]));
-            diamondPriceList.setEffectDate((String) field.get(0)[4]);
+//            diamondPriceList.setFairPrice(field.get(0)[1]));
+//            diamondPriceList.setMinPrice( field.get(0)[2]));
+//            diamondPriceList.setMaxPrice(String.valueOf((float) field.get(0)[3]));
+            diamondPriceList.setPercentChange((String) field.get(0)[4]);
             diamondPriceList.setDiamondOrigin(diamondPriceListDTO.getDiamondOrigin());
             diamondPriceList.setCaratWeight(diamondPriceListDTO.getCaratWeight());
             diamondPriceList.setColor(diamondPriceListDTO.getColor());
