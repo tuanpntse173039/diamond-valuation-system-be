@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface ServicePriceListService {
 
-    List<ServicePriceListDTO> getAllServicePriceList(long serviceId);
+    List<ServicePriceListDTO> getAllServicePriceList();
 
-    ServicePriceListDTO getServicePriceListById(long serviceId, long id);
+    ServicePriceListDTO getServicePriceListById(long id);
 
-    ServicePriceListDTO createServicePriceList(long serviceId,ServicePriceListDTO servicePriceListDto);
+    ServicePriceListDTO createServicePriceList(ServicePriceListDTO servicePriceListDto);
 }

@@ -28,36 +28,20 @@ public class ServicePriceListImpl implements ServicePriceListService {
 
 
     @Override
-    public List<ServicePriceListDTO> getAllServicePriceList(long serviceId) {
-        Service service = serviceRepository.findById(serviceId).orElseThrow(() -> new ResourceNotFoundException("Service", "id", serviceId));
-
-        List<ServicePriceList> servicePriceLists = servicePriceListRepository.findByServiceId(serviceId);
+    public List<ServicePriceListDTO> getAllServicePriceList() {
+        List<ServicePriceList> servicePriceLists = servicePriceListRepository.findAll();
         return servicePriceLists.stream().map(servicePriceList -> mapToDto(servicePriceList)).collect(Collectors.toList());
     }
 
     @Override
-    public ServicePriceListDTO getServicePriceListById(long serviceId, long id) {
-        Service service = serviceRepository.findById(serviceId).orElseThrow(() -> new ResourceNotFoundException("Service", "id", serviceId));
-
+    public ServicePriceListDTO getServicePriceListById(long id) {
         ServicePriceList servicePriceList = servicePriceListRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ServicePriceList", "id", id));
-
-        if (servicePriceList.getService().getId() == service.getId()) {
-            return mapToDto(servicePriceList);
-        }
-        else {
-            throw new APIException(HttpStatus.BAD_REQUEST, "ServicePriceList with id " + id + " does not belong to Service with id " + serviceId);
-        }
-
+        return mapToDto(servicePriceList);
     }
 
     @Override
-    public ServicePriceListDTO createServicePriceList(long serviceId,ServicePriceListDTO servicePriceListDto) {
+    public ServicePriceListDTO createServicePriceList(ServicePriceListDTO servicePriceListDto) {
         ServicePriceList servicePriceList = mapToEntity(servicePriceListDto);
-
-        Service service = serviceRepository.findById(serviceId).orElseThrow(() -> new ResourceNotFoundException("Service", "id", serviceId));
-
-        servicePriceList.setService(service);
-
         return mapToDto(servicePriceListRepository.save(servicePriceList));
     }
 
