@@ -18,20 +18,19 @@ public class ServicePriceListController
         this.servicePriceListService = servicePriceListService;
     }
 
-    public ResponseEntity<List<ServicePriceListDTO>> getAllServicePriceList(@PathVariable(name = "serviceId") long serviceId) {
-        return new ResponseEntity<>(servicePriceListService.getAllServicePriceList(serviceId), HttpStatus.OK);
+    @GetMapping
+    public ResponseEntity<List<ServicePriceListDTO>> getAllServicePriceList() {
+        return new ResponseEntity<>(servicePriceListService.getAllServicePriceList(), HttpStatus.OK);
     }
 
-    @GetMapping("services/{serviceId}/service-price-list/{id}")
-    public ResponseEntity<ServicePriceListDTO> getServicePriceListById(@PathVariable(name = "serviceId") long serviceId,
-                                                                       @PathVariable(name = "id") long id) {
-        return new ResponseEntity<>(servicePriceListService.getServicePriceListById(serviceId, id), HttpStatus.OK);
+    @GetMapping("{id}")
+    public ResponseEntity<ServicePriceListDTO> getServicePriceListById(@PathVariable(name = "id") long id) {
+        return new ResponseEntity<>(servicePriceListService.getServicePriceListById(id), HttpStatus.OK);
     }
 
-    @PostMapping("services/{serviceId}/service-price-list")
-    public ResponseEntity<ServicePriceListDTO> createServicePriceList(@PathVariable(name = "serviceId") long serviceId,
-                                                                     @RequestBody ServicePriceListDTO servicePriceListDto) {
-        return new ResponseEntity<>(servicePriceListService.createServicePriceList(serviceId, servicePriceListDto), HttpStatus.CREATED);
+    @PostMapping()
+    public ResponseEntity<ServicePriceListDTO> createServicePriceList(@RequestBody ServicePriceListDTO servicePriceListDto) {
+        return new ResponseEntity<>(servicePriceListService.createServicePriceList(servicePriceListDto), HttpStatus.CREATED);
     }
 
 }
