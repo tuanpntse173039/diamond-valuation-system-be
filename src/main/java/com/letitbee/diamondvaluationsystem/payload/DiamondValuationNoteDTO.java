@@ -10,7 +10,6 @@ import java.util.Set;
 @Data
 public class DiamondValuationNoteDTO {
     private long id;
-    private ValuationRequest valuationRequest;
     private String certificateId;
     private String proportions;
     private String clarityCharacteristic;
