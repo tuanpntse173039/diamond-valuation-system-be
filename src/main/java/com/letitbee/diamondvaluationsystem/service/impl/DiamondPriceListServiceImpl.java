@@ -2,10 +2,12 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondPriceList;
 import com.letitbee.diamondvaluationsystem.enums.*;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondPriceListRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondPriceListService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +48,7 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
             DiamondPriceListDTO diamondPriceList = field.stream().findFirst().map(this::mapToDto).get();
             return diamondPriceList;
         }
-        return null;
+        else throw new APIException(HttpStatus.NOT_FOUND,"No diamond price list data found");
     }
 
     private DiamondPriceListDTO mapToDto(DiamondPriceList field) {
