@@ -87,15 +87,17 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id));
         //set data to valuation request detail
         valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
-        valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
         valuationRequestDetail.setSealingRecordLink(valuationRequestDetailDTO.getSealingRecordLink());
         valuationRequestDetail.setMode(valuationRequestDetailDTO.isMode());
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
 
         //update valuation price base on mode
         updateValuationPriceBaseOnMode(valuationRequestDetail.isMode(), valuationRequestDetail, valuationRequestDetailDTO);
+
         //create diamond note when know diamond is real
         createDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
+        valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
+
         //update Service Price
         updateServicePrice(valuationRequestDetailDTO.getSize(), valuationRequestDetail);
 
