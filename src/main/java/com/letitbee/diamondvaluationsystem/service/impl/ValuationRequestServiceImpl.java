@@ -10,10 +10,7 @@ import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
-import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
-import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
+import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -23,6 +20,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -32,12 +31,18 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestRepository valuationRequestRepository;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private StaffRepository staffRepository;
+    private ServiceRepository serviceRepository;
     private ModelMapper mapper;
 
-    public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository, ValuationRequestDetailRepository valuationRequestDetailRepository, StaffRepository staffRepository, ModelMapper mapper) {
+    public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository,
+                                       ValuationRequestDetailRepository valuationRequestDetailRepository,
+                                       StaffRepository staffRepository,
+                                       ServiceRepository serviceRepository,
+                                       ModelMapper mapper) {
         this.valuationRequestRepository = valuationRequestRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
+        this.serviceRepository = serviceRepository;
         this.mapper = mapper;
     }
 
@@ -106,6 +111,11 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
+
+        if(valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())){
+            valuationRequest.setReceiptDate(new Date());
+            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
+        }
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
         //map to dto
@@ -137,5 +147,40 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
             valuationRequest.setStaff(null);
         }
         return valuationRequest;
+    }
+
+    private Date getReturnDate(ValuationRequest valuationRequest) {
+        com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequest.getService();
+        int period = service.getPeriod();
+        int totalHourService = valuationRequest.getDiamondAmount() * period;
+        Date receiptDate = dateRounding(valuationRequest.getReceiptDate());
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(receiptDate);
+        int remainHourInDay = 17 - calendar.get(Calendar.HOUR_OF_DAY);
+        int remainHourService = totalHourService - remainHourInDay;
+        if (remainHourService <= 0) {
+            calendar.add(Calendar.HOUR_OF_DAY, totalHourService);
+            return calendar.getTime();
+        }
+        int count = 0;
+        int hourInLastDay = 0;
+        while(remainHourService - 9 > 0) {
+            count++;
+            remainHourService -= 9;
+            hourInLastDay = remainHourService;
+        }
+        calendar.add(Calendar.DAY_OF_MONTH, count);
+        calendar.set(Calendar.HOUR_OF_DAY, 8 +  hourInLastDay);
+        return calendar.getTime();
+    }
+
+
+    private Date dateRounding(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.add(Calendar.HOUR_OF_DAY, 1);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        return calendar.getTime();
     }
 }
