@@ -30,14 +30,19 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private ServicePriceListRepository servicePriceListRepository;
     private DiamondPriceListRepository diamondPriceListRepository;
 
-    public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository, ValuationRequestRepository valuationRequestRepository, DiamondValuationNoteRepository diamondValuationNoteRepository, ServicePriceListRepository servicePriceListRepository) {
+    public ValuationRequestDetailServiceImpl(ModelMapper mapper,
+                                             ValuationRequestDetailRepository valuationRequestDetailRepository,
+                                             ValuationRequestRepository valuationRequestRepository,
+                                             DiamondValuationNoteRepository diamondValuationNoteRepository,
+                                             ServicePriceListRepository servicePriceListRepository,
+                                             DiamondPriceListRepository diamondPriceListRepository) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.valuationRequestRepository = valuationRequestRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.servicePriceListRepository = servicePriceListRepository;
+        this.diamondPriceListRepository = diamondPriceListRepository;
     }
-
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
         return mapper.map(valuationRequestDetailDTO, ValuationRequestDetail.class);
     }

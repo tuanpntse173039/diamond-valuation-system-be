@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1/diamond-valuation-assigns")
+@RequestMapping("api/v1/diamond-valuation-assigns")
 public class DiamondValuationAssignController {
     private DiamondValuationAssignService diamondValuationAssignService;
 
