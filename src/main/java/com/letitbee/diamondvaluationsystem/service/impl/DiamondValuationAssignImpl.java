@@ -1,9 +1,13 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondValuationAssign;
+import com.letitbee.diamondvaluationsystem.entity.Staff;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
+import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
+import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -15,15 +19,32 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
 
     private ModelMapper mapper;
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
+    private ValuationRequestDetailRepository valuationRequestDetailRepository;
+    private StaffRepository staffRepository;
 
-    public DiamondValuationAssignImpl(ModelMapper mapper, DiamondValuationAssignRepository diamondValuationAssignRepository) {
+    public DiamondValuationAssignImpl(ModelMapper mapper,
+                                      DiamondValuationAssignRepository diamondValuationAssignRepository,
+                                      ValuationRequestDetailRepository valuationRequestDetailRepository,
+                                      StaffRepository staffRepository) {
         this.mapper = mapper;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
+        this.valuationRequestDetailRepository = valuationRequestDetailRepository;
+        this.staffRepository = staffRepository;
     }
-
     @Override
     public DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO) {
-        DiamondValuationAssign diamondValuationAssign = mapToEntity(diamondValuationAssignDTO);
+        DiamondValuationAssign diamondValuationAssign = new DiamondValuationAssign();
+        Staff staff = staffRepository.findById(diamondValuationAssignDTO.getStaffId()).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", diamondValuationAssignDTO.getStaffId()));
+        ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository.findById(diamondValuationAssignDTO.getValuationRequestDetailId())
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId()));
+        diamondValuationAssign.setStaff(staff);
+        diamondValuationAssign.setValuationRequestDetail(valuationRequestDetail);
+        diamondValuationAssign.setValuationPrice(diamondValuationAssignDTO.getValuationPrice());
+        diamondValuationAssign.setComment(diamondValuationAssignDTO.getComment());
+        diamondValuationAssign.setStatus(diamondValuationAssignDTO.isStatus());
+        if (diamondValuationAssign.isStatus()) {
+            diamondValuationAssign.setCreationDate((new Date()));
+        }
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
         return mapToDTO(diamondValuationAssign);
     }

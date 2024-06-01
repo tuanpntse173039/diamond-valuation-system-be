@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -35,6 +36,7 @@ public class PaymentServiceImpl implements PaymentService {
     @Override
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
         Payment payment = mapToEntity(paymentDTO);
+        payment.setPaytime(new Date());
         payment = paymentRepository.save(payment);
 
         ValuationRequest valuationRequest = payment.getValuationRequest();
