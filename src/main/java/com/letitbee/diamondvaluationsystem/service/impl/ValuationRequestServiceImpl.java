@@ -108,12 +108,15 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         valuationRequest.setReturnDate(valuationRequestDTO.getReturnDate());
         valuationRequest.setReceiptDate(valuationRequestDTO.getReceiptDate());
         valuationRequest.setReturnLink(valuationRequestDTO.getReturnLink());
+        if(valuationRequest.getReceiptLink() == null && valuationRequestDTO.getReceiptLink() != null) {
+            valuationRequest.setReceiptDate(new Date());
+        }
         valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
+
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
 
-        if(valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())){
-            valuationRequest.setReceiptDate(new Date());
+        if(valuationRequest.getReceiptLink() != null){
             valuationRequest.setReturnDate(getReturnDate(valuationRequest));
         }
         //save to database
@@ -183,4 +186,5 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         calendar.set(Calendar.SECOND, 0);
         return calendar.getTime();
     }
+
 }

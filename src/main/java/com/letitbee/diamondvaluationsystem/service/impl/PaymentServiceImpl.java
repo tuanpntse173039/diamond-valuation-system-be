@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -40,11 +41,17 @@ public class PaymentServiceImpl implements PaymentService {
         payment = paymentRepository.save(payment);
 
         ValuationRequest valuationRequest = valuationRequestRepository.findById(
-                paymentDTO.getValuationRequestID()).orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", paymentDTO.getValuationRequestID()));
+                paymentDTO.getValuationRequestID())
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", paymentDTO.getValuationRequestID()));
         if(valuationRequest.getCreationDate() == null) {
             throw new ResourceNotFoundException("Valuation Request", "id", valuationRequest.getId());
         }
+        double amount = valuationRequest.getTotalServicePrice() * 0.4;
+        payment.setAmount(amount);
+        payment = paymentRepository.save(payment);
+
         valuationRequest.setStatus(RequestStatus.RECEIVED);
+
         valuationRequestRepository.save(valuationRequest);
         return mapToDTO(payment);
     }
@@ -74,6 +81,8 @@ public class PaymentServiceImpl implements PaymentService {
 
         return response;
     }
+
+
 
     private Payment mapToEntity(PaymentDTO paymentDTO) {
         return mapper.map(paymentDTO, Payment.class);
