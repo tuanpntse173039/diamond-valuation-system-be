@@ -1,21 +1,26 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
-import com.letitbee.diamondvaluationsystem.entity.DiamondValuationAssign;
-import com.letitbee.diamondvaluationsystem.entity.Staff;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
+import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
+import com.letitbee.diamondvaluationsystem.payload.PostDTO;
+import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DiamondValuationAssignImpl implements DiamondValuationAssignService {
@@ -75,7 +80,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId()));
         int flag = 0;
-        if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())) {
+        if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.VALUATING.toString())) {
             for (DiamondValuationAssign dva : valuationRequestDetail.getDiamondValuationAssigns()) {
                 if (!dva.isStatus()) {
                     flag = 1;
@@ -90,6 +95,39 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
 
         //save to database
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
+        return mapToDTO(diamondValuationAssign);
+    }
+
+    @Override
+    public Response<DiamondValuationAssignDTO> getAllDiamondValuationAssign(int pageNo, int pageSize, String sortBy, String sortDir) {
+
+        //create Pageable intance
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+
+        Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
+
+        Page<DiamondValuationAssign> diamondValuationAssigns = diamondValuationAssignRepository.findAll(pageable);
+        //get content for page obj
+
+        List<DiamondValuationAssign> diamondValuationAssignList = diamondValuationAssigns.getContent();
+        List<DiamondValuationAssignDTO> content =  diamondValuationAssignList.stream()
+                .map(diamondValuationAssign -> mapToDTO(diamondValuationAssign)).collect(Collectors.toList());
+
+        Response<DiamondValuationAssignDTO> response = new Response<>();
+        response.setContent(content);
+        response.setPageNumber(diamondValuationAssigns.getNumber());
+        response.setPageSize(diamondValuationAssigns.getSize());
+        response.setTotalElement(diamondValuationAssigns.getTotalElements());
+        response.setTotalPage(diamondValuationAssigns.getTotalPages());
+        response.setLast(diamondValuationAssigns.isLast());
+
+        return response;
+    }
+
+    @Override
+    public DiamondValuationAssignDTO getDiamondValuationAssignById(long id) {
+        DiamondValuationAssign diamondValuationAssign = diamondValuationAssignRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Diamond valuation assign", "id", id));
         return mapToDTO(diamondValuationAssign);
     }
 
