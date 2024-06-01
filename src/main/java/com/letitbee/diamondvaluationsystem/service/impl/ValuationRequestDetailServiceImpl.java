@@ -117,7 +117,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             changeValuationRequestStatusToValuating(valuationRequest);
         } else if (
                 valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())) {
-            updateDiamondValuationNote(valuationRequestDetailDTO);//update diamond valuation note price when status id assessed
+            updateDiamondValuationNote(valuationRequestDetail);//update diamond valuation note price when status id assessed
         }
         // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
@@ -178,8 +178,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             valuationRequest.setTotalServicePrice(totalPrice);
             valuationRequestRepository.save(valuationRequest);
     }
-    private void updateDiamondValuationNote(ValuationRequestDetailDTO diamondRequestDetailDTO) {
-        DiamondValuationNoteDTO diamondValuationNoteDTO = diamondRequestDetailDTO.getDiamondValuationNote();
+    private void updateDiamondValuationNote(ValuationRequestDetail valuationRequestDetail) {
+        DiamondValuationNote diamondValuationNoteDTO = valuationRequestDetail.getDiamondValuationNote();
         List<DiamondPriceList> diamondPriceList = diamondPriceListRepository.findSelectedFieldsByDiamondProperties(
                 diamondValuationNoteDTO.getDiamondOrigin(),
                 diamondValuationNoteDTO.getCaratWeight(),

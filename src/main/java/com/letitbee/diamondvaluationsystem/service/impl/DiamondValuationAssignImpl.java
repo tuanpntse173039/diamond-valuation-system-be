@@ -34,9 +34,12 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     @Override
     public DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = new DiamondValuationAssign();
-        Staff staff = staffRepository.findById(diamondValuationAssignDTO.getStaffId()).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", diamondValuationAssignDTO.getStaffId()));
-        ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository.findById(diamondValuationAssignDTO.getValuationRequestDetailId())
+        Staff staff = staffRepository.findById(diamondValuationAssignDTO.getStaffId())
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", diamondValuationAssignDTO.getStaffId()));
+        ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
+                .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId()));
+
         diamondValuationAssign.setStaff(staff);
         diamondValuationAssign.setValuationRequestDetail(valuationRequestDetail);
         diamondValuationAssign.setValuationPrice(diamondValuationAssignDTO.getValuationPrice());
@@ -45,6 +48,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         if (diamondValuationAssign.isStatus()) {
             diamondValuationAssign.setCreationDate((new Date()));
         }
+        //save to database
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
         return mapToDTO(diamondValuationAssign);
     }
