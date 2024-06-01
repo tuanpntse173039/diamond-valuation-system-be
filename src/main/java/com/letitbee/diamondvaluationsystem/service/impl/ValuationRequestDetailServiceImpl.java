@@ -112,7 +112,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
-        if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCELLED.toString())
+        if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                 || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
             changeValuationRequestStatusToValuating(valuationRequest);
         } else if (
@@ -143,7 +143,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         boolean checkStatusDetail = true;
         //check status in all valuation request detail
         for (ValuationRequestDetail valuationRequestDetail : valuationRequestDetailSet) {
-            if (!(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCELLED.toString())
+            if (!(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                     || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.APPROVED.toString()))) {
                 checkStatusDetail = false;
             }
