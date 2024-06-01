@@ -2,7 +2,10 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondValuationAssign;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
+import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
@@ -68,6 +71,23 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         if (diamondValuationAssign.isStatus()) {
             diamondValuationAssign.setCreationDate((new Date()));
         } // update date when status is true
+        ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
+                .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId()));
+        int flag = 0;
+        if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())) {
+            for (DiamondValuationAssign dva : valuationRequestDetail.getDiamondValuationAssigns()) {
+                if (!dva.isStatus()) {
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag == 0) {
+                valuationRequestDetail.setStatus(RequestDetailStatus.VALUATING);
+                valuationRequestDetailRepository.save(valuationRequestDetail);
+            }
+        }
+
         //save to database
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
         return mapToDTO(diamondValuationAssign);
@@ -80,4 +100,5 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     private DiamondValuationAssignDTO mapToDTO(DiamondValuationAssign diamondValuationAssign) {
         return mapper.map(diamondValuationAssign, DiamondValuationAssignDTO.class);
     }
+
 }
