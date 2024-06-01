@@ -30,19 +30,18 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private ServicePriceListRepository servicePriceListRepository;
     private DiamondPriceListRepository diamondPriceListRepository;
 
-    public ValuationRequestDetailServiceImpl(ModelMapper mapper,
-                                             ValuationRequestDetailRepository valuationRequestDetailRepository,
-                                             ValuationRequestRepository valuationRequestRepository,
-                                             DiamondValuationNoteRepository diamondValuationNoteRepository,
-                                             ServicePriceListRepository servicePriceListRepository,
-                                             DiamondPriceListRepository diamondPriceListRepository) {
+    private DiamondValuationAssignRepository diamondValuationAssignRepository;
+
+    public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository, ValuationRequestRepository valuationRequestRepository, DiamondValuationNoteRepository diamondValuationNoteRepository, ServicePriceListRepository servicePriceListRepository, DiamondPriceListRepository diamondPriceListRepository, DiamondValuationAssignRepository diamondValuationAssignRepository) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.valuationRequestRepository = valuationRequestRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.servicePriceListRepository = servicePriceListRepository;
         this.diamondPriceListRepository = diamondPriceListRepository;
+        this.diamondValuationAssignRepository = diamondValuationAssignRepository;
     }
+
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
         return mapper.map(valuationRequestDetailDTO, ValuationRequestDetail.class);
     }
@@ -96,6 +95,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         valuationRequestDetail.setMode(valuationRequestDetailDTO.isMode());
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
 
+
         //update valuation price base on mode
         updateValuationPriceBaseOnMode(valuationRequestDetail.isMode(), valuationRequestDetail, valuationRequestDetailDTO);
 
@@ -121,7 +121,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         }
         // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
-                                                                    //if all detail is approve or cancel
+        //if all detail is approve or cancel
         return mapToDTO(valuationRequestDetail);
     }
 
@@ -166,31 +166,32 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
     private void updateServicePrice(float sizeDTO,
                                     ValuationRequestDetail valuationRequestDetail) {
-            com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequestDetail.getValuationRequest().getService();
-            ServicePriceList servicePriceList = servicePriceListRepository.findByMinSizeLessThanEqualAndMaxSizeGreaterThanEqualAndService(sizeDTO, sizeDTO, service);
-            double servicePrice = servicePriceList.getInitPrice() +
-                    servicePriceList.getUnitPrice() * (sizeDTO - servicePriceList.getMinSize());
-            valuationRequestDetail.setServicePrice(servicePrice);
+        com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequestDetail.getValuationRequest().getService();
+        ServicePriceList servicePriceList = servicePriceListRepository.findByMinSizeLessThanEqualAndMaxSizeGreaterThanEqualAndService(sizeDTO, sizeDTO, service);
+        double servicePrice = servicePriceList.getInitPrice() +
+                servicePriceList.getUnitPrice() * (sizeDTO - servicePriceList.getMinSize());
+        valuationRequestDetail.setServicePrice(servicePrice);
 
-            ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
-            double totalPrice = valuationRequest.getTotalServicePrice();
-            totalPrice += servicePrice;
-            valuationRequest.setTotalServicePrice(totalPrice);
-            valuationRequestRepository.save(valuationRequest);
+        ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
+        double totalPrice = valuationRequest.getTotalServicePrice();
+        totalPrice += servicePrice;
+        valuationRequest.setTotalServicePrice(totalPrice);
+        valuationRequestRepository.save(valuationRequest);
     }
+
     private void updateDiamondValuationNote(ValuationRequestDetail valuationRequestDetail) {
         DiamondValuationNote diamondValuationNoteDTO = valuationRequestDetail.getDiamondValuationNote();
         List<DiamondPriceList> diamondPriceList = diamondPriceListRepository.findSelectedFieldsByDiamondProperties(
                 diamondValuationNoteDTO.getDiamondOrigin(),
                 diamondValuationNoteDTO.getCaratWeight(),
-                diamondValuationNoteDTO.getColor() ,
+                diamondValuationNoteDTO.getColor(),
                 diamondValuationNoteDTO.getClarity(),
                 diamondValuationNoteDTO.getCut(),
                 diamondValuationNoteDTO.getPolish(),
                 diamondValuationNoteDTO.getSymmetry(),
                 diamondValuationNoteDTO.getShape(),
                 diamondValuationNoteDTO.getFluorescence());
-        if (diamondPriceList != null && !diamondPriceList.isEmpty()){
+        if (diamondPriceList != null && !diamondPriceList.isEmpty()) {
             //get current diamond price
             DiamondPriceList diamondPrice = diamondPriceList.stream().findFirst().get();
             diamondValuationNoteDTO.setFairPrice(diamondPrice.getFairPrice());
@@ -202,8 +203,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
     private void updateValuationPriceBaseOnMode(boolean mode, ValuationRequestDetail valuationRequestDetail,
                                                 ValuationRequestDetailDTO valuationRequestDetailDTO) {
-        Set<DiamondValuationAssign> diamondValuationAssigns =  valuationRequestDetail.getDiamondValuationAssigns();
-        if(diamondValuationAssigns != null) {
+        Set<DiamondValuationAssign> diamondValuationAssigns = valuationRequestDetail.getDiamondValuationAssigns();
+        if (diamondValuationAssigns != null) {
             if (mode) {
                 int i = 0;
                 double valuationPrice = 0;
@@ -214,12 +215,15 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 valuationPrice = valuationPrice / i;
                 valuationRequestDetail.setValuationPrice(valuationPrice);
             } else {
-                if(valuationRequestDetail.getDiamondValuationAssign() != null) {
-                    double valuationPrice = valuationRequestDetail.getDiamondValuationAssign().getValuationPrice();
-                    DiamondValuationAssign diamondValuationAssign = mapper.map(valuationRequestDetailDTO.getDiamondValuationAssign(), DiamondValuationAssign.class);
+                if (valuationRequestDetailDTO.getDiamondValuationAssign() != null) {
+                    DiamondValuationAssign diamondValuationAssign =
+                            diamondValuationAssignRepository.findById(valuationRequestDetailDTO.getDiamondValuationAssign().getId()).
+                                    orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Assign", "id", valuationRequestDetailDTO.getDiamondValuationAssign().getId()));
+                    double valuationPrice = diamondValuationAssign.getValuationPrice();
                     valuationRequestDetail.setDiamondValuationAssign(diamondValuationAssign);
                     valuationRequestDetail.setValuationPrice(valuationPrice);
                 }
+
             }
         }
     }
