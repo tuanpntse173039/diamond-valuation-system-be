@@ -92,12 +92,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         //set data to valuation request detail
         valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
         valuationRequestDetail.setSealingRecordLink(valuationRequestDetailDTO.getSealingRecordLink());
-        valuationRequestDetail.setMode(valuationRequestDetailDTO.isMode());
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
 
-
-        //update valuation price base on mode
-        updateValuationPriceBaseOnMode(valuationRequestDetail.isMode(), valuationRequestDetail, valuationRequestDetailDTO);
 
         //create diamond note when know diamond is real
         createDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
@@ -107,6 +103,10 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         if (valuationRequestDetailDTO.isDiamond()) {
             updateServicePrice(valuationRequestDetailDTO.getSize(), valuationRequestDetail);
         }
+
+        //update valuation price base on mode
+        updateValuationPriceBaseOnMode(valuationRequestDetail.isMode(), valuationRequestDetail, valuationRequestDetailDTO);
+        valuationRequestDetail.setMode(valuationRequestDetailDTO.isMode());
 
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
@@ -205,7 +205,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                                 ValuationRequestDetailDTO valuationRequestDetailDTO) {
         Set<DiamondValuationAssign> diamondValuationAssigns = valuationRequestDetail.getDiamondValuationAssigns();
         if (diamondValuationAssigns != null) {
-            if (!mode) {
+            if (mode) {
                 int i = 0;
                 double valuationPrice = 0;
                 for (DiamondValuationAssign diamondValuationAssign : diamondValuationAssigns) {
