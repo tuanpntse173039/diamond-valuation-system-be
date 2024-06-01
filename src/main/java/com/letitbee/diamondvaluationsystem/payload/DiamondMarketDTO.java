@@ -17,5 +17,5 @@ public class DiamondMarketDTO {
     private Color color;
     private Clarity clarity;
     private double cutScore;
-    private Set<SupplierDTO> suppliers;
+    private long supplierId;
 }
