@@ -8,5 +8,4 @@ import java.util.Set;
 public class PaymentMethodDTO {
     private long id;
     private String name;
-    private Set<PaymentDTO> payments;
 }

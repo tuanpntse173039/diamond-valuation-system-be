@@ -39,7 +39,11 @@ public class PaymentServiceImpl implements PaymentService {
         payment.setPaytime(new Date());
         payment = paymentRepository.save(payment);
 
-        ValuationRequest valuationRequest = payment.getValuationRequest();
+        ValuationRequest valuationRequest = valuationRequestRepository.findById(
+                paymentDTO.getValuationRequestID()).orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", paymentDTO.getValuationRequestID()));
+        if(valuationRequest.getCreationDate() == null) {
+            throw new ResourceNotFoundException("Valuation Request", "id", valuationRequest.getId());
+        }
         valuationRequest.setStatus(RequestStatus.RECEIVED);
         valuationRequestRepository.save(valuationRequest);
         return mapToDTO(payment);
