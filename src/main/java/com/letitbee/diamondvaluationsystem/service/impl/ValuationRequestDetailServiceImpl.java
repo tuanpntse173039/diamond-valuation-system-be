@@ -104,13 +104,16 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
 
         //update Service Price
+        if (valuationRequestDetailDTO.isDiamond()) {
+            updateServicePrice(valuationRequestDetailDTO.getSize(), valuationRequestDetail);
+        }
         updateServicePrice(valuationRequestDetailDTO.getSize(), valuationRequestDetail);
 
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
-        if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
+        if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCELLED.toString())
                 || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
             changeValuationRequestStatusToValuating(valuationRequest);
         } else if (
@@ -141,7 +144,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         boolean checkStatusDetail = true;
         //check status in all valuation request detail
         for (ValuationRequestDetail valuationRequestDetail : valuationRequestDetailSet) {
-            if (!(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
+            if (!(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCELLED.toString())
                     || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.APPROVED.toString()))) {
                 checkStatusDetail = false;
             }
