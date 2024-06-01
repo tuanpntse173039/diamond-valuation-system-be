@@ -83,7 +83,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 }
             }
             if (flag == 0) {
-                valuationRequestDetail.setStatus(RequestDetailStatus.VALUATING);
+                valuationRequestDetail.setStatus(RequestDetailStatus.VALUATED);
                 valuationRequestDetailRepository.save(valuationRequestDetail);
             }
         }

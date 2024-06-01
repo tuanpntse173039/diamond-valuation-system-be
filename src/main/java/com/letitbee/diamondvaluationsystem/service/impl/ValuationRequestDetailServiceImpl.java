@@ -205,7 +205,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                                 ValuationRequestDetailDTO valuationRequestDetailDTO) {
         Set<DiamondValuationAssign> diamondValuationAssigns = valuationRequestDetail.getDiamondValuationAssigns();
         if (diamondValuationAssigns != null) {
-            if (mode) {
+            if (!mode) {
                 int i = 0;
                 double valuationPrice = 0;
                 for (DiamondValuationAssign diamondValuationAssign : diamondValuationAssigns) {
