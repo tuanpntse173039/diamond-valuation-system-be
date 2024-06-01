@@ -209,13 +209,16 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 double valuationPrice = 0;
                 for (DiamondValuationAssign diamondValuationAssign : diamondValuationAssigns) {
                     i++;
-                    valuationPrice += diamondValuationAssign.getValuationPrice() / i;
+                    valuationPrice += diamondValuationAssign.getValuationPrice();
                 }
+                valuationPrice = valuationPrice / i;
+                valuationRequestDetail.setValuationPrice(valuationPrice);
             } else {
                 if(valuationRequestDetail.getDiamondValuationAssign() != null) {
                     double valuationPrice = valuationRequestDetail.getDiamondValuationAssign().getValuationPrice();
                     DiamondValuationAssign diamondValuationAssign = mapper.map(valuationRequestDetailDTO.getDiamondValuationAssign(), DiamondValuationAssign.class);
                     valuationRequestDetail.setDiamondValuationAssign(diamondValuationAssign);
+                    valuationRequestDetail.setValuationPrice(valuationPrice);
                 }
             }
         }
