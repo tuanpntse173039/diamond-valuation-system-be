@@ -105,7 +105,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         }
 
         //update valuation price base on mode
-        updateValuationPriceBaseOnMode(valuationRequestDetail.isMode(), valuationRequestDetail, valuationRequestDetailDTO);
+        updateValuationPriceBaseOnMode(valuationRequestDetailDTO.isMode(), valuationRequestDetail, valuationRequestDetailDTO);
         valuationRequestDetail.setMode(valuationRequestDetailDTO.isMode());
 
         //save to database

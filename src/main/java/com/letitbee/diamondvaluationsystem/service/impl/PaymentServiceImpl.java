@@ -44,7 +44,7 @@ public class PaymentServiceImpl implements PaymentService {
         }
         Payment payment = mapToEntity(paymentDTO);
 
-        if(valuationRequest.getPayment() == null) {
+        if(valuationRequest.getPayment().isEmpty()) {
             double amount = valuationRequest.getTotalServicePrice() * 0.4;
             payment.setPaytime(new Date());
             payment.setAmount(amount);
