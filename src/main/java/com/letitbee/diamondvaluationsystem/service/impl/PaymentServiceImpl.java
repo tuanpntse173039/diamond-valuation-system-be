@@ -36,23 +36,30 @@ public class PaymentServiceImpl implements PaymentService {
     }
     @Override
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
-        Payment payment = mapToEntity(paymentDTO);
-        payment.setPaytime(new Date());
-        payment = paymentRepository.save(payment);
-
         ValuationRequest valuationRequest = valuationRequestRepository.findById(
-                paymentDTO.getValuationRequestID())
+                        paymentDTO.getValuationRequestID())
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", paymentDTO.getValuationRequestID()));
         if(valuationRequest.getCreationDate() == null) {
             throw new ResourceNotFoundException("Valuation Request", "id", valuationRequest.getId());
         }
-        double amount = valuationRequest.getTotalServicePrice() * 0.4;
-        payment.setAmount(amount);
-        payment = paymentRepository.save(payment);
+        Payment payment = mapToEntity(paymentDTO);
 
-        valuationRequest.setStatus(RequestStatus.RECEIVED);
+        if(valuationRequest.getPayment() == null) {
+            double amount = valuationRequest.getTotalServicePrice() * 0.4;
+            payment.setPaytime(new Date());
+            payment.setAmount(amount);
+            payment = paymentRepository.save(payment);
+            valuationRequest.setStatus(RequestStatus.RECEIVED);
 
-        valuationRequestRepository.save(valuationRequest);
+            valuationRequestRepository.save(valuationRequest);
+        } else {
+            double amount = valuationRequest.getTotalServicePrice() * 0.6;
+            payment.setPaytime(new Date());
+            payment.setAmount(amount);
+            payment = paymentRepository.save(payment);
+            valuationRequest.setStatus(RequestStatus.RECEIVED);
+            valuationRequestRepository.save(valuationRequest);
+        }
         return mapToDTO(payment);
     }
 
