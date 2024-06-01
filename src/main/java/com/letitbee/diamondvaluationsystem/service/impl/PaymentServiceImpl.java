@@ -42,6 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
         if(valuationRequest.getCreationDate() == null) {
             throw new ResourceNotFoundException("Valuation Request", "id", valuationRequest.getId());
         }
+
         Payment payment = mapToEntity(paymentDTO);
 
         if(valuationRequest.getPayment().isEmpty()) {
@@ -50,7 +51,6 @@ public class PaymentServiceImpl implements PaymentService {
             payment.setAmount(amount);
             payment = paymentRepository.save(payment);
             valuationRequest.setStatus(RequestStatus.RECEIVED);
-
             valuationRequestRepository.save(valuationRequest);
         } else {
             double amount = valuationRequest.getTotalServicePrice() * 0.6;
