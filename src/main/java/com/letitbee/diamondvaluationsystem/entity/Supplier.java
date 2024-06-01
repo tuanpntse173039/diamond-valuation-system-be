@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.HashSet;
+import java.util.Set;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -19,8 +22,9 @@ public class Supplier {
     @Column(columnDefinition = "nvarchar(50)")
     private String image;
 
-    @ManyToOne()
-    @JoinColumn(name = "diamond_market_id", nullable = false)
-    private DiamondMarket diamondMarket;
+    @OneToMany(mappedBy = "supplier",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    private Set<DiamondMarket> diamondMarket = new HashSet<>();
 
 }

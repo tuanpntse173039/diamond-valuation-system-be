@@ -38,8 +38,7 @@ public class DiamondMarket {
     @Column(columnDefinition = "money", nullable = false)
     private double price;
 
-    @OneToMany(mappedBy = "diamondMarket"
-               , cascade = CascadeType.ALL
-            , orphanRemoval = true)
-    private Set<Supplier> supplier = new HashSet<>();
+    @ManyToOne
+    @JoinColumn(name = "supplier_id", nullable = false)
+    private Supplier supplier;
 }
