@@ -9,7 +9,7 @@ import java.util.Set;
 @Data
 public class ValuationRequestDetailDTO {
     private long id;
-    private String valuationPrice;
+    private double valuationPrice;
     private boolean isMode;
     private String sealingRecordLink;
     private float size;

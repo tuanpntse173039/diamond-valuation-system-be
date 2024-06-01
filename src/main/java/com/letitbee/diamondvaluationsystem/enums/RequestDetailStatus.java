@@ -2,7 +2,7 @@ package com.letitbee.diamondvaluationsystem.enums;
 
 public enum RequestDetailStatus {
     PENDING("Pending"),
-    CANCEL("Cancel"),
+    CANCELLED("Cancelled"),
     ASSESSING("Assessing"),
     ASSESSED("Assessed"),
     VALUATING("Valuating"),

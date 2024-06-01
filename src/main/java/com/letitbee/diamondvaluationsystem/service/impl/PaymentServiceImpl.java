@@ -35,9 +35,13 @@ public class PaymentServiceImpl implements PaymentService {
     }
     @Override
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
+
         Payment payment = mapToEntity(paymentDTO);
+        double amount = payment.getValuationRequest().getTotalServicePrice() * 0.4;
         payment.setPaytime(new Date());
+        payment.setAmount(amount);
         payment = paymentRepository.save(payment);
+
 
         ValuationRequest valuationRequest = payment.getValuationRequest();
         valuationRequest.setStatus(RequestStatus.RECEIVED);
