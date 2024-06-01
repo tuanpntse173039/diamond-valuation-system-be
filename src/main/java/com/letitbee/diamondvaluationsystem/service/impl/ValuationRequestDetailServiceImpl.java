@@ -170,7 +170,6 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         ServicePriceList servicePriceList = servicePriceListRepository.findByMinSizeLessThanEqualAndMaxSizeGreaterThanEqualAndService(sizeDTO, sizeDTO, service);
         double servicePrice = servicePriceList.getInitPrice() +
                 servicePriceList.getUnitPrice() * (sizeDTO - servicePriceList.getMinSize());
-
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
         double totalPrice = valuationRequest.getTotalServicePrice();
         totalPrice = totalPrice + servicePrice - valuationRequestDetail.getServicePrice();
