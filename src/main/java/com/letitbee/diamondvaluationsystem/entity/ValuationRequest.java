@@ -39,6 +39,8 @@ public class ValuationRequest {
     private String receiptLink;
     @Column(columnDefinition = "varchar(1000)")
     private String returnLink;
+    @Column(columnDefinition = "varchar(1000)")
+    private String resultLink;
     @Column(columnDefinition = "text")
     private String feedback;
     @Column(columnDefinition = "varchar(1000)")
