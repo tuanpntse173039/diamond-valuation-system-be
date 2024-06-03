@@ -26,7 +26,7 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
                                                               DiamondValuationNoteDTO diamondValuationNoteDTO) {
         DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Note", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Note", "id", id + ""));
         diamondValuationNote.setDiamondOrigin(diamondValuationNoteDTO.getDiamondOrigin());
         diamondValuationNote.setClarity(diamondValuationNoteDTO.getClarity());
         diamondValuationNote.setCaratWeight(diamondValuationNoteDTO.getCaratWeight());
@@ -41,6 +41,14 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setSymmetry(diamondValuationNoteDTO.getSymmetry());
 
         diamondValuationNote = diamondValuationNoteRepository.save(diamondValuationNote);
+        return mapToDTO(diamondValuationNote);
+    }
+
+    @Override
+    public DiamondValuationNoteDTO getAllDiamondValuationNoteByCertificateId(String certificateId) {
+        DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
+                .findByCertificateId(certificateId)
+                .orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Note", "certificateId", certificateId));
         return mapToDTO(diamondValuationNote);
     }
 

@@ -3,21 +3,22 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
-import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,15 +57,23 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public StaffDTO getStaffById(Long id) {
-        Staff staff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id));
-        return mapToDto(staff);
+    public List<StaffDTO> getStaffByName(String name) {
+        String[] keywords = name.trim().split("\\s+");
+
+
+        List<Staff> staff = new ArrayList<>();
+        for (String keyword : keywords) {
+            staff = staffRepository.findStaffByFirstNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(
+                    "%" + keyword + "%", "%" + keyword + "%");
+        }
+        return staff.stream().map(staff1 -> mapToDto(staff1)).collect(Collectors.toList());
     }
+
 
     @Override
     public StaffDTO updateStaffInformation(StaffDTO staffDto, Long id) {
         Staff staff = staffRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Staff", "Id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "Id", id + ""));
         staff.setFirstName(staffDto.getFirstName());
         staff.setLastName(staffDto.getLastName());
         staff.setPhone(staffDto.getPhone());
@@ -93,7 +102,7 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public void deleteStaffById(Long id) {
-        Staff staff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id));
+        Staff staff = staffRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Staff", "id", id + ""));
         Account accountWithStaffID =  staff.getAccount();
         accountWithStaffID.setIs_active(false);
         accountRepository.save(accountWithStaffID);

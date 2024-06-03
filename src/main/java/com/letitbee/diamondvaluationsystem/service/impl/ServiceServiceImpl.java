@@ -30,7 +30,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public ServiceDTO getServiceById(long id) {
-        Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service", "id", id));
+        Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service", "id", id + ""));
         return mapToDto(service);
     }
 
@@ -43,7 +43,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public ServiceDTO updateService(ServiceDTO serviceDto, long id) {
-        Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service", "id", id));
+        Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service", "id", id + ""));
         service.setServiceName(serviceDto.getName());
         service.setDescription(serviceDto.getDescription());
         service.setPeriod(serviceDto.getPeriod());
@@ -53,7 +53,7 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public void deleteServiceById(long id) {
-        Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service", "id", id));
+        Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service", "id", id + ""));
         serviceRepository.delete(service);
     }
     private ServiceDTO mapToDto(Service service) {

@@ -65,7 +65,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public String updatePassword(String newPassword, Long id) {
         Account account = accountRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
         //happycase
         account.setPassword(newPassword);
         accountRepository.save(account);

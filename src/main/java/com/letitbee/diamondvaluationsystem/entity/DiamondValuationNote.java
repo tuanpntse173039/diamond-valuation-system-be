@@ -21,7 +21,7 @@ public class DiamondValuationNote {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(columnDefinition = "varchar(10)")
+    @Column(columnDefinition = "varchar(10)",unique = true)
     private String certificateId;
 
     @Column(columnDefinition = "varchar(1000)")

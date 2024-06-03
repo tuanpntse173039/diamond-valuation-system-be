@@ -79,7 +79,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     @Override
     public ValuationRequestDetailDTO getValuationRequestDetailById(Long id) {
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
         return mapToDTO(valuationRequestDetail);
     }
 
@@ -88,7 +88,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         //get valuation request detail
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
         //set data to valuation request detail
         valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
         valuationRequestDetail.setSealingRecordLink(valuationRequestDetailDTO.getSealingRecordLink());
@@ -218,7 +218,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 if (valuationRequestDetailDTO.getDiamondValuationAssign() != null) {
                     DiamondValuationAssign diamondValuationAssign =
                             diamondValuationAssignRepository.findById(valuationRequestDetailDTO.getDiamondValuationAssign().getId()).
-                                    orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Assign", "id", valuationRequestDetailDTO.getDiamondValuationAssign().getId()));
+                                    orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Assign", "id", valuationRequestDetailDTO.getDiamondValuationAssign().getId() + ""));
                     double valuationPrice = diamondValuationAssign.getValuationPrice();
                     valuationRequestDetail.setDiamondValuationAssign(diamondValuationAssign);
                     valuationRequestDetail.setValuationPrice(valuationPrice);

@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("api/v1/staffs")
 public class StaffController {
@@ -25,9 +27,10 @@ public class StaffController {
         return new ResponseEntity<>(staffService.getAllStaffs(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
 
-    @GetMapping("/{staffId}")
-    public ResponseEntity<StaffDTO> getStaffById(@PathVariable("staffId") long id) {
-        return ResponseEntity.ok(staffService.getStaffById(id));
+    @GetMapping("/search")
+    public ResponseEntity<List<StaffDTO>> getStaffByIdOrFirstNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(
+            @RequestParam(value = "name", required = false) String name){
+        return ResponseEntity.ok(staffService.getStaffByName(name));
     }
 
     @PostMapping

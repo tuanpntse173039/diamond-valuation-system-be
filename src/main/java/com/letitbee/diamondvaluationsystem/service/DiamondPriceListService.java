@@ -8,6 +8,15 @@ public interface DiamondPriceListService {
 
     DiamondPriceListDTO createDiamondPriceList(DiamondPriceListDTO diamondPriceListDTO);
 
-    DiamondPriceListDTO getDiamondPriceListByField(DiamondPriceListDTO diamondPriceListDTO);
-
+    DiamondPriceListDTO getDiamondPriceListByField(
+            DiamondOrigin diamondOrigin,
+            float caratWeight,
+            Color color,
+            Clarity clarity,
+            Cut cut,
+            Polish polish,
+            Symmetry symmetry,
+            Shape shape,
+            Fluorescence fluorescence
+    );
 }

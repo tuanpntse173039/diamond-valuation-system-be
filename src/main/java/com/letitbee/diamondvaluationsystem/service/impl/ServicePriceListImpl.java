@@ -35,7 +35,7 @@ public class ServicePriceListImpl implements ServicePriceListService {
 
     @Override
     public ServicePriceListDTO getServicePriceListById(long id) {
-        ServicePriceList servicePriceList = servicePriceListRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ServicePriceList", "id", id));
+        ServicePriceList servicePriceList = servicePriceListRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ServicePriceList", "id", id + ""));
         return mapToDto(servicePriceList);
     }
 
