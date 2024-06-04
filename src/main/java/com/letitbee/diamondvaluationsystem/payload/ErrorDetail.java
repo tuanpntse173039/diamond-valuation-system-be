@@ -11,4 +11,5 @@ public class ErrorDetail {
     private String timestamp;
     private String message;
     private String detail;
+
 }
