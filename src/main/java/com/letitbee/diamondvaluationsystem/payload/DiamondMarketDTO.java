@@ -1,9 +1,6 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
-import com.letitbee.diamondvaluationsystem.enums.Clarity;
-import com.letitbee.diamondvaluationsystem.enums.Color;
-import com.letitbee.diamondvaluationsystem.enums.Cut;
-import com.letitbee.diamondvaluationsystem.enums.DiamondOrigin;
+import com.letitbee.diamondvaluationsystem.enums.*;
 import lombok.*;
 
 import java.util.Set;
@@ -16,6 +13,10 @@ public class DiamondMarketDTO {
     private float caratWeight;
     private Color color;
     private Clarity clarity;
+    private Polish polish;
+    private Symmetry symmetry;
+    private Shape shape;
+    private Fluorescence fluorescence;
     private double cutScore;
     private long supplierId;
 }

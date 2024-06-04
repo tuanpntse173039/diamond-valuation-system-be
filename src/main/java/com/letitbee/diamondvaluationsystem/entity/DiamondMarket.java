@@ -1,8 +1,6 @@
 package com.letitbee.diamondvaluationsystem.entity;
 
-import com.letitbee.diamondvaluationsystem.enums.Clarity;
-import com.letitbee.diamondvaluationsystem.enums.Color;
-import com.letitbee.diamondvaluationsystem.enums.DiamondOrigin;
+import com.letitbee.diamondvaluationsystem.enums.*;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,6 +31,14 @@ public class DiamondMarket {
     private Color color;
     @Enumerated(EnumType.STRING)
     private Clarity clarity;
+    @Enumerated(EnumType.STRING)
+    private Polish polish;
+    @Enumerated(EnumType.STRING)
+    private Symmetry symmetry;
+    @Enumerated(EnumType.STRING)
+    private Shape shape;
+    @Enumerated(EnumType.STRING)
+    private Fluorescence fluorescence;
     @Column(nullable = false)
     private double cutScore;
     @Column(columnDefinition = "money", nullable = false)
