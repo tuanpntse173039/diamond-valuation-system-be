@@ -7,7 +7,6 @@ import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
-import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
@@ -18,6 +17,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -65,7 +65,8 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO getCustomerById(long id) {
         Customer customer = customerRepository.
                 findById(id).
-                orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id));
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id
+                + ""));
         return mapToDTO(customer);
     }
 
@@ -90,7 +91,7 @@ public class CustomerServiceImpl implements CustomerService {
     public CustomerDTO updateCustomerInformation(CustomerDTO customerDto, Long id) {
         Customer customer = customerRepository.
                 findById(id).
-                orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id));
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id + ""));
 
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
@@ -101,6 +102,15 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setIdentityDocument(customerDto.getIdentityDocument());
 
         return mapToDTO(customerRepository.save(customer));
+    }
+
+    @Override
+    public CustomerDTO  getCustomerByPhoneOrName(String phone, String name) {
+
+        Customer customer = customerRepository.findCustomerByPhoneOrFirstNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(
+                    phone, "%" + name + "%", "%" + name + "%" ).orElseThrow(() -> new ResourceNotFoundException("Customer", "phone or name", phone + name));
+
+        return mapToDTO(customer);
     }
 
 

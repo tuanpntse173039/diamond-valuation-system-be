@@ -75,7 +75,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     @Override
     public ValuationRequestDTO getValuationRequestById(Long id) {
         ValuationRequest valuationRequest = valuationRequestRepository.findById(id).
-                orElseThrow(() -> new ResourceNotFoundException("Valuation request", "id", id));
+                orElseThrow(() -> new ResourceNotFoundException("Valuation request", "id", id + ""));
         return mapToDTO(valuationRequest);
     }
 
@@ -98,7 +98,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     public ValuationRequestDTO updateValuationRequest(long id, ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = valuationRequestRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id + ""));
         //get staff
         Staff staff = staffRepository.findById(valuationRequestDTO.getStaffID()).orElse(null);
 
@@ -131,7 +131,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     public ValuationRequestDTO deleteValuationRequestById(Long id) {
         ValuationRequest valuationRequest = valuationRequestRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id + ""));
         if (!valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.PENDING.toString())) {
             throw new APIException(HttpStatus.BAD_REQUEST, "Can't cancel this valuation request!");
         }

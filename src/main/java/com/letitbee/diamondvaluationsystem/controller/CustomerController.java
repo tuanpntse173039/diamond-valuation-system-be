@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Controller
 @RequestMapping("api/v1/customers")
 public class CustomerController {
@@ -30,6 +32,11 @@ public class CustomerController {
     @GetMapping("/{customerId}")
     public ResponseEntity<CustomerDTO> getCustomerById(@PathVariable("customerId") long id) {
         return ResponseEntity.ok(customerService.getCustomerById(id));
+    }
+    @GetMapping("/search")
+    public ResponseEntity<CustomerDTO> getCustomerByPhoneOrName(@RequestParam(value = "phone", required = false) String phone,
+                                                                      @RequestParam(value = "name", required = false) String name){
+        return ResponseEntity.ok(customerService.getCustomerByPhoneOrName(phone,name));
     }
 
     @PostMapping()

@@ -38,9 +38,9 @@ public class PaymentServiceImpl implements PaymentService {
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
         ValuationRequest valuationRequest = valuationRequestRepository.findById(
                         paymentDTO.getValuationRequestID())
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", paymentDTO.getValuationRequestID()));
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", paymentDTO.getValuationRequestID() + ""));
         if(valuationRequest.getCreationDate() == null) {
-            throw new ResourceNotFoundException("Valuation Request", "id", valuationRequest.getId());
+            throw new ResourceNotFoundException("Valuation Request", "id", valuationRequest.getId() + "");
         }
 
         Payment payment = mapToEntity(paymentDTO);

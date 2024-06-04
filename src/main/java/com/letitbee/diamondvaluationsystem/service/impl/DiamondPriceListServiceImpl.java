@@ -32,18 +32,27 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
     }
 
     @Override
-    public DiamondPriceListDTO getDiamondPriceListByField(DiamondPriceListDTO diamondPriceListDTO) {
+    public DiamondPriceListDTO getDiamondPriceListByField(
+            DiamondOrigin diamondOrigin,
+            float caratWeight,
+            Color color,
+            Clarity clarity,
+            Cut cut,
+            Polish polish,
+            Symmetry symmetry,
+            Shape shape,
+            Fluorescence fluorescence
+    ) {
         List<DiamondPriceList> field = diamondPriceListRepository.findSelectedFieldsByDiamondProperties(
-                diamondPriceListDTO.getDiamondOrigin(),
-                diamondPriceListDTO.getCaratWeight(),
-                diamondPriceListDTO.getColor() ,
-                diamondPriceListDTO.getClarity(),
-                diamondPriceListDTO.getCut(),
-                diamondPriceListDTO.getPolish(),
-                diamondPriceListDTO.getSymmetry(),
-                diamondPriceListDTO.getShape(),
-                diamondPriceListDTO.getFluorescence());
-
+                diamondOrigin,
+                caratWeight,
+                color,
+                clarity,
+                cut,
+                polish,
+                symmetry,
+                shape,
+                fluorescence);
         if (field != null && !field.isEmpty()) {
             DiamondPriceListDTO diamondPriceList = field.stream().findFirst().map(this::mapToDto).get();
             return diamondPriceList;

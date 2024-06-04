@@ -43,10 +43,10 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     public DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = new DiamondValuationAssign();
         Staff staff = staffRepository.findById(diamondValuationAssignDTO.getStaffId())
-                .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", diamondValuationAssignDTO.getStaffId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", diamondValuationAssignDTO.getStaffId() + ""));
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
                 .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + ""));
 
         diamondValuationAssign.setStaff(staff);
         diamondValuationAssign.setValuationRequestDetail(valuationRequestDetail);
@@ -65,20 +65,20 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     public DiamondValuationAssignDTO updateDiamondValuationAssign(long id, DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = diamondValuationAssignRepository
                 .findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Diamond valuation assign", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Diamond valuation assign", "id", id + ""));
         diamondValuationAssign.setValuationPrice(diamondValuationAssignDTO.getValuationPrice());
         diamondValuationAssign.setComment(diamondValuationAssignDTO.getComment());
         diamondValuationAssign.setStatus(diamondValuationAssignDTO.isStatus());
         diamondValuationAssign.setStaff(staffRepository.findById(diamondValuationAssignDTO.getStaffId())
-                .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", diamondValuationAssignDTO.getStaffId())));
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", diamondValuationAssignDTO.getStaffId() + "")));
         diamondValuationAssign.setValuationRequestDetailId(valuationRequestDetailRepository.findById(diamondValuationAssignDTO.getValuationRequestDetailId())
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId())));
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + "")));
         if (diamondValuationAssign.isStatus()) {
             diamondValuationAssign.setCreationDate((new Date()));
         } // update date when status is true
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
                 .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + ""));
         int flag = 0;
         if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.VALUATING.toString())) {
             for (DiamondValuationAssign dva : valuationRequestDetail.getDiamondValuationAssigns()) {
@@ -127,7 +127,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     @Override
     public DiamondValuationAssignDTO getDiamondValuationAssignById(long id) {
         DiamondValuationAssign diamondValuationAssign = diamondValuationAssignRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Diamond valuation assign", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Diamond valuation assign", "id", id + ""));
         return mapToDTO(diamondValuationAssign);
     }
 

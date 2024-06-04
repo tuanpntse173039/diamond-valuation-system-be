@@ -30,7 +30,7 @@ public class DiamondImageServiceImpl implements DiamondImageService {
     @Override
     public DiamondImageDTO updateDiamondImage(long id, DiamondImageDTO diamondImageDTO) {
         DiamondImage diamondImage = diamondImageRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Diamond Image", "id", id));
+                .orElseThrow(() -> new ResourceNotFoundException("Diamond Image", "id", id + ""));
 
         diamondImage.setImage(diamondImage.getImage());
         diamondImage = diamondImageRepository.save(diamondImage);
