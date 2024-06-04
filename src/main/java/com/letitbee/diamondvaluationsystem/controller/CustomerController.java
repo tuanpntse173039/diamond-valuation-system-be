@@ -4,6 +4,7 @@ import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,6 +41,7 @@ public class CustomerController {
     }
 
     @PostMapping()
+    @Valid
     public ResponseEntity<CustomerDTO> createCustomerInformation(@RequestBody CustomerDTO customerDto){
         CustomerDTO customer = customerService.createCustomerInformation(customerDto);
         return new ResponseEntity<>(customer, HttpStatus.CREATED);

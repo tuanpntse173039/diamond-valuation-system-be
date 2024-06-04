@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 import com.letitbee.diamondvaluationsystem.payload.PaymentMethodDTO;
 import com.letitbee.diamondvaluationsystem.repository.PaymentMethodRepository;
 import com.letitbee.diamondvaluationsystem.service.PaymentMethodService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,7 @@ public class PaymentMethodController {
         return new ResponseEntity<>(methodService.getAllPaymentMethod(), HttpStatus.OK);
     }
     @PostMapping
+    @Valid
     public ResponseEntity<PaymentMethodDTO> createPaymentMethod(@RequestBody PaymentMethodDTO paymentMethodDTO) {
         return new ResponseEntity<>(methodService.createPaymentMethod(paymentMethodDTO), HttpStatus.CREATED);
     }

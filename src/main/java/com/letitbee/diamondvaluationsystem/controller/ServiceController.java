@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
 import com.letitbee.diamondvaluationsystem.service.ServiceService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +31,7 @@ public class ServiceController {
     }
 
     @PostMapping
+    @Valid
     public ResponseEntity<ServiceDTO> createService(@RequestBody ServiceDTO serviceDto) {
         return new ResponseEntity<>(serviceService.createService(serviceDto), HttpStatus.CREATED);
     }

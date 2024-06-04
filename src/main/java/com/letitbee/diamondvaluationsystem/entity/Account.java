@@ -24,6 +24,7 @@ public class Account {
             strategy = GenerationType.IDENTITY
     )
     private long id;
+
     @Column(nullable = false, columnDefinition = "nvarchar(50)",unique = true)
     private String username;
     @Column(nullable = false, columnDefinition = "nvarchar(50)")
@@ -33,10 +34,6 @@ public class Account {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-//    @ManyToOne
-//    @JoinColumn(name = "role_id", nullable = false)
-//    private Role role;
 
     @OneToOne(mappedBy = "account")
     private Staff staff;

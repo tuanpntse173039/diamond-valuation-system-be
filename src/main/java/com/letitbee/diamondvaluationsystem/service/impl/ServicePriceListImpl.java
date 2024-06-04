@@ -41,6 +41,9 @@ public class ServicePriceListImpl implements ServicePriceListService {
 
     @Override
     public ServicePriceListDTO createServicePriceList(ServicePriceListDTO servicePriceListDto) {
+        if(servicePriceListDto.getMinSize() > servicePriceListDto.getMaxSize()) {
+            throw new APIException( HttpStatus.BAD_REQUEST, "Max size must be greater than min size");
+        }
         ServicePriceList servicePriceList = mapToEntity(servicePriceListDto);
         return mapToDto(servicePriceListRepository.save(servicePriceList));
     }

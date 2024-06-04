@@ -5,6 +5,7 @@ import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -41,12 +42,14 @@ public class ValuationRequestController {
     }
 
     @PostMapping
+    @Valid
     public ResponseEntity<ValuationRequestDTO> createValuationRequest(
             @RequestBody ValuationRequestDTO valuationRequestDT) {
         return new ResponseEntity<>(valuationRequestService.createValuationRequest(valuationRequestDT), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
+    @Valid
     public ResponseEntity<ValuationRequestDTO> updateValuationRequest(
             @PathVariable("id") long id,
             @RequestBody ValuationRequestDTO valuationRequestDT) {

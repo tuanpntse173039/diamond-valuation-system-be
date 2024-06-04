@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ public class AccountController {
 
     //register Customer
     @PostMapping
-    public ResponseEntity<AccountResponse> register(@RequestBody AccountDTO accountDTO){
+    public ResponseEntity<AccountResponse> register(@RequestBody @Valid AccountDTO accountDTO){
         AccountResponse response = accountService.register(accountDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
