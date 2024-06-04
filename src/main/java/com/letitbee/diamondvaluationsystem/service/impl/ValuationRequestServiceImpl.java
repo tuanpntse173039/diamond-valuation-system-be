@@ -47,12 +47,12 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    public Response<ValuationRequestDTO> getAllValuationRequests(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response<ValuationRequestDTO> getAllValuationRequests(int pageNo, int pageSize, String sortBy, String sortDir, Date startDate, Date endDate) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
-        Page<ValuationRequest> page = valuationRequestRepository.findAll(pageable);
+        Page<ValuationRequest> page = valuationRequestRepository.findByCreationDateBetween(startDate, endDate, pageable);
         List<ValuationRequest> valuationRequests = page.getContent();
 
         List<ValuationRequestDTO> listDTO = valuationRequests.
