@@ -4,6 +4,7 @@ import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.Role;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -99,6 +101,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffDTO createStaffInformation(StaffDTO staffDto) {
+        if (staffDto.getAccount().getRole().toString().equalsIgnoreCase(Role.CUSTOMER.toString()))
+            throw new APIException(HttpStatus.BAD_REQUEST, "Invalid Role");
         Account account = mapper.map(staffDto.getAccount(), Account.class) ;
         Staff staff = new Staff();
         staff.setFirstName(staffDto.getFirstName());
