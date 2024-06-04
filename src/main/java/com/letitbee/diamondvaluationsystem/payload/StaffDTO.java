@@ -13,7 +13,8 @@ public class StaffDTO {
     private String phone;
     private int experience;
     private String certificateLink;
-    private Set<ValuationRequestDTO> valuationRequests;
-    private Set<DiamondValuationAssignDTO> diamondValuations;
+    private Set<ValuationRequestDTO> valuationRequestSet;
+    private Set<DiamondValuationAssignDTO> diamondValuationAssigns;
     private AccountResponse account;
+    private int countProject = 0;
 }
