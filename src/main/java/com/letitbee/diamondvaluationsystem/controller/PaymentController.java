@@ -4,6 +4,7 @@ import com.letitbee.diamondvaluationsystem.payload.PaymentDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.PaymentService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -21,6 +22,7 @@ public class PaymentController {
     }
 
     @PostMapping
+    @Valid
     public ResponseEntity<PaymentDTO> creatPayment(@RequestBody PaymentDTO paymentDTO) {
         return new ResponseEntity<>(paymentService.createPayment(paymentDTO), HttpStatus.CREATED);
     }

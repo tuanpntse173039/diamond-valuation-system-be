@@ -2,6 +2,8 @@ package com.letitbee.diamondvaluationsystem.payload;
 
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class PostDTO {
     private long id;
@@ -9,7 +11,7 @@ public class PostDTO {
     private String content;
     private String description;
     private String thumbnail;
-    private String publishedDate;
-    private String creationDate;
+    private Date publishedDate;
+    private Date creationDate;
     private String reference;
 }

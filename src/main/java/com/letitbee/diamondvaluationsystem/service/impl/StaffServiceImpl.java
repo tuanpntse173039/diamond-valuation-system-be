@@ -2,17 +2,23 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.enums.Role;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
+import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
+import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -25,11 +31,20 @@ import java.util.stream.Collectors;
 public class StaffServiceImpl implements StaffService {
     private StaffRepository staffRepository;
     private AccountRepository accountRepository;
+    private ValuationRequestRepository valuationRequestRepository;
+
+    private DiamondValuationAssignRepository diamondValuationAssignRepository;
     private ModelMapper mapper;
 
-    public StaffServiceImpl(StaffRepository staffRepository, AccountRepository accountRepository, ModelMapper mapper) {
+    public StaffServiceImpl(StaffRepository staffRepository,
+                            AccountRepository accountRepository,
+                            ValuationRequestRepository valuationRequestRepository,
+                            DiamondValuationAssignRepository diamondValuationAssignRepository,
+                            ModelMapper mapper) {
         this.staffRepository = staffRepository;
         this.accountRepository = accountRepository;
+        this.valuationRequestRepository = valuationRequestRepository;
+        this.diamondValuationAssignRepository = diamondValuationAssignRepository;
         this.mapper = mapper;
     }
 
@@ -86,6 +101,8 @@ public class StaffServiceImpl implements StaffService {
 
     @Override
     public StaffDTO createStaffInformation(StaffDTO staffDto) {
+        if (staffDto.getAccount().getRole().toString().equalsIgnoreCase(Role.CUSTOMER.toString()))
+            throw new APIException(HttpStatus.BAD_REQUEST, "Invalid Role");
         Account account = mapper.map(staffDto.getAccount(), Account.class) ;
         Staff staff = new Staff();
         staff.setFirstName(staffDto.getFirstName());
@@ -111,6 +128,13 @@ public class StaffServiceImpl implements StaffService {
     //convert Entity to DTO
     private StaffDTO mapToDto(Staff staff){
         StaffDTO staffDto = mapper.map(staff, StaffDTO.class);
+        if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.CONSULTANT_STAFF.toString())){
+            int count = valuationRequestRepository.countValuationRequestsByStaff(staff);
+            staffDto.setCountProject(count);
+        } else if (staff.getAccount().getRole().toString().equalsIgnoreCase(Role.VALUATION_STAFF.toString())) {
+            int count = diamondValuationAssignRepository.countDiamondValuationAssignByStaff(staff);
+            staffDto.setCountProject(count);
+        }
         return staffDto;
     }
     //convert DTO to Entity
