@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AccountResponse {
-    private long id;
+    private Long id;
     private String username;
     private Boolean is_active;
     private Role role;

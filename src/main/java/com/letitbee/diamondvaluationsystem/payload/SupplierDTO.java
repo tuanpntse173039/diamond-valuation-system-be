@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Data
 public class SupplierDTO {
-    private long id;
+    private Long id;
     private String image;
     private Set<DiamondMarketDTO> diamondMarket;
 }

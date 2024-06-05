@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class DiamondPriceListDTO {
-    private long id;
+    private Long id;
     private String creationDate;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
