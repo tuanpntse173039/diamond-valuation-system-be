@@ -15,7 +15,7 @@ import lombok.Setter;
 public class DiamondImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(columnDefinition = "varchar(1000)", nullable = false)
     private String image;
     @ManyToOne

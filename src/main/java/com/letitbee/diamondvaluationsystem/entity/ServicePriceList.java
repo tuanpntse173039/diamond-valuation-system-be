@@ -17,7 +17,7 @@ public class ServicePriceList {
     @GeneratedValue(
             strategy = GenerationType.IDENTITY
     )
-    private long id;
+    private Long id;
     @Column(columnDefinition = "float", nullable = false)
     private float minSize;
     @Column(columnDefinition = "float", nullable = false)

@@ -21,7 +21,7 @@ public class Customer {
     @GeneratedValue(
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
-    private long id;
+    private Long id;
     @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String firstName;
     @Column(columnDefinition = "nvarchar(50)", nullable = false)
