@@ -7,6 +7,7 @@ import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +21,7 @@ public class StaffController {
         this.staffService = staffService;
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
     @GetMapping
     public ResponseEntity<Response<StaffDTO>> getAllStaffs(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                                                  @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
@@ -41,6 +43,7 @@ public class StaffController {
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'VALUATION_STAFF')")
     @PutMapping("/{id}")
     @Valid
     public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("id") long id){
@@ -48,6 +51,7 @@ public class StaffController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStaffById(@PathVariable("id") long id) {
         staffService.deleteStaffById(id);

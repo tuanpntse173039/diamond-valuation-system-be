@@ -5,6 +5,7 @@ import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationNoteService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +18,7 @@ public class DiamondValuationNoteController {
         this.valuationNoteService = valuationNoteService;
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
     @PutMapping("{id}")
     public ResponseEntity<DiamondValuationNoteDTO>
     updateDiamondValuationNote(@PathVariable("id") long id,
