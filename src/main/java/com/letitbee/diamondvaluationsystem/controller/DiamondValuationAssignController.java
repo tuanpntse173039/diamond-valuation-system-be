@@ -26,7 +26,7 @@ public class DiamondValuationAssignController {
                 HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<DiamondValuationAssignDTO> updateDiamondValuationAssign
             (@PathVariable("id") long id,

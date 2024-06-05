@@ -4,11 +4,8 @@ import com.letitbee.diamondvaluationsystem.payload.ErrorDetail;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.AccessDeniedException;
-<<<<<<<<< Temporary merge branch 1
 import org.springframework.security.access.AccessDeniedException;
-=========
 import org.springframework.validation.BindException;
->>>>>>>>> Temporary merge branch 2
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;

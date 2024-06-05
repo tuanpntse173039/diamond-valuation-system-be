@@ -36,6 +36,7 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getStaffByName(name));
     }
 
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping
     public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody @Valid StaffDTO staffDto){
         StaffDTO response = staffService.createStaffInformation(staffDto);

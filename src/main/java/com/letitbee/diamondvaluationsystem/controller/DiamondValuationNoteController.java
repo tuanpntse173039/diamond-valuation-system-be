@@ -18,7 +18,7 @@ public class DiamondValuationNoteController {
         this.valuationNoteService = valuationNoteService;
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF')")
     @PutMapping("{id}")
     public ResponseEntity<DiamondValuationNoteDTO>
     updateDiamondValuationNote(@PathVariable("id") long id,
