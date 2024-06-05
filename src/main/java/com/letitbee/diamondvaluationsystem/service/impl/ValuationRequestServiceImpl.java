@@ -157,35 +157,33 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequest.getService();
         int period = service.getPeriod();
         int totalHourService = valuationRequest.getDiamondAmount() * period;
-        Date receiptDate = dateRounding(valuationRequest.getReceiptDate());
+        Date receiptDate = valuationRequest.getReceiptDate();
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(receiptDate);
-        int remainHourInDay = 17 - calendar.get(Calendar.HOUR_OF_DAY);
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        int minuteOfDay = calendar.get(Calendar.MINUTE);
+        int secondOfDay = calendar.get(Calendar.SECOND);
+
+        int remainHourInDay = 17 - hourOfDay - ((minuteOfDay > 0 || secondOfDay > 0) ? 1 : 0);
         int remainHourService = totalHourService - remainHourInDay;
+
         if (remainHourService <= 0) {
             calendar.add(Calendar.HOUR_OF_DAY, totalHourService);
             return calendar.getTime();
         }
+
         int count = 0;
-        int hourInLastDay = 0;
-        while(remainHourService - 9 > 0) {
+        while (remainHourService > 9) {
             count++;
             remainHourService -= 9;
-            hourInLastDay = remainHourService;
         }
+        int hourInLastDay = remainHourService;
+
         calendar.add(Calendar.DAY_OF_MONTH, count);
-        calendar.set(Calendar.HOUR_OF_DAY, 8 +  hourInLastDay);
+        calendar.set(Calendar.HOUR_OF_DAY, 8 + hourInLastDay);
+
         return calendar.getTime();
     }
 
-
-    private Date dateRounding(Date date) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(date);
-        calendar.add(Calendar.HOUR_OF_DAY, 1);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.SECOND, 0);
-        return calendar.getTime();
-    }
 
 }
