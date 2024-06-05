@@ -16,7 +16,7 @@ public class ValuationRequestDetailDTO {
     private RequestDetailStatus status;
     private boolean isDiamond;
     private DiamondValuationAssignDTO diamondValuationAssign;
-    private long valuationRequestID;
+    private Long valuationRequestID;
     private double servicePrice;
     private DiamondValuationNoteDTO diamondValuationNote;
     private Set<DiamondValuationAssignDTO> diamondValuationAssigns;

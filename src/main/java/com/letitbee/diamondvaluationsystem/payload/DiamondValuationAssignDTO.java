@@ -12,5 +12,5 @@ public class DiamondValuationAssignDTO {
     private String comment;
     private double valuationPrice;
     private boolean status;
-    private long staffId;
+    private Long staffId;
 }
