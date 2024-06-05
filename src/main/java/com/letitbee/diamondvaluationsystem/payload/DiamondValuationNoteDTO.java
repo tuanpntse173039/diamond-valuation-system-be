@@ -12,7 +12,7 @@ public class DiamondValuationNoteDTO {
     private long id;
     private String certificateId;
     private String proportions;
-    private String clarityCharacteristic;
+    private ClarityCharacteristic clarityCharacteristic;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
     private Color color;

@@ -86,4 +86,13 @@ public class FieldDiamondController {
         return fluorescences;
     }
 
+    @GetMapping("/clarity-characteristics")
+    public Map<String, String> getClarityCharacteristics() {
+        Map<String, String> clarityCharacteristics = new HashMap<>();
+        for (ClarityCharacteristic clarityCharacteristic : ClarityCharacteristic.values()) {
+            clarityCharacteristics.put(clarityCharacteristic.name(), clarityCharacteristic.name());
+        }
+        return clarityCharacteristics;
+    }
+
 }

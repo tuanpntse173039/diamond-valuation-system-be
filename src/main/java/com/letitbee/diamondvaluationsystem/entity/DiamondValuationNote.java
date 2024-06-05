@@ -31,8 +31,8 @@ public class DiamondValuationNote {
     @Column(columnDefinition = "varchar(1000)")
     private String proportions;
 
-    @Column(columnDefinition = "varchar(1000)")
-    private String clarityCharacteristic;
+    @Enumerated(EnumType.STRING)
+    private ClarityCharacteristic clarityCharacteristic;
 
     @Enumerated(EnumType.STRING)
     private DiamondOrigin diamondOrigin;
