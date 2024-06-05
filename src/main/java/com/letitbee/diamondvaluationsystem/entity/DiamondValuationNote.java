@@ -19,7 +19,7 @@ import java.util.Set;
 public class DiamondValuationNote {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(columnDefinition = "varchar(10)")
     private String certificateId;

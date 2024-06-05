@@ -18,7 +18,7 @@ import java.util.Date;
 public class DiamondValuationAssign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "valuation_request_detail_id", nullable = false)

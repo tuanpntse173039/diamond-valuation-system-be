@@ -24,7 +24,7 @@ public class ValuationRequest {
     @GeneratedValue(
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
-    private long id;
+    private Long id;
     @Column(columnDefinition = "datetime", nullable = false)
     private Date creationDate;
     @Column(columnDefinition = "datetime")

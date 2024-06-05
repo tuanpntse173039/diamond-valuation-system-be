@@ -19,7 +19,7 @@ import java.util.Date;
 public class DiamondPriceList {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(columnDefinition = "datetime", nullable = false)
     private Date creationDate;
     @Column(nullable = false)
