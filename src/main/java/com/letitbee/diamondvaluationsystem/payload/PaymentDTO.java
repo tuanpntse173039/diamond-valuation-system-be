@@ -15,5 +15,5 @@ public class PaymentDTO {
     private double amount;
     private String externalTransaction;
     private PaymentMethodDTO paymentMethod;
-    private long valuationRequestID;
+    private Long valuationRequestID;
 }

@@ -26,6 +26,6 @@ public class ValuationRequestDTO {
     private Set<PaymentDTO> payment;
     private Set<ValuationRequestDetailDTO> valuationRequestDetails;
     private ServiceDTO service;
-    private long customerID;
-    private long staffID;
+    private Long customerID;
+    private Long staffID;
 }
