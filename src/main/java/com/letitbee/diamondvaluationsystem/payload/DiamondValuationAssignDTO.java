@@ -6,8 +6,8 @@ import java.util.Date;
 
 @Data
 public class DiamondValuationAssignDTO {
-    private long id;
-    private long valuationRequestDetailId;
+    private Long id;
+    private Long valuationRequestDetailId;
     private Date creationDate;
     private String comment;
     private double valuationPrice;
