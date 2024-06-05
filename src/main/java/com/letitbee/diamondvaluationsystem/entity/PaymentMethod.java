@@ -21,7 +21,7 @@ public class PaymentMethod {
     @GeneratedValue(
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
-    private long id;
+    private Long id;
     @Column(columnDefinition = "varchar(50)",nullable = false)
     private String paymentModeName;
     @OneToMany(mappedBy = "paymentMethod",

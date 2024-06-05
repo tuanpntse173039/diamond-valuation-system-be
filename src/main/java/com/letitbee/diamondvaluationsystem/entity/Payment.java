@@ -22,7 +22,7 @@ public class Payment {
     @GeneratedValue(
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
-    private long id;
+    private Long id;
     @Column(columnDefinition = "datetime",nullable = false)
     private Date paytime;
     @Column(columnDefinition = "money",nullable = false)

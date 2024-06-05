@@ -20,7 +20,7 @@ public class DiamondMarket {
 
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(columnDefinition = "varchar(1000)", nullable = false)
     private String diamondImage;
     @Column(nullable = false)

@@ -20,7 +20,7 @@ public class Post {
     @GeneratedValue(
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
-    private long id;
+    private Long id;
     @Column(columnDefinition = "nvarchar(100)")
     private String title;
     @Column(columnDefinition = "text")
