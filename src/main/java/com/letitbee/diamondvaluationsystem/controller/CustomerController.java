@@ -7,6 +7,7 @@ import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -46,6 +47,7 @@ public class CustomerController {
         return new ResponseEntity<>(customer, HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     @PutMapping("/{id}")
     public ResponseEntity<CustomerDTO> updateCustomerInformation(@RequestBody @Valid CustomerDTO customerDto, @PathVariable("id") long id){
         CustomerDTO customer = customerService.updateCustomerInformation(customerDto, id);

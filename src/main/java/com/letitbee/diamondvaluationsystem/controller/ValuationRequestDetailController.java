@@ -6,6 +6,7 @@ import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,6 +32,7 @@ public class ValuationRequestDetailController {
         return ResponseEntity.ok(valuationRequestDetailService.getValuationRequestDetailById(id));
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<ValuationRequestDetailDTO> updateValuationRequestDetail(
             @PathVariable long id,
