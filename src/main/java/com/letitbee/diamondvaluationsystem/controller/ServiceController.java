@@ -31,13 +31,12 @@ public class ServiceController {
     }
 
     @PostMapping
-    @Valid
-    public ResponseEntity<ServiceDTO> createService(@RequestBody ServiceDTO serviceDto) {
+    public ResponseEntity<ServiceDTO> createService(@RequestBody @Valid ServiceDTO serviceDto) {
         return new ResponseEntity<>(serviceService.createService(serviceDto), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ServiceDTO> updateService(@RequestBody ServiceDTO serviceDto, @PathVariable(name = "id") long id) {
+    public ResponseEntity<ServiceDTO> updateService(@RequestBody @Valid ServiceDTO serviceDto, @PathVariable(name = "id") long id) {
         return new ResponseEntity<>(serviceService.updateService(serviceDto, id), HttpStatus.OK);
     }
 

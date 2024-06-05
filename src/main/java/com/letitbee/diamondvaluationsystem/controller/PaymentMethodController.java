@@ -24,8 +24,7 @@ public class PaymentMethodController {
         return new ResponseEntity<>(methodService.getAllPaymentMethod(), HttpStatus.OK);
     }
     @PostMapping
-    @Valid
-    public ResponseEntity<PaymentMethodDTO> createPaymentMethod(@RequestBody PaymentMethodDTO paymentMethodDTO) {
+    public ResponseEntity<PaymentMethodDTO> createPaymentMethod(@RequestBody @Valid PaymentMethodDTO paymentMethodDTO) {
         return new ResponseEntity<>(methodService.createPaymentMethod(paymentMethodDTO), HttpStatus.CREATED);
     }
 }

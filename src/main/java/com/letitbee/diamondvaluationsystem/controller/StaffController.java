@@ -35,15 +35,13 @@ public class StaffController {
     }
 
     @PostMapping
-    @Valid
-    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody StaffDTO staffDto){
+    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody @Valid StaffDTO staffDto){
         StaffDTO response = staffService.createStaffInformation(staffDto);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @Valid
-    public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody StaffDTO staffDto, @PathVariable("id") long id){
+    public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody @Valid StaffDTO staffDto, @PathVariable("id") long id){
         StaffDTO response = staffService.updateStaffInformation(staffDto, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }

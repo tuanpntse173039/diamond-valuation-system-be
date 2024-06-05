@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.ServicePriceListDTO;
 import com.letitbee.diamondvaluationsystem.service.ServicePriceListService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -29,7 +30,7 @@ public class ServicePriceListController
     }
 
     @PostMapping()
-    public ResponseEntity<ServicePriceListDTO> createServicePriceList(@RequestBody ServicePriceListDTO servicePriceListDto) {
+    public ResponseEntity<ServicePriceListDTO> createServicePriceList(@RequestBody @Valid ServicePriceListDTO servicePriceListDto) {
         return new ResponseEntity<>(servicePriceListService.createServicePriceList(servicePriceListDto), HttpStatus.CREATED);
     }
 

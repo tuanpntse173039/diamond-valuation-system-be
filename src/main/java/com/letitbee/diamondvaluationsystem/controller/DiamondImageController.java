@@ -17,14 +17,13 @@ public class DiamondImageController {
     }
 
     @PostMapping
-    @Valid
-    public ResponseEntity<DiamondImageDTO> createDiamondImage(@RequestBody DiamondImageDTO diamondImageDTO) {
+    public ResponseEntity<DiamondImageDTO> createDiamondImage(@RequestBody @Valid DiamondImageDTO diamondImageDTO) {
         return new ResponseEntity<>(diamondImageService.createDiamondImage(diamondImageDTO), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<DiamondImageDTO> updateDiamondImage(@PathVariable("id") long id,
-                                                              @RequestBody DiamondImageDTO diamondImageDTO) {
+                                                              @RequestBody @Valid DiamondImageDTO diamondImageDTO) {
         return ResponseEntity.ok(diamondImageService.updateDiamondImage(id, diamondImageDTO));
     }
 

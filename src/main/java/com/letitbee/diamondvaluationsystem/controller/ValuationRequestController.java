@@ -42,17 +42,15 @@ public class ValuationRequestController {
     }
 
     @PostMapping
-    @Valid
     public ResponseEntity<ValuationRequestDTO> createValuationRequest(
-            @RequestBody ValuationRequestDTO valuationRequestDT) {
+            @RequestBody @Valid ValuationRequestDTO valuationRequestDT) {
         return new ResponseEntity<>(valuationRequestService.createValuationRequest(valuationRequestDT), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    @Valid
     public ResponseEntity<ValuationRequestDTO> updateValuationRequest(
             @PathVariable("id") long id,
-            @RequestBody ValuationRequestDTO valuationRequestDT) {
+            @RequestBody @Valid ValuationRequestDTO valuationRequestDT) {
         return ResponseEntity.ok(valuationRequestService.updateValuationRequest(id, valuationRequestDT));
     }
 

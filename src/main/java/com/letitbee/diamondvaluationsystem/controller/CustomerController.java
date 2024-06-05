@@ -41,14 +41,13 @@ public class CustomerController {
     }
 
     @PostMapping()
-    @Valid
-    public ResponseEntity<CustomerDTO> createCustomerInformation(@RequestBody CustomerDTO customerDto){
+    public ResponseEntity<CustomerDTO> createCustomerInformation(@RequestBody @Valid CustomerDTO customerDto){
         CustomerDTO customer = customerService.createCustomerInformation(customerDto);
         return new ResponseEntity<>(customer, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerDTO> updateCustomerInformation(@RequestBody CustomerDTO customerDto, @PathVariable("id") long id){
+    public ResponseEntity<CustomerDTO> updateCustomerInformation(@RequestBody @Valid CustomerDTO customerDto, @PathVariable("id") long id){
         CustomerDTO customer = customerService.updateCustomerInformation(customerDto, id);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
