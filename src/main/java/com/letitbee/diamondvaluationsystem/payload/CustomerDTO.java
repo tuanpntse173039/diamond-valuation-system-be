@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Data
 public class CustomerDTO {
-      private long id;
+      private Long id;
       @NotEmpty(message = "First name cannot be empty")
       @Size(min = 2, max = 24, message = "First name must be between 2 and 24 characters")
       private String firstName;
