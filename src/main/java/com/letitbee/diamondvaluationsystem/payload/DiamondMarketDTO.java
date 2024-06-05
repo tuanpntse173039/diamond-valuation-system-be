@@ -7,7 +7,7 @@ import java.util.Set;
 
 @Data
 public class DiamondMarketDTO {
-    private long id;
+    private Long id;
     private String diamondImage;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;

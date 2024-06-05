@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class DiamondImageDTO {
-    private long id;
+    private Long id;
     @NotEmpty(message = "Image cannot be empty")
     private String image;
     private Long diamondValuationNoteID;
