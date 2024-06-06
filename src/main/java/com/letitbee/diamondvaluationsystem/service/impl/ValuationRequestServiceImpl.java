@@ -84,7 +84,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
         valuationRequest.setStatus(RequestStatus.PENDING);
         valuationRequest.setCreationDate(new Date());
-        valuationRequestRepository.save(valuationRequest);
+        valuationRequest = valuationRequestRepository.save(valuationRequest);
         for (int i = 0; i < valuationRequest.getDiamondAmount(); i++) {
             ValuationRequestDetail valuationRequestDetail = new ValuationRequestDetail();
             valuationRequestDetail.setValuationRequest(valuationRequest);
