@@ -48,11 +48,11 @@ public class DiamondPriceList {
     @Enumerated(EnumType.STRING)
     private Fluorescence fluorescence;
     @Column(columnDefinition = "money", nullable = false)
-    private double fairPrice;
+    private Double fairPrice;
     @Column(columnDefinition = "money", nullable = false)
-    private double minPrice;
+    private Double minPrice;
     @Column(columnDefinition = "money", nullable = false)
-    private double maxPrice;
+    private Double maxPrice;
     @Column(columnDefinition = "varchar(20)", nullable = false)
     private String percentChange;
 

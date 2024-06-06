@@ -62,13 +62,13 @@ public class DiamondValuationNote {
     private Fluorescence fluorescence;
 
     @Column(columnDefinition = "money")
-    private double fairPrice;
+    private Double fairPrice;
 
     @Column(columnDefinition = "money")
-    private double minPrice;
+    private Double minPrice;
 
     @Column(columnDefinition = "money")
-    private double maxPrice;
+    private Double maxPrice;
 
     @OneToMany(mappedBy = "diamondValuationNote",
             cascade = CascadeType.ALL,

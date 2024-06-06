@@ -10,7 +10,7 @@ public class DiamondValuationAssignDTO {
     private Long valuationRequestDetailId;
     private Date creationDate;
     private String comment;
-    private double valuationPrice;
+    private Double valuationPrice;
     private boolean status;
     private Long staffId;
 }
