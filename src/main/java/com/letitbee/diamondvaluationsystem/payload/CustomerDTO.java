@@ -26,6 +26,6 @@ public class CustomerDTO {
       @NotEmpty(message = "Identity document cannot be empty")
       @Size(min = 12, max = 12, message = "Invalid identity document")
       private String identityDocument;
-      private Set<ValuationRequestDTO> valuationRequests;
+      private Set<ValuationRequestDTO> valuationRequestSet;
       private AccountResponse account;
 }
