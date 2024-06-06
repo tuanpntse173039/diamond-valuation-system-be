@@ -8,7 +8,7 @@ import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +23,7 @@ public class ValuationRequestController {
         this.valuationRequestService = valuationRequestService;
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF')")
+//    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF')")
     @GetMapping
     public ResponseEntity<Response<ValuationRequestDTO>>
     getAllValuationRequest(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
@@ -38,7 +38,7 @@ public class ValuationRequestController {
         return new ResponseEntity<>(valuationRequestService.getAllValuationRequests(pageNo, pageSize, sortBy, sortDir, startDateParse, endDateParse), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'CUSTOMER')")
+//    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'CUSTOMER')")
     @GetMapping("/{id}")
     public ResponseEntity<ValuationRequestDTO> getValuationRequest(@PathVariable("id") long id) {
         return ResponseEntity.ok(valuationRequestService.getValuationRequestById(id));
@@ -50,7 +50,7 @@ public class ValuationRequestController {
         return new ResponseEntity<>(valuationRequestService.createValuationRequest(valuationRequestDT), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CUSTOMER')")
+//    @PreAuthorize("hasAnyAuthority('MANAGER', 'CUSTOMER')")
     @PutMapping("/{id}")
     public ResponseEntity<ValuationRequestDTO> updateValuationRequest(
             @PathVariable("id") long id,
@@ -58,7 +58,7 @@ public class ValuationRequestController {
         return ResponseEntity.ok(valuationRequestService.updateValuationRequest(id, valuationRequestDT));
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER')")
+//    @PreAuthorize("hasAnyAuthority('MANAGER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ValuationRequestDTO> deleteValuationRequest(
             @PathVariable("id") long id) {
