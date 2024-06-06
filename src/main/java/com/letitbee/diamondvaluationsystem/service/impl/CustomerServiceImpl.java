@@ -129,7 +129,7 @@ public class CustomerServiceImpl implements CustomerService {
             //convert to DTO
             Set<ValuationRequestDTO> valuationRequestDTOList = valuationRequestList.stream()
                     .map(valuationRequest -> (mapper.map(valuationRequest, ValuationRequestDTO.class))).collect(Collectors.toSet());
-            customerDTO.setValuationRequests(valuationRequestDTOList);
+            customerDTO.setValuationRequestSet(valuationRequestDTOList);
         }
         return customerDTO;
     }

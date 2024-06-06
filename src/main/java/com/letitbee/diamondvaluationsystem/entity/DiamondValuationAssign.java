@@ -31,7 +31,7 @@ public class DiamondValuationAssign {
     private String comment;
 
     @Column(columnDefinition = "money")
-    private double valuationPrice;
+    private Double valuationPrice;
 
     @OneToOne(mappedBy = "diamondValuationAssign")
     private ValuationRequestDetail valuationRequestDetailId;
@@ -42,3 +42,4 @@ public class DiamondValuationAssign {
     @JoinColumn(name = "valuation_staff_id", nullable = false)
     private Staff staff;
 }
+
