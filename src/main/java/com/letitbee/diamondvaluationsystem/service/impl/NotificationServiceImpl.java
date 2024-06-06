@@ -36,6 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: ", "id", id + ""));
         notification.setMessage(notificationDTO.getMessage());
+        notification.setIsRead(notificationDTO.getIsRead());
         return mapToDto(notificationRepository.save(notification));
     }
 
