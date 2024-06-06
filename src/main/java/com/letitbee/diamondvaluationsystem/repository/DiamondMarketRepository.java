@@ -13,12 +13,22 @@ public interface DiamondMarketRepository extends JpaRepository<DiamondMarket, Lo
     @Query("SELECT d " +
             "FROM DiamondMarket d " +
             "WHERE d.diamondOrigin = :diamondOrigin " +
-            "AND d.caratWeight between :caratWeight - 0.5 and :caratWeight + 0.5" +
+            "AND d.caratWeight between :caratWeight - 0.15 and :caratWeight + 0.15" +
             "AND d.color = :color " +
-            "AND d.clarity = :clarity ")
+            "AND d.clarity = :clarity " +
+            "AND d.polish = :polish " +
+            "AND d.symmetry = :symmetry " +
+            "AND d.shape = :shape " +
+            "AND d.fluorescence = :fluorescence " +
+            "ORDER BY d.price ASC ")
     List<DiamondMarket> findSelectedFieldsByDiamondProperties(
             @Param("diamondOrigin") DiamondOrigin diamondOrigin,
             @Param("caratWeight") float caratWeight,
             @Param("color") Color color,
-            @Param("clarity") Clarity clarity);
+            @Param("clarity") Clarity clarity,
+            @Param("polish") Polish polish,
+            @Param("symmetry") Symmetry symmetry,
+            @Param("shape") Shape shape,
+            @Param("fluorescence") Fluorescence fluorescence);
+
 }

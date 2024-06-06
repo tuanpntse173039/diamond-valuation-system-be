@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 public class PostDTO {
-    private Long id;
+    private long id;
     private String title;
     private String content;
     private String description;

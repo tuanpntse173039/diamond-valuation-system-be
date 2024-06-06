@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 public class ServicePriceListDTO {
-    private Long id;
+    private long id;
     @Min(value = 4, message = "Size must be greater than or equal to 4")
     private float minSize;
     @Min(value = 4, message = "Max size must be greater than or equal to min size")

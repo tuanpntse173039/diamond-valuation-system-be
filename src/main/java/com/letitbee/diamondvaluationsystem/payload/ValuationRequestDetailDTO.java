@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 public class ValuationRequestDetailDTO {
-    private Long id;
+    private long id;
     private double valuationPrice;
     private boolean isMode;
     private String sealingRecordLink;

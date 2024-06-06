@@ -41,5 +41,10 @@ public class Account {
     @OneToOne(mappedBy = "account")
     private Customer customer;
 
-
+    @OneToMany(
+            mappedBy = "account",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Notification> notifications = new HashSet<>();
 }

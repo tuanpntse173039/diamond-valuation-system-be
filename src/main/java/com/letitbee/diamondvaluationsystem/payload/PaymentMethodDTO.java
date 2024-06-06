@@ -8,7 +8,7 @@ import java.util.Set;
 
 @Data
 public class PaymentMethodDTO {
-    private Long id;
+    private long id;
     @Min(value = 1, message = "Payment method name id must be greater than or equal to 1")
     @NotEmpty(message = "Name cannot be empty")
     private String name;

@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Data
 public class StaffDTO {
-    private Long id;
+    private long id;
     @NotEmpty(message = "First name cannot be empty")
     @Size(min = 2, max = 24, message = "First name must be between 2 and 24 characters")
     private String firstName;
@@ -27,5 +27,5 @@ public class StaffDTO {
     private Set<ValuationRequestDTO> valuationRequestSet;
     private Set<DiamondValuationAssignDTO> diamondValuationAssigns;
     private AccountResponse account;
-    private int countProject = 0;
+//    private int countProject = 0;
 }

@@ -13,8 +13,8 @@ import java.util.Set;
 
 public interface ValuationRequestRepository extends JpaRepository<ValuationRequest, Long> {
     Optional<Set<ValuationRequest>> findAllByCustomer(Customer customer);
+
     Page<ValuationRequest> findByCreationDateBetween(Date startDate, Date endDate, Pageable pageable);
 
     int countValuationRequestsByStaff(Staff staff);
-
 }

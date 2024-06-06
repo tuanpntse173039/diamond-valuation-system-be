@@ -32,6 +32,7 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setCaratWeight(diamondValuationNoteDTO.getCaratWeight());
         diamondValuationNote.setCertificateId(diamondValuationNoteDTO.getCertificateId());
         diamondValuationNote.setClarityCharacteristic(diamondValuationNoteDTO.getClarityCharacteristic());
+        diamondValuationNote.setClarityCharacteristicLink(diamondValuationNoteDTO.getClarityCharacteristicLink());
         diamondValuationNote.setColor(diamondValuationNoteDTO.getColor());
         diamondValuationNote.setCut(diamondValuationNoteDTO.getCut());
         diamondValuationNote.setFluorescence(diamondValuationNoteDTO.getFluorescence());

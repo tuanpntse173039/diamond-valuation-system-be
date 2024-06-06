@@ -24,7 +24,7 @@ public class DiamondMarket {
     @Column(columnDefinition = "varchar(1000)", nullable = false)
     private String diamondImage;
     @Column(nullable = false)
-    private float caratWeight;
+    private Float caratWeight;
     @Enumerated(EnumType.STRING)
     private DiamondOrigin diamondOrigin;
     @Enumerated(EnumType.STRING)
@@ -40,9 +40,9 @@ public class DiamondMarket {
     @Enumerated(EnumType.STRING)
     private Fluorescence fluorescence;
     @Column(nullable = false)
-    private double cutScore;
+    private Double cutScore;
     @Column(columnDefinition = "money", nullable = false)
-    private double price;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)

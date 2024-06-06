@@ -9,10 +9,11 @@ import java.util.Set;
 
 @Data
 public class DiamondValuationNoteDTO {
-    private Long id;
+    private long id;
     private String certificateId;
     private String proportions;
     private String clarityCharacteristic;
+    private String clarityCharacteristicLink;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
     private Color color;

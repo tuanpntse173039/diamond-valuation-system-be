@@ -10,7 +10,7 @@ import java.util.Set;
 
 @Data
 public class ValuationRequestDTO {
-    private Long id;
+    private long id;
     private Date creationDate;
     private Date receiptDate;
     private Date returnDate;

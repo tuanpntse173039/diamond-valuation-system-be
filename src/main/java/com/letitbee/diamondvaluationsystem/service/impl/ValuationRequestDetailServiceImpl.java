@@ -1,12 +1,9 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.*;
-import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
-import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
-import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
-import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService;
@@ -17,8 +14,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class ValuationRequestDetailServiceImpl implements ValuationRequestDetailService {
@@ -29,10 +28,17 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
     private ServicePriceListRepository servicePriceListRepository;
     private DiamondPriceListRepository diamondPriceListRepository;
-
+    private DiamondMarketRepository diamondMarketRepository;
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
 
-    public ValuationRequestDetailServiceImpl(ModelMapper mapper, ValuationRequestDetailRepository valuationRequestDetailRepository, ValuationRequestRepository valuationRequestRepository, DiamondValuationNoteRepository diamondValuationNoteRepository, ServicePriceListRepository servicePriceListRepository, DiamondPriceListRepository diamondPriceListRepository, DiamondValuationAssignRepository diamondValuationAssignRepository) {
+    public ValuationRequestDetailServiceImpl(ModelMapper mapper,
+                                             ValuationRequestDetailRepository valuationRequestDetailRepository,
+                                             ValuationRequestRepository valuationRequestRepository,
+                                             DiamondValuationNoteRepository diamondValuationNoteRepository,
+                                             ServicePriceListRepository servicePriceListRepository,
+                                             DiamondPriceListRepository diamondPriceListRepository,
+                                             DiamondValuationAssignRepository diamondValuationAssignRepository,
+                                             DiamondMarketRepository diamondMarketRepository) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.valuationRequestRepository = valuationRequestRepository;
@@ -40,6 +46,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         this.servicePriceListRepository = servicePriceListRepository;
         this.diamondPriceListRepository = diamondPriceListRepository;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
+        this.diamondMarketRepository = diamondMarketRepository;
     }
 
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
@@ -181,22 +188,26 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
     private void updateDiamondValuationNote(ValuationRequestDetail valuationRequestDetail) {
         DiamondValuationNote diamondValuationNoteDTO = valuationRequestDetail.getDiamondValuationNote();
-        List<DiamondPriceList> diamondPriceList = diamondPriceListRepository.findSelectedFieldsByDiamondProperties(
+        List<DiamondMarket> diamondMarkets = diamondMarketRepository.findSelectedFieldsByDiamondProperties(
                 diamondValuationNoteDTO.getDiamondOrigin(),
                 diamondValuationNoteDTO.getCaratWeight(),
                 diamondValuationNoteDTO.getColor(),
                 diamondValuationNoteDTO.getClarity(),
-                diamondValuationNoteDTO.getCut(),
-                diamondValuationNoteDTO.getPolish(),
-                diamondValuationNoteDTO.getSymmetry(),
-                diamondValuationNoteDTO.getShape(),
-                diamondValuationNoteDTO.getFluorescence());
-        if (diamondPriceList != null && !diamondPriceList.isEmpty()) {
+                Polish.EXCELLENT,
+                Symmetry.EXCELLENT,
+                Shape.ROUND,
+                Fluorescence.NONE);
+
+        if (diamondMarkets != null && !diamondMarkets.isEmpty()) {
             //get current diamond price
-            DiamondPriceList diamondPrice = diamondPriceList.stream().findFirst().get();
-            diamondValuationNoteDTO.setFairPrice(diamondPrice.getFairPrice());
-            diamondValuationNoteDTO.setMaxPrice(diamondPrice.getMaxPrice());
-            diamondValuationNoteDTO.setMinPrice(diamondPrice.getMinPrice());
+            double fairPrice = 0;
+            for (DiamondMarket diamondMarket : diamondMarkets) {
+                fairPrice += diamondMarket.getPrice();
+            }
+            fairPrice = fairPrice / diamondMarkets.size();
+            diamondValuationNoteDTO.setFairPrice(fairPrice);
+            diamondValuationNoteDTO.setMaxPrice(diamondMarkets.get(diamondMarkets.size() - 1).getPrice());
+            diamondValuationNoteDTO.setMinPrice(diamondMarkets.stream().findFirst().get().getPrice());
         }
         diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
     }

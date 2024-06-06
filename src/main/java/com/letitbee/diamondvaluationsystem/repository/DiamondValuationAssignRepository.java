@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface DiamondValuationAssignRepository extends JpaRepository<DiamondValuationAssign, Long> {
     int countDiamondValuationAssignByStaff(Staff staff);
+
 }
