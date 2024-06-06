@@ -25,13 +25,13 @@ public class ValuationRequestDetail {
     private boolean isMode;
 
     @Column(columnDefinition = "money")
-    private double valuationPrice;
+    private Double valuationPrice;
 
     @Column(columnDefinition = "varchar(1000)")
     private String sealingRecordLink;
 
     @Column(columnDefinition = "float")
-    private float size;
+    private Float size;
 
     @Enumerated(EnumType.STRING)
     private RequestDetailStatus status;

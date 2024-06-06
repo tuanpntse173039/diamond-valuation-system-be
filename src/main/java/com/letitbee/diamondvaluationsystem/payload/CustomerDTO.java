@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Data
 public class CustomerDTO {
-      private long id;
+      private Long id;
       @NotEmpty(message = "First name cannot be empty")
       @Size(min = 2, max = 24, message = "First name must be between 2 and 24 characters")
       private String firstName;
@@ -26,6 +26,6 @@ public class CustomerDTO {
       @NotEmpty(message = "Identity document cannot be empty")
       @Size(min = 12, max = 12, message = "Invalid identity document")
       private String identityDocument;
-      private Set<ValuationRequestDTO> valuationRequests;
+      private Set<ValuationRequestDTO> valuationRequestSet;
       private AccountResponse account;
 }
