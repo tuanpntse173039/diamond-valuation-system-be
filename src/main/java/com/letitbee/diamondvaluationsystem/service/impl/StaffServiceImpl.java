@@ -72,6 +72,13 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    public StaffDTO getStaffById(Long id) {
+        Staff staff = staffRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "Id", id + ""));
+        return mapToDto(staff);
+    }
+
+    @Override
     public List<StaffDTO> getStaffByName(String name) {
         String[] keywords = name.trim().split("\\s+");
 
@@ -128,13 +135,13 @@ public class StaffServiceImpl implements StaffService {
     //convert Entity to DTO
     private StaffDTO mapToDto(Staff staff){
         StaffDTO staffDto = mapper.map(staff, StaffDTO.class);
-        if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.CONSULTANT_STAFF.toString())){
-            int count = valuationRequestRepository.countValuationRequestsByStaff(staff);
-            staffDto.setCountProject(count);
-        } else if (staff.getAccount().getRole().toString().equalsIgnoreCase(Role.VALUATION_STAFF.toString())) {
-            int count = diamondValuationAssignRepository.countDiamondValuationAssignByStaff(staff);
-            staffDto.setCountProject(count);
-        }
+//        if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.CONSULTANT_STAFF.toString())){
+//            int count = valuationRequestRepository.countValuationRequestsByStaff(staff);
+//            staffDto.setCountProject(count);
+//        } else if (staff.getAccount().getRole().toString().equalsIgnoreCase(Role.VALUATION_STAFF.toString())) {
+//            int count = diamondValuationAssignRepository.countDiamondValuationAssignByStaff(staff);
+//            staffDto.setCountProject(count);
+//        }
         return staffDto;
     }
     //convert DTO to Entity

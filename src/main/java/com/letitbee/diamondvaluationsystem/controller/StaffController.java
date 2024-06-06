@@ -56,4 +56,9 @@ public class StaffController {
         staffService.deleteStaffById(id);
         return new ResponseEntity<>("Staff deleted successfully", HttpStatus.OK);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<StaffDTO> getStaffById(@PathVariable("id") Long id) {
+        return ResponseEntity.ok(staffService.getStaffById(id));
+    }
 }
