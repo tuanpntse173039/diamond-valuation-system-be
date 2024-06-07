@@ -31,6 +31,7 @@ public class DiamondMarketController {
             @RequestParam(value = "caratWeight") float caratWeight,
             @RequestParam(value = "color") Color color,
             @RequestParam(value = "clarity") Clarity clarity,
+            @RequestParam(value = "cut") Cut cut,
             @RequestParam(value = "polish") Polish polish,
             @RequestParam(value = "symmetry") Symmetry symmetry,
             @RequestParam(value = "shape") Shape shape,
@@ -41,6 +42,31 @@ public class DiamondMarketController {
                 caratWeight,
                 color,
                 clarity,
+                cut,
+                polish,
+                symmetry,
+                shape,
+                fluorescence), HttpStatus.OK);
+    }
+
+    @GetMapping("/price-list")
+    public ResponseEntity<DiamondPriceListDTO> createDiamondPriceList(
+            @RequestParam(value = "diamondOrigin") DiamondOrigin diamondOrigin,
+            @RequestParam(value = "caratWeight") float caratWeight,
+            @RequestParam(value = "color") Color color,
+            @RequestParam(value = "clarity") Clarity clarity,
+            @RequestParam(value = "cut") Cut cut,
+            @RequestParam(value = "polish") Polish polish,
+            @RequestParam(value = "symmetry") Symmetry symmetry,
+            @RequestParam(value = "shape") Shape shape,
+            @RequestParam(value = "fluorescence") Fluorescence fluorescence
+    ){
+        return new ResponseEntity<>(diamondMarketService.createDiamondPriceList(
+                diamondOrigin,
+                caratWeight,
+                color,
+                clarity,
+                cut,
                 polish,
                 symmetry,
                 shape,

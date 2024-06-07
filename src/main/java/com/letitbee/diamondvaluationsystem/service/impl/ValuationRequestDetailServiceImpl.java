@@ -27,7 +27,6 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private ValuationRequestRepository valuationRequestRepository;
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
     private ServicePriceListRepository servicePriceListRepository;
-    private DiamondPriceListRepository diamondPriceListRepository;
     private DiamondMarketRepository diamondMarketRepository;
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
 
@@ -36,7 +35,6 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                              ValuationRequestRepository valuationRequestRepository,
                                              DiamondValuationNoteRepository diamondValuationNoteRepository,
                                              ServicePriceListRepository servicePriceListRepository,
-                                             DiamondPriceListRepository diamondPriceListRepository,
                                              DiamondValuationAssignRepository diamondValuationAssignRepository,
                                              DiamondMarketRepository diamondMarketRepository) {
         this.mapper = mapper;
@@ -44,7 +42,6 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         this.valuationRequestRepository = valuationRequestRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.servicePriceListRepository = servicePriceListRepository;
-        this.diamondPriceListRepository = diamondPriceListRepository;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
         this.diamondMarketRepository = diamondMarketRepository;
     }
@@ -196,6 +193,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 diamondValuationNoteDTO.getCaratWeight(),
                 diamondValuationNoteDTO.getColor(),
                 diamondValuationNoteDTO.getClarity(),
+                diamondValuationNoteDTO.getCut(),
                 diamondValuationNoteDTO.getPolish(),
                 diamondValuationNoteDTO.getSymmetry(),
                 diamondValuationNoteDTO.getShape(),

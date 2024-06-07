@@ -33,6 +33,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                                                       float caratWeight,
                                                       Color color,
                                                       Clarity clarity,
+                                                      Cut cut,
                                                       Polish polish,
                                                       Symmetry symmetry,
                                                       Shape shape,
@@ -42,6 +43,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                 caratWeight,
                 color,
                 clarity,
+                cut,
                 polish,
                 symmetry,
                 shape,
@@ -50,6 +52,51 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
             return diamondMarket.stream().map(DiamondMarket -> mapToDTO(DiamondMarket)).toList();
          }
         else throw new APIException(HttpStatus.NOT_FOUND,"No diamond market data found");
+    }
+
+    @Override
+    public DiamondPriceListDTO createDiamondPriceList(
+            DiamondOrigin diamondOrigin,
+            float caratWeight,
+            Color color,
+            Clarity clarity,
+            Cut cut,
+            Polish polish,
+            Symmetry symmetry,
+            Shape shape,
+            Fluorescence fluorescence) {
+        List<DiamondMarket> diamondMarket = diamondMarketRepository.findSelectedFieldsByDiamondProperties(
+                diamondOrigin,
+                caratWeight,
+                color,
+                clarity,
+                cut,
+                polish,
+                symmetry,
+                shape,
+                fluorescence);
+        if (diamondMarket != null && !diamondMarket.isEmpty()) {
+            DiamondPriceListDTO diamondPriceList = new DiamondPriceListDTO();
+            diamondPriceList.setDiamondOrigin(diamondOrigin);
+            diamondPriceList.setCaratWeight(caratWeight);
+            diamondPriceList.setColor(color);
+            diamondPriceList.setClarity(clarity);
+            diamondPriceList.setCut(cut);
+            diamondPriceList.setPolish(polish);
+            diamondPriceList.setSymmetry(symmetry);
+            diamondPriceList.setShape(shape);
+            diamondPriceList.setFluorescence(fluorescence);
+            diamondPriceList.setMinPrice(diamondMarket.stream().findFirst().get().getPrice());
+            diamondPriceList.setMaxPrice(diamondMarket.get(diamondMarket.size()-1).getPrice());
+            double fairPrice = 0;
+            for (DiamondMarket diamondMarkets : diamondMarket) {
+                fairPrice += diamondMarkets.getPrice();
+            }
+            fairPrice = fairPrice / diamondMarket.size();
+            diamondPriceList.setFairPrice(fairPrice);
+            return diamondPriceList;
+        }
+        else throw new APIException(HttpStatus.NOT_FOUND,"No diamond price list data found");
     }
 
     private DiamondMarketDTO mapToDTO(DiamondMarket diamondMarket) {

@@ -14,6 +14,19 @@ public interface DiamondMarketService {
             float caratWeight,
             Color color,
             Clarity clarity,
+            Cut cut,
+            Polish polish,
+            Symmetry symmetry,
+            Shape shape,
+            Fluorescence fluorescence
+    );
+
+    DiamondPriceListDTO createDiamondPriceList(
+            DiamondOrigin diamondOrigin,
+            float caratWeight,
+            Color color,
+            Clarity clarity,
+            Cut cut,
             Polish polish,
             Symmetry symmetry,
             Shape shape,
