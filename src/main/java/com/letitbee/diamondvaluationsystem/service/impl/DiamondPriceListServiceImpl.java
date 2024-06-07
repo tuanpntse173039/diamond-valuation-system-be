@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -33,6 +34,7 @@ public class DiamondPriceListServiceImpl implements DiamondPriceListService {
 
     @Override
     public DiamondPriceListDTO createDiamondPriceList(DiamondPriceListDTO diamondPriceListDTO) {
+        diamondPriceListDTO.setCreationDate(new Date());
         DiamondPriceList diamondPriceList = mapToEntity(diamondPriceListDTO);
         return mapToDto(diamondPriceListRepository.save(diamondPriceList));
     }
