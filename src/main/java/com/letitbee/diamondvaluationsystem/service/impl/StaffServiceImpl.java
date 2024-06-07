@@ -139,6 +139,15 @@ public class StaffServiceImpl implements StaffService {
         staffDto.setValuationRequestIDSet(valuationRequestList);
         Set<Long> diamondValuationAssignList = diamondValuationAssignRepository.findAllByStaff(staff);
         staffDto.setDiamondValuationAssignIDSet(diamondValuationAssignList);
+
+        int countProject = 0;
+        if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.CONSULTANT_STAFF.toString())) {
+            countProject = valuationRequestRepository.countValuationRequestsByStaff(staff);
+        } else if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.VALUATION_STAFF.toString())) {
+            countProject = diamondValuationAssignRepository.countDiamondValuationAssignByStaff(staff);
+        }
+        staffDto.setCountProject(countProject);
+
         return staffDto;
     }
     //convert DTO to Entity
