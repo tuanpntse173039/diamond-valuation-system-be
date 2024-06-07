@@ -10,7 +10,7 @@ import java.util.Date;
 public class PaymentDTO {
     private long id;
     private Date paytime;
-    @NotEmpty(message = "Amount cannot be empty")
+//    @NotEmpty(message = "Amount cannot be empty")
     @Min(value = 0, message = "Amount must be greater than or equal to 0")
     private double amount;
     private String externalTransaction;
