@@ -21,5 +21,6 @@ public class DiamondMarketDTO {
     private Shape shape;
     private Fluorescence fluorescence;
     private double cutScore;
+    private double price;
     private Long supplierId;
 }
