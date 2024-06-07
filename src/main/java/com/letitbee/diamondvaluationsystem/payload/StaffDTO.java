@@ -24,8 +24,8 @@ public class StaffDTO {
     @Min(value = 0, message = "Experience must be greater than or equal to 0")
     private int experience;
     private String certificateLink;
-    private Set<ValuationRequestDTO> valuationRequestSet;
-    private Set<DiamondValuationAssignDTO> diamondValuationAssigns;
+    private Set<Long> valuationRequestIDSet;
+    private Set<Long> diamondValuationAssignIDSet;
     private AccountResponse account;
-//    private int countProject = 0;
+    private int countProject = 0;
 }

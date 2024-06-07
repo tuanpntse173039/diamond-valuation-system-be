@@ -33,7 +33,11 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                 diamondPriceListDTO.getDiamondOrigin(),
                 diamondPriceListDTO.getCaratWeight(),
                 diamondPriceListDTO.getColor(),
-                diamondPriceListDTO.getClarity());
+                diamondPriceListDTO.getClarity(),
+                diamondPriceListDTO.getPolish(),
+                diamondPriceListDTO.getSymmetry(),
+                diamondPriceListDTO.getShape(),
+                diamondPriceListDTO.getFluorescence());
          if (diamondMarket != null && !diamondMarket.isEmpty()) {
             return diamondMarket.stream().map(DiamondMarket -> mapToDTO(DiamondMarket)).toList();
          }
