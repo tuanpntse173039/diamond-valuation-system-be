@@ -58,7 +58,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
                 .findByCertificateId(certificateId)
                 .orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Note", "certificateId", certificateId));
         String[] items = diamondValuationNote.getClarityCharacteristic().split(",");
-        // Chuyển mảng thành ArrayList
         ArrayList<String> list = new ArrayList<>(Arrays.asList(items));
         return mapToDTO(diamondValuationNote, list);
     }
