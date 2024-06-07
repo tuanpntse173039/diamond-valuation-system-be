@@ -196,10 +196,10 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 diamondValuationNoteDTO.getCaratWeight(),
                 diamondValuationNoteDTO.getColor(),
                 diamondValuationNoteDTO.getClarity(),
-                Polish.EXCELLENT,
-                Symmetry.EXCELLENT,
-                Shape.ROUND,
-                Fluorescence.NONE);
+                diamondValuationNoteDTO.getPolish(),
+                diamondValuationNoteDTO.getSymmetry(),
+                diamondValuationNoteDTO.getShape(),
+                diamondValuationNoteDTO.getFluorescence());
 
         if (diamondMarkets != null && !diamondMarkets.isEmpty()) {
             //get current diamond price
