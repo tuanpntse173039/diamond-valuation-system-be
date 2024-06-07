@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondMarket;
+import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.payload.DiamondMarketDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
 import com.letitbee.diamondvaluationsystem.service.DiamondMarketService;
@@ -24,8 +25,25 @@ public class DiamondMarketController {
         return new ResponseEntity<>(diamondMarketService.createDiamondMarket(diamondMarketDTO), HttpStatus.CREATED);
     }
 
-    @GetMapping("/field")
-    public ResponseEntity<List<DiamondMarketDTO>> getAllDiamondMarket(@RequestBody DiamondPriceListDTO diamondPriceListDTO){
-        return new ResponseEntity<>(diamondMarketService.getAllDiamondMarket(diamondPriceListDTO), HttpStatus.OK);
+    @GetMapping("/search")
+    public ResponseEntity<List<DiamondMarketDTO>> getAllDiamondMarket(
+            @RequestParam(value = "diamondOrigin") DiamondOrigin diamondOrigin,
+            @RequestParam(value = "caratWeight") float caratWeight,
+            @RequestParam(value = "color") Color color,
+            @RequestParam(value = "clarity") Clarity clarity,
+            @RequestParam(value = "polish") Polish polish,
+            @RequestParam(value = "symmetry") Symmetry symmetry,
+            @RequestParam(value = "shape") Shape shape,
+            @RequestParam(value = "fluorescence") Fluorescence fluorescence
+    ){
+        return new ResponseEntity<>(diamondMarketService.getAllDiamondMarket(
+                diamondOrigin,
+                caratWeight,
+                color,
+                clarity,
+                polish,
+                symmetry,
+                shape,
+                fluorescence), HttpStatus.OK);
     }
 }

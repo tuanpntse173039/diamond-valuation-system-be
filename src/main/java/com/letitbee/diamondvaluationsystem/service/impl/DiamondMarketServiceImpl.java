@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondMarket;
+import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondMarketDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
@@ -28,16 +29,23 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
     }
 
     @Override
-    public List<DiamondMarketDTO> getAllDiamondMarket(DiamondPriceListDTO diamondPriceListDTO) {
+    public List<DiamondMarketDTO> getAllDiamondMarket(DiamondOrigin diamondOrigin,
+                                                      float caratWeight,
+                                                      Color color,
+                                                      Clarity clarity,
+                                                      Polish polish,
+                                                      Symmetry symmetry,
+                                                      Shape shape,
+                                                      Fluorescence fluorescence) {
         List<DiamondMarket> diamondMarket = diamondMarketRepository.findSelectedFieldsByDiamondProperties(
-                diamondPriceListDTO.getDiamondOrigin(),
-                diamondPriceListDTO.getCaratWeight(),
-                diamondPriceListDTO.getColor(),
-                diamondPriceListDTO.getClarity(),
-                diamondPriceListDTO.getPolish(),
-                diamondPriceListDTO.getSymmetry(),
-                diamondPriceListDTO.getShape(),
-                diamondPriceListDTO.getFluorescence());
+                diamondOrigin,
+                caratWeight,
+                color,
+                clarity,
+                polish,
+                symmetry,
+                shape,
+                fluorescence);
          if (diamondMarket != null && !diamondMarket.isEmpty()) {
             return diamondMarket.stream().map(DiamondMarket -> mapToDTO(DiamondMarket)).toList();
          }
