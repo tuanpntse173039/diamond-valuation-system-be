@@ -5,12 +5,14 @@ import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import lombok.Data;
 
+import java.util.Date;
 import java.util.Set;
 
 @Data
 public class DiamondValuationNoteDTO {
     private long id;
     private String certificateId;
+    private Date certificateDate;
     private String proportions;
     private String clarityCharacteristic;
     private String clarityCharacteristicLink;
