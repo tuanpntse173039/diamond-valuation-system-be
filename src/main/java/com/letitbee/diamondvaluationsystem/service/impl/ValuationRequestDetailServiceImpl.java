@@ -102,8 +102,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
 
 
-        //create diamond note when know diamond is real
-        createDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
+        //delete diamond note when know diamond is fake
+        deleteDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
         valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
 
         //update Service Price
@@ -128,7 +128,11 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         }
         // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
-        //if all detail is approve or cancel
+                                                                    //if all detail is approve or cancel
+         valuationRequestDetail = valuationRequestDetailRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
+
         return mapToDTO(valuationRequestDetail);
     }
 
@@ -162,12 +166,11 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
     }
 
-    private void createDiamondValuationNote(ValuationRequestDetailDTO valuationRequestDetailDTO
+    private void deleteDiamondValuationNote(ValuationRequestDetailDTO valuationRequestDetailDTO
             , ValuationRequestDetail valuationRequestDetail) {
-        if (!valuationRequestDetail.isDiamond() && valuationRequestDetailDTO.isDiamond()) {
-            DiamondValuationNote diamondValuationNote = new DiamondValuationNote();
-            diamondValuationNote.setValuationRequestDetail(valuationRequestDetail);
-            diamondValuationNoteRepository.save(diamondValuationNote);
+        if (valuationRequestDetail.isDiamond() && !valuationRequestDetailDTO.isDiamond()) {
+            DiamondValuationNote diamondValuationNote = valuationRequestDetail.getDiamondValuationNote();
+            diamondValuationNoteRepository.delete(diamondValuationNote);
         }
     }
 

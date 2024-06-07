@@ -30,6 +30,10 @@ public class DiamondValuationAssign {
     @Column(columnDefinition = "text")
     private String comment;
 
+    @Column(columnDefinition = "text")
+    private String commentDetail;
+
+
     @Column(columnDefinition = "money")
     private Double valuationPrice;
 

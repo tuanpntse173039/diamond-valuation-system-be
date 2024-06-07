@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -26,6 +27,6 @@ public class CustomerDTO {
       @NotEmpty(message = "Identity document cannot be empty")
       @Size(min = 12, max = 12, message = "Invalid identity document")
       private String identityDocument;
-      private Set<ValuationRequestDTO> valuationRequestSet;
+      private Set<Long> valuationRequestIDSet = new HashSet<>();
       private AccountResponse account;
 }

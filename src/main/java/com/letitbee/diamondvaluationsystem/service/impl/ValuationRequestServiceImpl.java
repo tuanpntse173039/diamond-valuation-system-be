@@ -1,15 +1,13 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
-import com.letitbee.diamondvaluationsystem.entity.Customer;
-import com.letitbee.diamondvaluationsystem.entity.Staff;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
+import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.modelmapper.ModelMapper;
@@ -31,18 +29,20 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestRepository valuationRequestRepository;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private StaffRepository staffRepository;
-    private ServiceRepository serviceRepository;
+
+    private DiamondValuationNoteRepository diamondValuationNoteRepository;
+
     private ModelMapper mapper;
 
     public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository,
                                        ValuationRequestDetailRepository valuationRequestDetailRepository,
                                        StaffRepository staffRepository,
-                                       ServiceRepository serviceRepository,
+                                       DiamondValuationNoteRepository diamondValuationNoteRepository,
                                        ModelMapper mapper) {
         this.valuationRequestRepository = valuationRequestRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
-        this.serviceRepository = serviceRepository;
+        this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.mapper = mapper;
     }
 
@@ -89,7 +89,12 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
             ValuationRequestDetail valuationRequestDetail = new ValuationRequestDetail();
             valuationRequestDetail.setValuationRequest(valuationRequest);
             valuationRequestDetail.setStatus(RequestDetailStatus.PENDING);
-            valuationRequestDetailRepository.save(valuationRequestDetail);
+            valuationRequestDetail.setDiamond(true);
+            valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
+
+            DiamondValuationNote diamondValuationNote = new DiamondValuationNote();
+            diamondValuationNote.setValuationRequestDetail(valuationRequestDetail);
+            diamondValuationNoteRepository.save(diamondValuationNote);
         }
         return mapToDTO(valuationRequest);
     }
