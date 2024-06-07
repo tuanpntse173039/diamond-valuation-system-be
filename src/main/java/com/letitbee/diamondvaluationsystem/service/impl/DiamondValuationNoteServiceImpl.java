@@ -10,7 +10,10 @@ import com.letitbee.diamondvaluationsystem.service.DiamondValuationNoteService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Service
 public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteService {
@@ -34,7 +37,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setCaratWeight(diamondValuationNoteDTO.getCaratWeight());
         diamondValuationNote.setCertificateId(diamondValuationNoteDTO.getCertificateId());
         diamondValuationNote.setCertificateDate(new Date());
-        diamondValuationNote.setClarityCharacteristic(diamondValuationNoteDTO.getClarityCharacteristic());
         diamondValuationNote.setClarityCharacteristicLink(diamondValuationNoteDTO.getClarityCharacteristicLink());
         diamondValuationNote.setColor(diamondValuationNoteDTO.getColor());
         diamondValuationNote.setCut(diamondValuationNoteDTO.getCut());
@@ -43,9 +45,11 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setProportions(diamondValuationNoteDTO.getProportions());
         diamondValuationNote.setShape(diamondValuationNoteDTO.getShape());
         diamondValuationNote.setSymmetry(diamondValuationNoteDTO.getSymmetry());
-
+        diamondValuationNote.setClarityCharacteristic(
+                diamondValuationNoteDTO.getClarityCharacteristic()
+                        .stream().collect(Collectors.joining(",")));
         diamondValuationNote = diamondValuationNoteRepository.save(diamondValuationNote);
-        return mapToDTO(diamondValuationNote);
+        return mapToDTO(diamondValuationNote, diamondValuationNoteDTO.getClarityCharacteristic());
     }
 
     @Override
@@ -53,15 +57,20 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
                 .findByCertificateId(certificateId)
                 .orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Note", "certificateId", certificateId));
-        return mapToDTO(diamondValuationNote);
+        String[] items = diamondValuationNote.getClarityCharacteristic().split(",");
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(items));
+        return mapToDTO(diamondValuationNote, list);
     }
 
     private DiamondValuationNote mapToEntity(DiamondValuationNoteDTO valuationNoteDTO) {
         return mapper.map(valuationNoteDTO, DiamondValuationNote.class);
     }
 
-    private DiamondValuationNoteDTO mapToDTO(DiamondValuationNote valuationNote) {
-        return mapper.map(valuationNote, DiamondValuationNoteDTO.class);
+    private DiamondValuationNoteDTO mapToDTO(DiamondValuationNote valuationNote
+                                               , ArrayList<String> listClarityCharacteristic) {
+        DiamondValuationNoteDTO result =  mapper.map(valuationNote, DiamondValuationNoteDTO.class);
+        result.setClarityCharacteristic(listClarityCharacteristic);
+        return result;
     }
 
 }

@@ -25,7 +25,6 @@ public class DiamondValuationNote {
     @Column(columnDefinition = "varchar(10)")
     private String certificateId;
 
-
     @Column(columnDefinition = "datetime")
     private Date certificateDate;
 
