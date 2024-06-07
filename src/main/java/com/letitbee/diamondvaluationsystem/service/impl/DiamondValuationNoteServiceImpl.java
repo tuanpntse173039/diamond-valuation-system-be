@@ -10,6 +10,8 @@ import com.letitbee.diamondvaluationsystem.service.DiamondValuationNoteService;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
 public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteService {
 
@@ -31,6 +33,7 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setClarity(diamondValuationNoteDTO.getClarity());
         diamondValuationNote.setCaratWeight(diamondValuationNoteDTO.getCaratWeight());
         diamondValuationNote.setCertificateId(diamondValuationNoteDTO.getCertificateId());
+        diamondValuationNote.setCertificateDate(new Date());
         diamondValuationNote.setClarityCharacteristic(diamondValuationNoteDTO.getClarityCharacteristic());
         diamondValuationNote.setClarityCharacteristicLink(diamondValuationNoteDTO.getClarityCharacteristicLink());
         diamondValuationNote.setColor(diamondValuationNoteDTO.getColor());

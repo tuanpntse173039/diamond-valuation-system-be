@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,7 +27,7 @@ public class DiamondValuationNote {
 
 
     @Column(columnDefinition = "datetime")
-    private String certificateDate;
+    private Date certificateDate;
 
     @Column(columnDefinition = "varchar(1000)")
     private String proportions;
