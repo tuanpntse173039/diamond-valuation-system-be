@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.stream.Collectors;
 
 @Service
 public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteService {
@@ -34,7 +35,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setCaratWeight(diamondValuationNoteDTO.getCaratWeight());
         diamondValuationNote.setCertificateId(diamondValuationNoteDTO.getCertificateId());
         diamondValuationNote.setCertificateDate(new Date());
-        diamondValuationNote.setClarityCharacteristic(diamondValuationNoteDTO.getClarityCharacteristic());
         diamondValuationNote.setClarityCharacteristicLink(diamondValuationNoteDTO.getClarityCharacteristicLink());
         diamondValuationNote.setColor(diamondValuationNoteDTO.getColor());
         diamondValuationNote.setCut(diamondValuationNoteDTO.getCut());
@@ -43,9 +43,11 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setProportions(diamondValuationNoteDTO.getProportions());
         diamondValuationNote.setShape(diamondValuationNoteDTO.getShape());
         diamondValuationNote.setSymmetry(diamondValuationNoteDTO.getSymmetry());
-
+        diamondValuationNote.setClarityCharacteristic(
+                diamondValuationNoteDTO.getClarityCharacteristic()
+                        .stream().collect(Collectors.joining(",")));
         diamondValuationNote = diamondValuationNoteRepository.save(diamondValuationNote);
-        return mapToDTO(diamondValuationNote);
+        return diamondValuationNoteDTO;
     }
 
     @Override

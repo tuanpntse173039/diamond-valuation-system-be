@@ -5,6 +5,7 @@ import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ public class DiamondValuationNoteDTO {
     private String certificateId;
     private Date certificateDate;
     private String proportions;
-    private String clarityCharacteristic;
+    private ArrayList<String> clarityCharacteristic;
     private String clarityCharacteristicLink;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
