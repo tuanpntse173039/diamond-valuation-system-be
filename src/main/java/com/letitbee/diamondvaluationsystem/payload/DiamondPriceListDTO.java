@@ -3,10 +3,12 @@ package com.letitbee.diamondvaluationsystem.payload;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 public class DiamondPriceListDTO {
     private Long id;
-    private String creationDate;
+    private Date creationDate;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
     private Color color;
