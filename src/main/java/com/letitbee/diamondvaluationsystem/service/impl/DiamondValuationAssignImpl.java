@@ -77,6 +77,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         if (diamondValuationAssign.isStatus()) {
             diamondValuationAssign.setCreationDate((new Date()));
         } // update date when status is true
+        diamondValuationAssign.setCommentDetail(diamondValuationAssignDTO.getCommentDetail());
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
                 .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + ""));
