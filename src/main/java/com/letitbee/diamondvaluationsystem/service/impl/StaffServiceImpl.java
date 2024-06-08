@@ -141,12 +141,16 @@ public class StaffServiceImpl implements StaffService {
         staffDto.setDiamondValuationAssignIDSet(diamondValuationAssignList);
 
         int countProject = 0;
+        int countCurrentProject = 0;
         if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.CONSULTANT_STAFF.toString())) {
             countProject = valuationRequestRepository.countValuationRequestsByStaff(staff);
+            countCurrentProject = valuationRequestRepository.countValuationRequestsIsProcessedByStaff(staff);
         } else if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.VALUATION_STAFF.toString())) {
             countProject = diamondValuationAssignRepository.countDiamondValuationAssignByStaff(staff);
+            countCurrentProject = diamondValuationAssignRepository.countDiamondValuationAssignIsProcessedByStaff(staff);
         }
         staffDto.setCountProject(countProject);
+        staffDto.setCurrentTotalProject(countCurrentProject);
 
         return staffDto;
     }

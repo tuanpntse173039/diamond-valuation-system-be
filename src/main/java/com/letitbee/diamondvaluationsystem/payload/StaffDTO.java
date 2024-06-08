@@ -28,4 +28,5 @@ public class StaffDTO {
     private Set<Long> diamondValuationAssignIDSet;
     private AccountResponse account;
     private int countProject = 0;
+    private int currentTotalProject;
 }
