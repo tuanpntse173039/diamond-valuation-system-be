@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
+import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.*;
@@ -29,6 +30,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private ServicePriceListRepository servicePriceListRepository;
     private DiamondMarketRepository diamondMarketRepository;
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
+    private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
 
     public ValuationRequestDetailServiceImpl(ModelMapper mapper,
                                              ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -36,7 +38,9 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                              DiamondValuationNoteRepository diamondValuationNoteRepository,
                                              ServicePriceListRepository servicePriceListRepository,
                                              DiamondValuationAssignRepository diamondValuationAssignRepository,
-                                             DiamondMarketRepository diamondMarketRepository) {
+                                             DiamondMarketRepository diamondMarketRepository,
+                                                DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl
+    ) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.valuationRequestRepository = valuationRequestRepository;
@@ -44,6 +48,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         this.servicePriceListRepository = servicePriceListRepository;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
         this.diamondMarketRepository = diamondMarketRepository;
+        this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
     }
 
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
@@ -84,7 +89,12 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     public ValuationRequestDetailDTO getValuationRequestDetailById(Long id) {
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
-        return mapToDTO(valuationRequestDetail);
+        DiamondValuationNoteDTO diamondValuationNoteDTO =
+                diamondValuationNoteServiceImpl.getAllDiamondValuationNoteByCertificateId(
+                        valuationRequestDetail.getDiamondValuationNote().getCertificateId());
+        ValuationRequestDetailDTO result  = mapToDTO(valuationRequestDetail);
+        result.setDiamondValuationNote(diamondValuationNoteDTO);
+        return result;
     }
 
     @Override

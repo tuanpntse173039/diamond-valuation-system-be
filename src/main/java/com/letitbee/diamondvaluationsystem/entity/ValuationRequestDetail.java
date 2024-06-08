@@ -42,6 +42,9 @@ public class ValuationRequestDetail {
     @Column(columnDefinition = "varchar(100)")
     private String resultLink;
 
+    @Column(columnDefinition = "varchar(1000)")
+    private String cancelReason;
+
     @OneToOne(mappedBy = "valuationRequestDetail")
     private DiamondValuationNote diamondValuationNote;
 
