@@ -62,6 +62,16 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         return mapToDTO(diamondValuationNote, list);
     }
 
+    @Override
+    public DiamondValuationNoteDTO getDiamondValuationNoteById(long id) {
+        DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Note", "id", id + ""));
+        String[] items = diamondValuationNote.getClarityCharacteristic().split(",");
+        ArrayList<String> list = new ArrayList<>(Arrays.asList(items));
+        return mapToDTO(diamondValuationNote, list);
+    }
+
     private DiamondValuationNote mapToEntity(DiamondValuationNoteDTO valuationNoteDTO) {
         return mapper.map(valuationNoteDTO, DiamondValuationNote.class);
     }

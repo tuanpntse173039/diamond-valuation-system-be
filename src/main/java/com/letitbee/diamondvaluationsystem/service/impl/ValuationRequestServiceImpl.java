@@ -5,6 +5,7 @@ import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
+import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
@@ -19,31 +20,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestRepository valuationRequestRepository;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private StaffRepository staffRepository;
-
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
-
+    private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
     private ModelMapper mapper;
 
     public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository,
                                        ValuationRequestDetailRepository valuationRequestDetailRepository,
                                        StaffRepository staffRepository,
                                        DiamondValuationNoteRepository diamondValuationNoteRepository,
-                                       ModelMapper mapper) {
+                                       ModelMapper mapper,
+                                       DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl) {
         this.valuationRequestRepository = valuationRequestRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.mapper = mapper;
+        this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
     }
 
     @Override
@@ -147,7 +146,21 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
-        return mapper.map(valuationRequest, ValuationRequestDTO.class);
+        ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);
+        Set<ValuationRequestDetailDTO> valuationRequestDetailDTOSet = new HashSet<>();
+        for(ValuationRequestDetail valuationRequestDetail : valuationRequest.getValuationRequestDetails()){
+            ValuationRequestDetailDTO valuationRequestDetailDTO = mapper.map(valuationRequestDetail, ValuationRequestDetailDTO.class);
+            if(valuationRequestDetail.getDiamondValuationNote() != null
+                    && valuationRequestDetail.getDiamondValuationNote().getClarityCharacteristic() != null) {
+                DiamondValuationNoteDTO diamondValuationNoteDTO =
+                        diamondValuationNoteServiceImpl.getDiamondValuationNoteById(
+                                valuationRequestDetail.getDiamondValuationNote().getId());
+                valuationRequestDetailDTO.setDiamondValuationNote(diamondValuationNoteDTO);
+            }
+            valuationRequestDetailDTOSet.add(valuationRequestDetailDTO);
+        }
+        valuationRequestDTO.setValuationRequestDetails(valuationRequestDetailDTOSet);
+        return valuationRequestDTO;
     }
 
     private ValuationRequest mapToEntity(ValuationRequestDTO valuationRequestDTO) {

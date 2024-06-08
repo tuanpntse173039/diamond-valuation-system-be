@@ -56,7 +56,15 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     }
 
     private ValuationRequestDetailDTO mapToDTO(ValuationRequestDetail valuationRequestDetail) {
-        return mapper.map(valuationRequestDetail, ValuationRequestDetailDTO.class);
+        ValuationRequestDetailDTO valuationRequestDetailDTO = mapper.map(valuationRequestDetail, ValuationRequestDetailDTO.class);
+        if(valuationRequestDetail.getDiamondValuationNote() != null
+                && valuationRequestDetail.getDiamondValuationNote().getClarityCharacteristic() != null) {
+            DiamondValuationNoteDTO diamondValuationNoteDTO =
+                    diamondValuationNoteServiceImpl.getDiamondValuationNoteById(
+                            valuationRequestDetail.getDiamondValuationNote().getId());
+            valuationRequestDetailDTO.setDiamondValuationNote(diamondValuationNoteDTO);
+        }
+        return valuationRequestDetailDTO ;
     }
 
     @Override
@@ -89,12 +97,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     public ValuationRequestDetailDTO getValuationRequestDetailById(Long id) {
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
-        DiamondValuationNoteDTO diamondValuationNoteDTO =
-                diamondValuationNoteServiceImpl.getAllDiamondValuationNoteByCertificateId(
-                        valuationRequestDetail.getDiamondValuationNote().getCertificateId());
-        ValuationRequestDetailDTO result  = mapToDTO(valuationRequestDetail);
-        result.setDiamondValuationNote(diamondValuationNoteDTO);
-        return result;
+        return mapToDTO(valuationRequestDetail);
     }
 
     @Override
