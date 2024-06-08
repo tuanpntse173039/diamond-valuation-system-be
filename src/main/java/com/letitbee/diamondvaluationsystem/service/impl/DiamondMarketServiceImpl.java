@@ -94,6 +94,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
             }
             fairPrice = fairPrice / diamondMarket.size();
             diamondPriceList.setFairPrice(fairPrice);
+            diamondPriceList.setPricePerCarat(fairPrice / caratWeight);
             return diamondPriceList;
         }
         else throw new APIException(HttpStatus.NOT_FOUND,"No diamond price list data found");

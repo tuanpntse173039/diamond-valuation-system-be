@@ -19,4 +19,5 @@ public class DiamondPriceListDTO {
     private double fairPrice;
     private double minPrice;
     private double maxPrice;
+    private double pricePerCarat;
 }

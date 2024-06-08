@@ -78,7 +78,9 @@ public class SupplierServiceImpl implements SupplierService {
 
     }
     private SupplierDTO mapToDto(Supplier supplier) {
-        return mapper.map(supplier, SupplierDTO.class);
+        SupplierDTO supplierDTO =  mapper.map(supplier, SupplierDTO.class);
+        supplierDTO.setDiamondMarketID(supplierRepository.findAllDiamond(supplier));
+        return supplierDTO;
     }
     private Supplier mapToEntity(SupplierDTO supplierDto) {
         return mapper.map(supplierDto, Supplier.class);
