@@ -18,6 +18,7 @@ public class ValuationRequestDetailDTO {
     private DiamondValuationAssignDTO diamondValuationAssign;
     private Long valuationRequestID;
     private double servicePrice;
+    private String resultLink;
     private DiamondValuationNoteDTO diamondValuationNote;
     private Set<DiamondValuationAssignDTO> diamondValuationAssigns;
 }

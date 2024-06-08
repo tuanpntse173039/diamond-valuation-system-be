@@ -97,7 +97,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
         valuationRequestDetail.setSealingRecordLink(valuationRequestDetailDTO.getSealingRecordLink());
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
-
+        valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
 
         //delete diamond note when know diamond is fake
         deleteDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
