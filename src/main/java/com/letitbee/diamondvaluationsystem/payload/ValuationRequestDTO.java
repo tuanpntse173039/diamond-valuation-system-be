@@ -20,6 +20,7 @@ public class ValuationRequestDTO {
     private String receiptLink;
     private String returnLink;
     private String resultLink;
+    private String sealingRecordLink;
     private String feedback;
     private String cancelReason;
     private RequestStatus status;

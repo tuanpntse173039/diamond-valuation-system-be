@@ -41,6 +41,8 @@ public class ValuationRequest {
     private String returnLink;
     @Column(columnDefinition = "varchar(1000)")
     private String resultLink;
+    @Column(columnDefinition = "varchar(1000)")
+    private String sealingRecordLink;
     @Column(columnDefinition = "text")
     private String feedback;
     @Column(columnDefinition = "varchar(1000)")

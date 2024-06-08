@@ -114,6 +114,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         valuationRequest.setReceiptDate(valuationRequestDTO.getReceiptDate());
         valuationRequest.setReturnLink(valuationRequestDTO.getReturnLink());
         valuationRequest.setResultLink(valuationRequestDTO.getResultLink());
+        valuationRequest.setSealingRecordLink(valuationRequestDTO.getSealingRecordLink());
         if(valuationRequest.getReceiptLink() == null && valuationRequestDTO.getReceiptLink() != null) {
             valuationRequest.setReceiptDate(new Date());
         }

@@ -11,7 +11,6 @@ public class ValuationRequestDetailDTO {
     private long id;
     private double valuationPrice;
     private boolean isMode;
-    private String sealingRecordLink;
     private Float size;
     private RequestDetailStatus status;
     private boolean isDiamond;

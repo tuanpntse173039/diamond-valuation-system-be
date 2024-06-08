@@ -27,9 +27,6 @@ public class ValuationRequestDetail {
     @Column(columnDefinition = "money")
     private Double valuationPrice;
 
-    @Column(columnDefinition = "varchar(1000)")
-    private String sealingRecordLink;
-
     @Column(columnDefinition = "float")
     private Float size;
 
