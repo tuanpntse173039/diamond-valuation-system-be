@@ -118,13 +118,12 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
             valuationRequest.setReceiptDate(new Date());
         }
         valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
-
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
-
         if(valuationRequest.getReceiptLink() != null){
             valuationRequest.setReturnDate(getReturnDate(valuationRequest));
         }
+
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
         //map to dto
