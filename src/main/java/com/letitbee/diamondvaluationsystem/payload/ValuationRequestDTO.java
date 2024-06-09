@@ -6,6 +6,7 @@ import lombok.Data;
 import org.springframework.format.annotation.NumberFormat;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -24,8 +25,8 @@ public class ValuationRequestDTO {
     private String feedback;
     private String cancelReason;
     private RequestStatus status;
-    private Set<PaymentDTO> payment;
-    private Set<ValuationRequestDetailDTO> valuationRequestDetails;
+    private Set<PaymentDTO> payment = new HashSet<>();
+    private Set<ValuationRequestDetailDTO> valuationRequestDetails = new HashSet<>();
     private ServiceDTO service;
     private Long customerID;
     private Long staffID;
