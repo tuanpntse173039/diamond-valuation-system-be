@@ -2,12 +2,14 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondImage;
 import com.letitbee.diamondvaluationsystem.entity.DiamondValuationNote;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondImageDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationNoteRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationNoteService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -32,6 +34,10 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Note", "id", id + ""));
+        if (checkCertificateDuplicate(diamondValuationNote, diamondValuationNoteDTO)) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Certificate Id already exists");
+        }
+
         diamondValuationNote.setDiamondOrigin(diamondValuationNoteDTO.getDiamondOrigin());
         diamondValuationNote.setClarity(diamondValuationNoteDTO.getClarity());
         diamondValuationNote.setCaratWeight(diamondValuationNoteDTO.getCaratWeight());
@@ -45,6 +51,9 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setProportions(diamondValuationNoteDTO.getProportions());
         diamondValuationNote.setShape(diamondValuationNoteDTO.getShape());
         diamondValuationNote.setSymmetry(diamondValuationNoteDTO.getSymmetry());
+        diamondValuationNote.setClarityCharacteristic(
+                diamondValuationNoteDTO.getClarityCharacteristic()
+                        .stream().collect(Collectors.joining(",")));
         diamondValuationNote = diamondValuationNoteRepository.save(diamondValuationNote);
         return mapToDTO(diamondValuationNote, diamondValuationNoteDTO.getClarityCharacteristic());
     }
@@ -74,9 +83,24 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
     }
 
     private DiamondValuationNoteDTO mapToDTO(DiamondValuationNote valuationNote
-                                               , ArrayList<String> listClarityCharacteristic) {
-        DiamondValuationNoteDTO result =  mapper.map(valuationNote, DiamondValuationNoteDTO.class);
+            , ArrayList<String> listClarityCharacteristic) {
+        DiamondValuationNoteDTO result = mapper.map(valuationNote, DiamondValuationNoteDTO.class);
+        result.setClarityCharacteristic(listClarityCharacteristic);
         return result;
+    }
+
+    private boolean checkCertificateDuplicate(DiamondValuationNote diamondValuationNote,
+                                              DiamondValuationNoteDTO diamondValuationNoteDTO) {
+        String diamondCertificateIdUpdate = diamondValuationNoteDTO.getCertificateId();
+        if(diamondCertificateIdUpdate == null) {
+            return false;
+        }
+
+        if (diamondCertificateIdUpdate.equalsIgnoreCase(diamondValuationNote.getCertificateId())) {
+            return false;
+        } else {
+            return diamondValuationNoteRepository.countByCertificateId(diamondCertificateIdUpdate) > 0;
+        }
     }
 
 }
