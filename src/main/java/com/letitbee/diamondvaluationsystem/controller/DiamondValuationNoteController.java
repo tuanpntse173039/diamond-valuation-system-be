@@ -31,4 +31,9 @@ public class DiamondValuationNoteController {
             @RequestParam(value = "certificateId",required = false) String certificateId) {
         return ResponseEntity.ok(valuationNoteService.getAllDiamondValuationNoteByCertificateId(certificateId));
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<DiamondValuationNoteDTO> getDiamondValuationNoteById(@PathVariable("id") long id) {
+        return ResponseEntity.ok(valuationNoteService.getDiamondValuationNoteById(id));
+    }
 }

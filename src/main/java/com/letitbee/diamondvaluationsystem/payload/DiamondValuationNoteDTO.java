@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -15,7 +16,7 @@ public class DiamondValuationNoteDTO {
     private String certificateId;
     private Date certificateDate;
     private String proportions;
-    private ArrayList<String> clarityCharacteristic;
+    private ArrayList<String> clarityCharacteristic = new ArrayList<>();
     private String clarityCharacteristicLink;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
@@ -29,5 +30,5 @@ public class DiamondValuationNoteDTO {
     private double fairPrice;
     private double minPrice;
     private double maxPrice;
-    private Set<DiamondImageDTO> diamondImages;
+    private Set<DiamondImageDTO> diamondImages = new HashSet<>();
 }
