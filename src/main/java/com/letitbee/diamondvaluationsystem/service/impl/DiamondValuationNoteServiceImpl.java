@@ -45,9 +45,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setProportions(diamondValuationNoteDTO.getProportions());
         diamondValuationNote.setShape(diamondValuationNoteDTO.getShape());
         diamondValuationNote.setSymmetry(diamondValuationNoteDTO.getSymmetry());
-        diamondValuationNote.setClarityCharacteristic(
-                diamondValuationNoteDTO.getClarityCharacteristic()
-                        .stream().collect(Collectors.joining(",")));
         diamondValuationNote = diamondValuationNoteRepository.save(diamondValuationNote);
         return mapToDTO(diamondValuationNote, diamondValuationNoteDTO.getClarityCharacteristic());
     }
@@ -79,7 +76,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
     private DiamondValuationNoteDTO mapToDTO(DiamondValuationNote valuationNote
                                                , ArrayList<String> listClarityCharacteristic) {
         DiamondValuationNoteDTO result =  mapper.map(valuationNote, DiamondValuationNoteDTO.class);
-        result.setClarityCharacteristic(listClarityCharacteristic);
         return result;
     }
 
