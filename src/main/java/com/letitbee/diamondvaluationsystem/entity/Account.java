@@ -7,9 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+//import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table
 @Entity
-public class Account {
+public class Account  {
 
     @Id
     @GeneratedValue(
@@ -47,4 +48,5 @@ public class Account {
             orphanRemoval = true
     )
     private Set<Notification> notifications = new HashSet<>();
+
 }

@@ -9,8 +9,8 @@ import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 //import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
 import org.modelmapper.ModelMapper;
-//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.http.HttpStatus;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 //import org.springframework.security.authentication.AuthenticationManager;
 //import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 //import org.springframework.security.core.Authentication;
@@ -27,9 +27,14 @@ public class AccountServiceImpl implements AccountService {
 
     private ModelMapper mapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper) {
+    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper
+                              //JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager,
+                             /* PasswordEncoder passwordEncoder*/) {
         this.accountRepository = accountRepository;
         this.mapper = mapper;
+//        this.jwtTokenProvider = jwtTokenProvider;
+//        this.authenticationManager = authenticationManager;
+//        this.passwordEncoder = passwordEncoder;
     }
     private AccountDTO mapToDto(Account account){
         AccountDTO accountDto = mapper.map(account, AccountDTO.class);
@@ -47,7 +52,7 @@ public class AccountServiceImpl implements AccountService {
 //                new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
 //        SecurityContextHolder.getContext().setAuthentication(authentication);
 //        String token = jwtTokenProvider.generateToken(authentication);
-        return "Login successfully";
+        return "token";
     }
 
     @Override

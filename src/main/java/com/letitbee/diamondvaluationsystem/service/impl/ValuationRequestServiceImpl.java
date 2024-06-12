@@ -5,10 +5,7 @@ import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
-import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
-import com.letitbee.diamondvaluationsystem.payload.Response;
-import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
-import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
+import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.modelmapper.ModelMapper;
@@ -21,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ValuationRequestServiceImpl implements ValuationRequestService {
@@ -68,8 +66,9 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         response.setLast(page.isLast());
 
         return response;
-
     }
+
+
 
     @Override
     public ValuationRequestDTO getValuationRequestById(Long id) {
@@ -148,6 +147,31 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         return mapToDTO(valuationRequest);
     }
 
+    @Override
+    public Response<ValuationRequestResponse> getValuationRequestResponse(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
+        //Set size page and pageNo
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+
+        Page<ValuationRequest> page = valuationRequestRepository.findAll(pageable);
+        List<ValuationRequest> valuationRequests = page.getContent();
+
+        List<ValuationRequestResponse> listDTO = valuationRequests.
+                stream().
+                map(this::mapToResponse).collect(Collectors.toList());
+
+        Response<ValuationRequestResponse> response = new Response<>();
+
+        response.setContent(listDTO);
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalPage(page.getTotalPages());
+        response.setTotalElement(page.getTotalElements());
+        response.setLast(page.isLast());
+
+        return response;
+    }
+
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
         ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);
         Set<ValuationRequestDetailDTO> valuationRequestDetailDTOSet = new HashSet<>();
@@ -164,6 +188,11 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         }
         valuationRequestDTO.setValuationRequestDetails(valuationRequestDetailDTOSet);
         return valuationRequestDTO;
+    }
+
+    private ValuationRequestResponse mapToResponse(ValuationRequest valuationRequest) {
+        ValuationRequestResponse valuationRequestResponse = mapper.map(valuationRequest, ValuationRequestResponse.class);
+        return valuationRequestResponse;
     }
 
     private ValuationRequest mapToEntity(ValuationRequestDTO valuationRequestDTO) {

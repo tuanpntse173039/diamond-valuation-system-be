@@ -1,7 +1,9 @@
 package com.letitbee.diamondvaluationsystem.service;
 
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestResponse;
 
 import java.util.Date;
 
@@ -15,5 +17,7 @@ public interface ValuationRequestService {
 
     ValuationRequestDTO updateValuationRequest(long id, ValuationRequestDTO valuationRequestDTO);
     ValuationRequestDTO deleteValuationRequestById(Long id);
+
+    Response<ValuationRequestResponse> getValuationRequestResponse(int pageNo, int pageSize, String sortBy, String sortDir);
 
 }
