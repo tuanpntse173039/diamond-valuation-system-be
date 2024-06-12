@@ -20,6 +20,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestRepository valuationRequestRepository;
@@ -54,7 +56,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         List<ValuationRequestResponse> listDTO = valuationRequests.
                 stream().
-                map(this::mapToResponse).toList();
+                map(valuationRequest -> this.mapToResponse(valuationRequest, ValuationRequestResponse.class)).collect(Collectors.toList());
 
         Response<ValuationRequestResponse> response = new Response<>();
 
@@ -158,7 +160,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         List<ValuationRequestResponseV2> listDTO = valuationRequests.
                 stream().
-                map(this::mapToResponseV2).collect(Collectors.toList());
+                map(valuationRequest -> this.mapToResponse(valuationRequest, ValuationRequestResponseV2.class)).collect(Collectors.toList());
 
         Response<ValuationRequestResponseV2> response = new Response<>();
 
@@ -191,20 +193,9 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         return valuationRequestDTO;
     }
 
-    private ValuationRequestResponse mapToResponse(ValuationRequest valuationRequest) {
-        ValuationRequestResponse valuationRequestResponse = mapper.map(valuationRequest, ValuationRequestResponse.class);
-        return valuationRequestResponse;
+    private <T> T mapToResponse(ValuationRequest valuationRequest, Class<T> responseType) {
+        return mapper.map(valuationRequest, responseType);
     }
-
-    private ValuationRequestResponseV2 mapToResponseV2(ValuationRequest valuationRequest) {
-        ValuationRequestResponseV2 valuationRequestResponse = mapper.map(valuationRequest, ValuationRequestResponseV2.class);
-        valuationRequestResponse.setCustomerFirstName(valuationRequest.getCustomer().getFirstName());
-        valuationRequestResponse.setCustomerLastName(valuationRequest.getCustomer().getLastName());
-        valuationRequestResponse.setServiceName(valuationRequest.getService().getServiceName());
-        return valuationRequestResponse;
-    }
-
-
 
     private ValuationRequest mapToEntity(ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = mapper.map(valuationRequestDTO, ValuationRequest.class);
