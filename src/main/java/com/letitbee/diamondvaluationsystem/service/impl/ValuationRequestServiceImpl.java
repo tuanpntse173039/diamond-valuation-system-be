@@ -150,8 +150,13 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<ValuationRequest> page;
+        if(status != null){
+            page = valuationRequestRepository.findAllByStatus(status, pageable);
+        } else {
+            page = valuationRequestRepository.findAll(pageable);
+        }
 
-        Page<ValuationRequest> page = valuationRequestRepository.findAllByStatus(status, pageable);
         List<ValuationRequest> valuationRequests = page.getContent();
 
         List<ValuationRequestResponseV2> listDTO = valuationRequests.
