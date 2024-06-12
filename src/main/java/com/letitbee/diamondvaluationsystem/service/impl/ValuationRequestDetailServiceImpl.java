@@ -8,6 +8,7 @@ import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService;
+import com.letitbee.diamondvaluationsystem.utils.Tools;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,9 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -39,7 +38,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                              ServicePriceListRepository servicePriceListRepository,
                                              DiamondValuationAssignRepository diamondValuationAssignRepository,
                                              DiamondMarketRepository diamondMarketRepository,
-                                                DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl
+                                             DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl
     ) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
@@ -57,14 +56,14 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
     private ValuationRequestDetailDTO mapToDTO(ValuationRequestDetail valuationRequestDetail) {
         ValuationRequestDetailDTO valuationRequestDetailDTO = mapper.map(valuationRequestDetail, ValuationRequestDetailDTO.class);
-        if(valuationRequestDetail.getDiamondValuationNote() != null
+        if (valuationRequestDetail.getDiamondValuationNote() != null
                 && valuationRequestDetail.getDiamondValuationNote().getClarityCharacteristic() != null) {
             DiamondValuationNoteDTO diamondValuationNoteDTO =
                     diamondValuationNoteServiceImpl.getDiamondValuationNoteById(
                             valuationRequestDetail.getDiamondValuationNote().getId());
             valuationRequestDetailDTO.setDiamondValuationNote(diamondValuationNoteDTO);
         }
-        return valuationRequestDetailDTO ;
+        return valuationRequestDetailDTO;
     }
 
     @Override
@@ -134,11 +133,12 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         } else if (
                 valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())) {
             updateDiamondValuationNote(valuationRequestDetail);//update diamond valuation note price when status id assessed
+            generateCertificate(valuationRequestDetail); // generate certificate id and certificate date;
         }
         // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
-                                                                    //if all detail is approve or cancel
-         valuationRequestDetail = valuationRequestDetailRepository
+        //if all detail is approve or cancel
+        valuationRequestDetail = valuationRequestDetailRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
 
@@ -196,6 +196,18 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         valuationRequestDetail.setServicePrice(servicePrice);
         valuationRequest.setTotalServicePrice(totalPrice);
         valuationRequestRepository.save(valuationRequest);
+    }
+
+    private void generateCertificate(ValuationRequestDetail valuationRequestDetail) {
+        DiamondValuationNote diamondValuationNote = valuationRequestDetail.getDiamondValuationNote();
+        Date certificateDate = new Date();
+        String certificateId = "";
+        do {
+            certificateId = Tools.generateId(10);
+        } while (diamondValuationNoteRepository.countByCertificateId(certificateId) != 0);
+        diamondValuationNote.setCertificateId(certificateId);
+        diamondValuationNote.setCertificateDate(certificateDate);
+        diamondValuationNoteRepository.save(diamondValuationNote);
     }
 
     private void updateDiamondValuationNote(ValuationRequestDetail valuationRequestDetail) {

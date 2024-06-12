@@ -34,9 +34,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Diamond Valuation Note", "id", id + ""));
-        if (checkCertificateDuplicate(diamondValuationNote, diamondValuationNoteDTO)) {
-            throw new APIException(HttpStatus.BAD_REQUEST, "Certificate Id already exists");
-        }
 
         diamondValuationNote.setDiamondOrigin(diamondValuationNoteDTO.getDiamondOrigin());
         diamondValuationNote.setClarity(diamondValuationNoteDTO.getClarity());
@@ -89,18 +86,5 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         return result;
     }
 
-    private boolean checkCertificateDuplicate(DiamondValuationNote diamondValuationNote,
-                                              DiamondValuationNoteDTO diamondValuationNoteDTO) {
-        String diamondCertificateIdUpdate = diamondValuationNoteDTO.getCertificateId();
-        if(diamondCertificateIdUpdate == null) {
-            return false;
-        }
-
-        if (diamondCertificateIdUpdate.equalsIgnoreCase(diamondValuationNote.getCertificateId())) {
-            return false;
-        } else {
-            return diamondValuationNoteRepository.countByCertificateId(diamondCertificateIdUpdate) > 0;
-        }
-    }
 
 }
