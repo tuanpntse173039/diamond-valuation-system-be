@@ -28,6 +28,6 @@ public class ValuationRequestDTO {
     private Set<PaymentDTO> payment = new HashSet<>();
     private Set<ValuationRequestDetailDTO> valuationRequestDetails = new HashSet<>();
     private ServiceDTO service;
-    private Long customerID;
-    private Long staffID;
+    private CustomerDTO customer;
+    private StaffDTO staff;
 }
