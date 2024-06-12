@@ -44,7 +44,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    public Response<ValuationRequestDTO> getAllValuationRequests(int pageNo, int pageSize, String sortBy, String sortDir, Date startDate, Date endDate) {
+    public Response<ValuationRequestResponse> getAllValuationRequests(int pageNo, int pageSize, String sortBy, String sortDir, Date startDate, Date endDate) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -52,11 +52,11 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         Page<ValuationRequest> page = valuationRequestRepository.findByCreationDateBetween(startDate, endDate, pageable);
         List<ValuationRequest> valuationRequests = page.getContent();
 
-        List<ValuationRequestDTO> listDTO = valuationRequests.
+        List<ValuationRequestResponse> listDTO = valuationRequests.
                 stream().
-                map(this::mapToDTO).toList();
+                map(this::mapToResponse).toList();
 
-        Response<ValuationRequestDTO> response = new Response<>();
+        Response<ValuationRequestResponse> response = new Response<>();
 
         response.setContent(listDTO);
         response.setPageNumber(page.getNumber());
@@ -148,7 +148,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    public Response<ValuationRequestResponse> getValuationRequestResponse(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response<ValuationRequestResponseV2> getValuationRequestResponse(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -156,11 +156,11 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         Page<ValuationRequest> page = valuationRequestRepository.findAll(pageable);
         List<ValuationRequest> valuationRequests = page.getContent();
 
-        List<ValuationRequestResponse> listDTO = valuationRequests.
+        List<ValuationRequestResponseV2> listDTO = valuationRequests.
                 stream().
-                map(this::mapToResponse).collect(Collectors.toList());
+                map(this::mapToResponseV2).collect(Collectors.toList());
 
-        Response<ValuationRequestResponse> response = new Response<>();
+        Response<ValuationRequestResponseV2> response = new Response<>();
 
         response.setContent(listDTO);
         response.setPageNumber(page.getNumber());
@@ -171,6 +171,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         return response;
     }
+
 
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
         ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);
@@ -194,6 +195,16 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         ValuationRequestResponse valuationRequestResponse = mapper.map(valuationRequest, ValuationRequestResponse.class);
         return valuationRequestResponse;
     }
+
+    private ValuationRequestResponseV2 mapToResponseV2(ValuationRequest valuationRequest) {
+        ValuationRequestResponseV2 valuationRequestResponse = mapper.map(valuationRequest, ValuationRequestResponseV2.class);
+        valuationRequestResponse.setCustomerFirstName(valuationRequest.getCustomer().getFirstName());
+        valuationRequestResponse.setCustomerLastName(valuationRequest.getCustomer().getLastName());
+        valuationRequestResponse.setServiceName(valuationRequest.getService().getServiceName());
+        return valuationRequestResponse;
+    }
+
+
 
     private ValuationRequest mapToEntity(ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = mapper.map(valuationRequestDTO, ValuationRequest.class);

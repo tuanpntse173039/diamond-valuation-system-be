@@ -1,9 +1,9 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestResponse;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestResponseV2;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import jakarta.validation.Valid;
@@ -26,7 +26,7 @@ public class ValuationRequestController {
 
 //    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF')")
     @GetMapping
-    public ResponseEntity<Response<ValuationRequestDTO>>
+    public ResponseEntity<Response<ValuationRequestResponse>>
     getAllValuationRequest(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                            @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
                            @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
@@ -67,11 +67,12 @@ public class ValuationRequestController {
     }
 
     @GetMapping("/response")
-    public ResponseEntity<Response<ValuationRequestResponse>> getValuationRequestResponse(
+    public ResponseEntity<Response<ValuationRequestResponseV2>> getValuationRequestResponse(
             @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
             @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
             @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir) {
         return new ResponseEntity<>(valuationRequestService.getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }
+
 }
