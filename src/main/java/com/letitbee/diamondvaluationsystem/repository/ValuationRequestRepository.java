@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.repository;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -35,4 +36,7 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
             "where s = :staff " +
             "group by s.id")
     int countValuationRequestsIsProcessedByStaff(Staff staff);
+
+
+    Page<ValuationRequest> findAllByStatus(RequestStatus status, Pageable pageable);
 }

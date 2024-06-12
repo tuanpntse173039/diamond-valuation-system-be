@@ -105,13 +105,8 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id + ""));
         //get staff
-        if(valuationRequestDTO.getStaff() != null) {
-            long staffID = valuationRequestDTO.getStaff().getId();
-            Staff staff = staffRepository
-                    .findById(staffID)
-                    .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", staffID + ""));
-            valuationRequest.setStaff(staff);
-        }
+        Staff staff = staffRepository.findById(valuationRequestDTO.getStaffID()).orElse(null);
+        valuationRequest.setStaff(staff);
         //update valuation request
         valuationRequest.setFeedback(valuationRequestDTO.getFeedback());
         valuationRequest.setReturnDate(valuationRequestDTO.getReturnDate());
@@ -150,12 +145,13 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    public Response<ValuationRequestResponseV2> getValuationRequestResponse(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response<ValuationRequestResponseV2> getValuationRequestResponse(
+            int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
-        Page<ValuationRequest> page = valuationRequestRepository.findAll(pageable);
+        Page<ValuationRequest> page = valuationRequestRepository.findAllByStatus(status, pageable);
         List<ValuationRequest> valuationRequests = page.getContent();
 
         List<ValuationRequestResponseV2> listDTO = valuationRequests.
@@ -199,6 +195,10 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
     private ValuationRequest mapToEntity(ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = mapper.map(valuationRequestDTO, ValuationRequest.class);
+        long staffId = valuationRequestDTO.getStaffID();
+        if (staffId == 0) {
+            valuationRequest.setStaff(null);
+        }
         return valuationRequest;
     }
 

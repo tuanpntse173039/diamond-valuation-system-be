@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestResponse;
@@ -71,8 +72,10 @@ public class ValuationRequestController {
             @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
             @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
-            @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir) {
-        return new ResponseEntity<>(valuationRequestService.getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
+            @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+            @RequestParam(name = "status", required = false) RequestStatus status){
+        return new ResponseEntity<>(valuationRequestService.
+                getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir,status), HttpStatus.OK);
     }
 
 }

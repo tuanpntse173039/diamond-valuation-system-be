@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.service;
 
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestResponse;
@@ -18,6 +19,7 @@ public interface ValuationRequestService {
     ValuationRequestDTO updateValuationRequest(long id, ValuationRequestDTO valuationRequestDTO);
     ValuationRequestDTO deleteValuationRequestById(Long id);
 
-    Response<ValuationRequestResponseV2> getValuationRequestResponse(int pageNo, int pageSize, String sortBy, String sortDir);
+    Response<ValuationRequestResponseV2> getValuationRequestResponse(
+            int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status);
 
 }
