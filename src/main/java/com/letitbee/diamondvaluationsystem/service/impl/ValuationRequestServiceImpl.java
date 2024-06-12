@@ -56,7 +56,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         List<ValuationRequestDTO> listDTO = valuationRequests.
                 stream().
-                map((valuationRequest) -> mapToDTO(valuationRequest)).toList();
+                map(this::mapToDTO).toList();
 
         Response<ValuationRequestDTO> response = new Response<>();
 
@@ -104,10 +104,14 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id + ""));
         //get staff
-        Staff staff = staffRepository.findById(valuationRequestDTO.getStaffID()).orElse(null);
-
+        if(valuationRequestDTO.getStaff() != null) {
+            long staffID = valuationRequestDTO.getStaff().getId();
+            Staff staff = staffRepository
+                    .findById(staffID)
+                    .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", staffID + ""));
+            valuationRequest.setStaff(staff);
+        }
         //update valuation request
-        valuationRequest.setStaff(staff);
         valuationRequest.setFeedback(valuationRequestDTO.getFeedback());
         valuationRequest.setReturnDate(valuationRequestDTO.getReturnDate());
         valuationRequest.setReceiptDate(valuationRequestDTO.getReceiptDate());
@@ -164,10 +168,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
     private ValuationRequest mapToEntity(ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = mapper.map(valuationRequestDTO, ValuationRequest.class);
-        long staffId = valuationRequestDTO.getStaffID();
-        if (staffId == 0) {
-            valuationRequest.setStaff(null);
-        }
         return valuationRequest;
     }
 
