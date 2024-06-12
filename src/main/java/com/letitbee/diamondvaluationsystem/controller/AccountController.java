@@ -1,15 +1,12 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
-import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
 import com.letitbee.diamondvaluationsystem.payload.JwtAuthResponse;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,7 +23,6 @@ public class AccountController {
         String token = accountService.login(accountDTO);
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
         jwtAuthResponse.setAccessToken(token);
-        jwtAuthResponse.setRefreshToken(token);
         return ResponseEntity.ok(jwtAuthResponse);
     }
 

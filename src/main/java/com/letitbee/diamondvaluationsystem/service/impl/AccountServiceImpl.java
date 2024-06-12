@@ -6,35 +6,34 @@ import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
-//import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
+import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
-//    private PasswordEncoder passwordEncoder;
-//    private JwtTokenProvider jwtTokenProvider;
-//    private AuthenticationManager authenticationManager;
+    private PasswordEncoder passwordEncoder;
+    private JwtTokenProvider jwtTokenProvider;
+    private AuthenticationManager authenticationManager;
 
     private ModelMapper mapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper
-                              //JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager,
-                             /* PasswordEncoder passwordEncoder*/) {
+    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper,
+                              JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager,
+                             PasswordEncoder passwordEncoder) {
         this.accountRepository = accountRepository;
         this.mapper = mapper;
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.authenticationManager = authenticationManager;
-//        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
     }
     private AccountDTO mapToDto(Account account){
         AccountDTO accountDto = mapper.map(account, AccountDTO.class);
@@ -48,11 +47,11 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public String login(AccountDTO accountDTO) {
-//        Authentication authentication = authenticationManager.authenticate(
-//                new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
-//        SecurityContextHolder.getContext().setAuthentication(authentication);
-//        String token = jwtTokenProvider.generateToken(authentication);
-        return "token";
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        String token = jwtTokenProvider.generateToken(authentication);
+        return token;
     }
 
     @Override
@@ -65,8 +64,8 @@ public class AccountServiceImpl implements AccountService {
         //save account to db
         Account account = new Account();
         account.setUsername(accountDTO.getUsername());
-//        account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
-        account.setPassword(accountDTO.getPassword());
+        account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
+//        account.setPassword(accountDTO.getPassword());
         account.setRole(accountDTO.getRole());
         account.setIs_active(true);
         account = accountRepository.save(account);
