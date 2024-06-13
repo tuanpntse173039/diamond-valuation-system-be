@@ -17,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+
 @Service
 public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
@@ -46,13 +48,17 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String login(AccountDTO accountDTO) {
+    public ArrayList<String> login(AccountDTO accountDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtTokenProvider.generateToken(authentication);
-        return token;
+        ArrayList<String> response = new ArrayList<>();
+        response.add(jwtTokenProvider.generateToken(authentication));
+        response.add(jwtTokenProvider.generateRefreshToken());
+        return response;
     }
+
+
 
     @Override
     public AccountResponse register(AccountDTO accountDTO) {
@@ -87,6 +93,11 @@ public class AccountServiceImpl implements AccountService {
         account.setPassword(newPassword);
         accountRepository.save(account);
         return "Update password successfully";
+    }
+
+    @Override
+    public ArrayList<String> refreshToken(AccountDTO accountDTO) {
+        return null;
     }
 
 
