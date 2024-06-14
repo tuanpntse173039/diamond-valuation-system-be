@@ -49,22 +49,7 @@ public class AuthController {
 
     @PostMapping(value = {"/login", "/signin"})
     public ResponseEntity<LoginResponse> login(HttpServletRequest request,@RequestBody AccountDTO accountDTO){
-        ArrayList<String> token = accountService.login(request,accountDTO);
-        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-        jwtAuthResponse.setAccessToken(token.get(0));
-        jwtAuthResponse.setRefreshToken(token.get(1));
-        Account account = accountRepository.findByUsername(accountDTO.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsername()));
-        LoginResponse loginResponse = new LoginResponse();
-        if(account.getRole().equals(Role.CUSTOMER)){
-            Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
-            loginResponse.setDto(mapper.map(customer, CustomerDTO.class));
-        }else{
-            Staff staff = staffRepository.findStaffByAccount_Id(account.getId());
-            loginResponse.setDto(mapper.map(staff, StaffDTO.class));
-        }
-        loginResponse.setJwtAuthResponse(jwtAuthResponse);
-        return ResponseEntity.ok(loginResponse);
+        return ResponseEntity.ok(accountService.login(request, accountDTO));
     }
 
     //register Customer

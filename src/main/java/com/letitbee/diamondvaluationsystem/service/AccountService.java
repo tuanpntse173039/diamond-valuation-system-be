@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.service;
 
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
+import com.letitbee.diamondvaluationsystem.payload.LoginResponse;
 import jakarta.servlet.http.HttpServletRequest;
 
 import java.net.http.HttpRequest;
@@ -9,7 +10,7 @@ import java.util.ArrayList;
 
 public interface AccountService {
 
-    ArrayList<String> login(HttpServletRequest request,AccountDTO accountDTO);
+    LoginResponse login(HttpServletRequest request, AccountDTO accountDTO);
 
     AccountResponse register(AccountDTO accountDTO);
 

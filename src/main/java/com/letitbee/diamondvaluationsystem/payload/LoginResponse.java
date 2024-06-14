@@ -7,6 +7,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse<T> {
-    private T dto;
-    private JwtAuthResponse jwtAuthResponse;
+    private T userInformation;
+    private JwtAuthResponse userToken;
 }
