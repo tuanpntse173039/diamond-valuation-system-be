@@ -11,7 +11,7 @@ import java.util.Optional;
 public interface StaffRepository extends JpaRepository<Staff, Long> {
     Optional<Staff> findStaffByValuationRequestSetContaining(ValuationRequest valuationRequest);
 
-    Optional<Staff> findStaffByAccount(Account account);
+    Staff findStaffByAccount_Id(Long accountId);
 
     List<Staff> findStaffByFirstNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(String firstName, String lastName);
 
