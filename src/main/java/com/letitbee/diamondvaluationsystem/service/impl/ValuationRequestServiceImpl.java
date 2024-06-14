@@ -16,11 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.toList;
 
 @Service
 public class ValuationRequestServiceImpl implements ValuationRequestService {
@@ -176,18 +173,22 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    public Response<ValuationRequestDTO> getValuationRequestByCustomerId(int pageNo, int pageSize, String sortBy, String sortDir, Long customerId) {
+    public Response<ValuationRequestResponseV2> getValuationRequestByCustomerId(int pageNo,
+                                                                                int pageSize,
+                                                                                String sortBy,
+                                                                                String sortDir,
+                                                                                Long customerId) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<ValuationRequest> page = valuationRequestRepository.findValuationRequestByCustomer_Id(customerId, pageable);
         List<ValuationRequest> valuationRequests = page.getContent();
 
-        List<ValuationRequestDTO> listDTO = valuationRequests.
+        List<ValuationRequestResponseV2> listDTO = valuationRequests.
                 stream().
-                map(this::mapToDTO).collect(Collectors.toList());
+                map(valuationRequest -> this.mapToResponse(valuationRequest, ValuationRequestResponseV2.class)).collect(Collectors.toList());
 
-        Response<ValuationRequestDTO> response = new Response<>();
+        Response<ValuationRequestResponseV2> response = new Response<>();
 
         response.setContent(listDTO);
         response.setPageNumber(page.getNumber());

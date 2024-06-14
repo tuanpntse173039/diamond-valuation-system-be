@@ -79,7 +79,7 @@ public class ValuationRequestController {
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<Response<ValuationRequestDTO>> getValuationRequestByCustomerId(
+    public ResponseEntity<Response<ValuationRequestResponseV2>> getValuationRequestByCustomerId(
             @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
             @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
