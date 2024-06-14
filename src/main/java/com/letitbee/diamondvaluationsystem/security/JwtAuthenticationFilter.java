@@ -57,11 +57,23 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
             // After successful authentication, add refresh token to cookie
-            String refreshToken = jwtTokenProvider.generateRefreshToken();
-            Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setMaxAge(24 * 60 * 60); // Set cookie to expire after 1 day
-            response.addCookie(refreshTokenCookie);
+            String refreshToken = null;
+            int flag = 0;
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("refreshToken")) {
+                        flag = 1;
+                    }
+                }
+                if(flag == 0){
+                    refreshToken = jwtTokenProvider.generateRefreshToken(authenticationToken);
+                    Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+                    refreshTokenCookie.setHttpOnly(true);
+                    refreshTokenCookie.setMaxAge(24 * 60 * 60); // Set cookie to expire after 1 day
+                    response.addCookie(refreshTokenCookie);
+                }
+            }
         }
 
         filterChain.doFilter(request,response);

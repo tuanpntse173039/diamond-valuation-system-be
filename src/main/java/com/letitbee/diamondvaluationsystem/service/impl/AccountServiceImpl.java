@@ -8,8 +8,11 @@ import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -48,13 +51,24 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ArrayList<String> login(AccountDTO accountDTO) {
+    public ArrayList<String> login(HttpServletRequest request,AccountDTO accountDTO) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
         ArrayList<String> response = new ArrayList<>();
         response.add(jwtTokenProvider.generateToken(authentication));
-        response.add(jwtTokenProvider.generateRefreshToken());
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refreshToken")) {
+                    String refreshToken = cookie.getValue();
+                    response.add(refreshToken);
+                }
+            }
+        }
+        else {
+            response.add(jwtTokenProvider.generateRefreshToken(authentication));
+        }
         return response;
     }
 
@@ -96,9 +110,19 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ArrayList<String> refreshToken(AccountDTO accountDTO) {
+    public ArrayList<String> refreshToken(String refreshToken) {
+        String username = jwtTokenProvider.getUsername(refreshToken);
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "username", username));
+        AccountDTO accountDTO = mapToDto(account);
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
+        ArrayList<String> response = new ArrayList<>();
+        if (jwtTokenProvider.validateToken(refreshToken)) {
+            response.add(jwtTokenProvider.generateToken(authentication));
+            response.add(jwtTokenProvider.generateRefreshToken(authentication));
+            return response;
+        }
         return null;
     }
-
-
 }

@@ -34,8 +34,8 @@ public class AccountController {
     }
 
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<JwtAuthResponse> login(@RequestBody AccountDTO accountDTO){
-        ArrayList<String> token = accountService.login(accountDTO);
+    public ResponseEntity<JwtAuthResponse> login(HttpServletRequest request,@RequestBody AccountDTO accountDTO){
+        ArrayList<String> token = accountService.login(request,accountDTO);
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
         jwtAuthResponse.setAccessToken(token.get(0));
         jwtAuthResponse.setRefreshToken(token.get(1));
@@ -55,22 +55,12 @@ public class AccountController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/refresh-token")
-    public ResponseEntity<?> refreshToken(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountDTO accountDTO) {
-        Cookie[] cookies = request.getCookies();
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
-                    String refreshToken = cookie.getValue();
-                    if (jwtTokenProvider.validateToken(refreshToken)) {
-                        String newToken = jwtTokenProvider.generateToken(authentication);
-                        return ResponseEntity.ok(newToken);
-                    }
-                }
-            }
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Refresh token is missing or invalid");
+    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody String refreshToken) {
+        ArrayList<String> token = accountService.refreshToken(refreshToken);
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+        jwtAuthResponse.setAccessToken(token.get(0));
+        jwtAuthResponse.setRefreshToken(token.get(1));
+        return ResponseEntity.ok(jwtAuthResponse);
     }
 
 }
