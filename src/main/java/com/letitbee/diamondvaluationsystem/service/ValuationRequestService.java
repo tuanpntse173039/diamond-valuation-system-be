@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.service;
 
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
@@ -22,4 +23,5 @@ public interface ValuationRequestService {
     Response<ValuationRequestResponseV2> getValuationRequestResponse(
             int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status);
 
+    Response<ValuationRequestDTO> getValuationRequestByCustomerId(int pageNo, int pageSize, String sortBy, String sortDir, Long customerId);
 }

@@ -175,6 +175,30 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         return response;
     }
 
+    @Override
+    public Response<ValuationRequestDTO> getValuationRequestByCustomerId(int pageNo, int pageSize, String sortBy, String sortDir, Long customerId) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
+        //Set size page and pageNo
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<ValuationRequest> page = valuationRequestRepository.findValuationRequestByCustomer_Id(customerId, pageable);
+        List<ValuationRequest> valuationRequests = page.getContent();
+
+        List<ValuationRequestDTO> listDTO = valuationRequests.
+                stream().
+                map(this::mapToDTO).collect(Collectors.toList());
+
+        Response<ValuationRequestDTO> response = new Response<>();
+
+        response.setContent(listDTO);
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalPage(page.getTotalPages());
+        response.setTotalElement(page.getTotalElements());
+        response.setLast(page.isLast());
+
+        return response;
+    }
+
 
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
         ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);
