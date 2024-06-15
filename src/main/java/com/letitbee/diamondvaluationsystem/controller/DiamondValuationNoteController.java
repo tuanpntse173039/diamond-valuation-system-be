@@ -26,6 +26,7 @@ public class DiamondValuationNoteController {
     ) {
         return ResponseEntity.ok(valuationNoteService.updateDiamondValuationNote(id, valuationNoteDTO));
     }
+
     @GetMapping("/search")
     public ResponseEntity<DiamondValuationNoteDTO> getAllDiamondValuationNoteByCertificateId(
             @RequestParam(value = "certificateId",required = false) String certificateId) {
