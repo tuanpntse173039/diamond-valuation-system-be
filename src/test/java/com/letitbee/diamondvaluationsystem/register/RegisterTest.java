@@ -42,7 +42,6 @@ public class RegisterTest {
         accountDTO.setRole(Role.CUSTOMER);
 
         String accountJson = objectMapper.writeValueAsString(accountDTO);
-
         mockMvc.perform(post("/api/v1/accounts/signup")
                         .contentType("application/json")
                         .content(accountJson))
