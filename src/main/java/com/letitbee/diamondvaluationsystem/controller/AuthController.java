@@ -11,6 +11,7 @@ import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -48,8 +49,8 @@ public class AuthController {
     }
 
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<LoginResponse> login(HttpServletRequest request,@RequestBody AccountDTO accountDTO){
-        return ResponseEntity.ok(accountService.login(request, accountDTO));
+    public ResponseEntity<LoginResponse> login(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountDTO accountDTO){
+        return ResponseEntity.ok(accountService.login(request,response, accountDTO));
     }
 
     //register Customer
@@ -65,11 +66,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/refresh-token")
-    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody String refreshToken) {
-        ArrayList<String> token = accountService.refreshToken(refreshToken);
-        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-        jwtAuthResponse.setAccessToken(token.get(0));
-        jwtAuthResponse.setRefreshToken(token.get(1));
-        return ResponseEntity.ok(jwtAuthResponse);
+    public ResponseEntity<LoginResponse> refreshToken(HttpServletRequest request) {
+        return ResponseEntity.ok(accountService.refreshToken(request));
     }
 }

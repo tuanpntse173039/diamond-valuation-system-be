@@ -68,6 +68,7 @@ public class ValuationRequestController {
         return ResponseEntity.ok(valuationRequestService.deleteValuationRequestById(id));
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF')")
     @GetMapping("/response")
     public ResponseEntity<Response<ValuationRequestResponseV2>> getValuationRequestResponse(
             @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,

@@ -14,9 +14,11 @@ import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -60,37 +62,51 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public LoginResponse login(HttpServletRequest request, AccountDTO accountDTO) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        Account account = accountRepository.findByUsername(accountDTO.getUsername())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsername()));
-        LoginResponse loginResponse = new LoginResponse();
+    public LoginResponse login(HttpServletRequest request, HttpServletResponse response, AccountDTO accountDTO) {
 
-        if (account.getRole().equals(Role.CUSTOMER)) {
-            Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
-            loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
-        } else {
-            Staff staff = staffRepository.findStaffByAccount_Id(account.getId());
-            loginResponse.setUserInformation(staff == null ? null : mapper.map(staff, StaffDTO.class));
-        }
-        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-        jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
-                    String refreshToken = cookie.getValue();
-                    jwtAuthResponse.setRefreshToken(refreshToken);
-                }
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            Account account = accountRepository.findByUsername(accountDTO.getUsername())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsername()));
+            LoginResponse loginResponse = new LoginResponse();
+
+            if (account.getRole().equals(Role.CUSTOMER)) {
+                Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
+                loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
+            } else {
+                Staff staff = staffRepository.findStaffByAccount_Id(account.getId());
+                loginResponse.setUserInformation(staff == null ? null : mapper.map(staff, StaffDTO.class));
             }
+            JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+            jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
+            String refreshToken = jwtTokenProvider.generateRefreshToken();
+            Cookie[] cookies = request.getCookies();
+            if (cookies != null) {
+                for (Cookie cookie : cookies) {
+                    if (cookie.getName().equals("refreshToken")) {
+                        refreshToken = cookie.getValue();
+                        jwtAuthResponse.setRefreshToken(refreshToken);
+                    }
+                }
+            } else {
+                jwtAuthResponse.setRefreshToken(refreshToken);
+            }
+            loginResponse.setUserToken(jwtAuthResponse);
+            // Set refresh token cookie in the response
+            Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
+            refreshTokenCookie.setHttpOnly(true);
+            refreshTokenCookie.setPath("/");
+            refreshTokenCookie.setMaxAge(24 * 60 * 60 * 30);
+            response.addCookie(refreshTokenCookie);
+
+            jwtAuthResponse.setRefreshToken(refreshToken);
+            loginResponse.setUserToken(jwtAuthResponse);
+            return loginResponse;
+        }catch (BadCredentialsException ex) {
+            throw new APIException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
-        else {
-            jwtAuthResponse.setRefreshToken(jwtTokenProvider.generateRefreshToken(authentication));
-        }
-        loginResponse.setUserToken(jwtAuthResponse);
-        return loginResponse;
     }
 
 
@@ -131,19 +147,43 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public ArrayList<String> refreshToken(String refreshToken) {
-        String username = jwtTokenProvider.getUsername(refreshToken);
-        Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new ResourceNotFoundException("Account", "username", username));
-        AccountDTO accountDTO = mapToDto(account);
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
-        ArrayList<String> response = new ArrayList<>();
-        if (jwtTokenProvider.validateToken(refreshToken)) {
-            response.add(jwtTokenProvider.generateToken(authentication));
-            response.add(jwtTokenProvider.generateRefreshToken(authentication));
-            return response;
+    public LoginResponse refreshToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        String refreshToken = null;
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("refreshToken")) {
+                    refreshToken = cookie.getValue();
+                }
+            }
         }
-        return null;
+        if (refreshToken == null) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Refresh token is missing");
+        }
+        if (!jwtTokenProvider.validateToken(refreshToken)) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Invalid refresh token");
+        }
+        String accessToken = request.getHeader("Authorization");
+        if (accessToken != null && accessToken.startsWith("Bearer ")) {
+            accessToken = accessToken.substring(7);  // Correct substring index
+        }
+        String username = jwtTokenProvider.getUsername(accessToken);
+        Account account = accountRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + username));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(account.getUsername(), account.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        LoginResponse loginResponse = new LoginResponse();
+        if (account.getRole().equals(Role.CUSTOMER)) {
+            Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
+            loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
+        } else {
+            Staff staff = staffRepository.findStaffByAccount_Id(account.getId());
+            loginResponse.setUserInformation(staff == null ? null : mapper.map(staff, StaffDTO.class));
+        }
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+        jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
+        jwtAuthResponse.setRefreshToken(jwtTokenProvider.generateRefreshToken());
+        loginResponse.setUserToken(jwtAuthResponse);
+        return loginResponse;
     }
 }

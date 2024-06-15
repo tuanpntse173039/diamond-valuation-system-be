@@ -45,16 +45,13 @@ public class JwtTokenProvider {
         return token;
     }
 
-    public String generateRefreshToken(Authentication authentication) {
-
-        String username = authentication.getName();
+    public String generateRefreshToken() {
 
         Date currentDate = new Date();
 
         Date expireDate = new Date(currentDate.getTime() + jwtExpirationRefreshDate);
 
         String refreshToken = Jwts.builder()
-                .setSubject(username)
                 .setIssuedAt(currentDate)
                 .setExpiration(expireDate)
                 .signWith(key())
