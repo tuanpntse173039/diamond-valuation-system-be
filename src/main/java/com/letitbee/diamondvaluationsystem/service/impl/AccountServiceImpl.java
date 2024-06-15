@@ -5,6 +5,7 @@ import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
+import com.letitbee.diamondvaluationsystem.exception.CredentialsException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
@@ -105,7 +106,7 @@ public class AccountServiceImpl implements AccountService {
             loginResponse.setUserToken(jwtAuthResponse);
             return loginResponse;
         }catch (BadCredentialsException ex) {
-            throw new APIException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+            throw new CredentialsException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
         }
     }
 
