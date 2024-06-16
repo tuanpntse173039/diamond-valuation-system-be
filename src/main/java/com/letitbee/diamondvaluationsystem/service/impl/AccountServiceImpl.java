@@ -139,11 +139,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String updatePassword(String newPassword, Long id) {
+    public String updatePassword(AccountDTO accountDTO, Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
         //happycase
-        account.setPassword(newPassword);
+        account.setPassword(account.getPassword());
         accountRepository.save(account);
         return "Update password successfully";
     }
@@ -189,21 +189,13 @@ public class AccountServiceImpl implements AccountService {
         return loginResponse;
     }
     @Override
-    public AccountResponse updateAccount(Long id, AccountDTO accountDTO) {
+    public String updateEmail(Long id, AccountDTO accountDTO) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
-        account.setUsername(accountDTO.getUsername());
         account.setPassword(accountDTO.getPassword());
-        account.setRole(accountDTO.getRole());
-        account.setIs_active(accountDTO.getIs_active());
-        accountRepository.save(account);
 
-        AccountResponse newAccount = new AccountResponse();
-        newAccount.setId(account.getId());
-        newAccount.setUsername(account.getUsername());
-        newAccount.setRole(account.getRole());
-        newAccount.setIs_active(account.getIs_active());
-        return newAccount;
+        accountRepository.save(account);
+        return "Update email successfully";
     }
 
 }

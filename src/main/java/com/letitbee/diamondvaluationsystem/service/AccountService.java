@@ -12,9 +12,9 @@ public interface AccountService {
 
     AccountResponse register(AccountDTO accountDTO);
 
-    String updatePassword(String newPassword, Long id);
+    String updatePassword(AccountDTO accountDTO, Long id);
 
-    AccountResponse updateAccount(Long id, AccountDTO accountDTO);
+    String updateEmail(Long id, AccountDTO accountDTO);
 
     LoginResponse login(HttpServletRequest request, HttpServletResponse response, AccountDTO accountDTO);
 

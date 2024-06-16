@@ -38,13 +38,13 @@ public class AccountController {
     }
 
     @PutMapping("/password/{id}")
-    public ResponseEntity<String> updatePassword(@RequestBody String newPassword, @PathVariable(name = "id") long id){
-        String response = accountService.updatePassword(newPassword, id);
+    public ResponseEntity<String> updatePassword(@RequestBody @Valid AccountDTO accountDTO, @PathVariable(name = "id") long id){
+        String response = accountService.updatePassword(accountDTO, id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccountResponse> updateAccount(@RequestBody @Valid AccountDTO accountDTO, @PathVariable(name = "id") long id){
-        return ResponseEntity.ok(accountService.updateAccount(id,accountDTO));
+    public ResponseEntity<String> updateEmail(@RequestBody @Valid AccountDTO accountDTO, @PathVariable(name = "id") long id){
+        return ResponseEntity.ok(accountService.updateEmail(id,accountDTO));
     }
 }
