@@ -99,4 +99,27 @@ public class SignUp {
                         .content(customerJson))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    @Transactional
+    @Rollback
+    public void testFirstnameContainsInvalidCharacters() throws Exception {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("John123"); // Invalid first name
+        customerDTO.setLastName("Doe");
+        customerDTO.setPhone("1234567890");
+        customerDTO.setAddress("testAddress");
+        customerDTO.setEmail("test@example.com");
+        customerDTO.setIdentityDocument("123456789012");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(40L);
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(post("/api/v1/customers")
+                        .contentType("application/json")
+                        .content(customerJson))
+                .andExpect(status().isBadRequest());
+    }
+
 }
