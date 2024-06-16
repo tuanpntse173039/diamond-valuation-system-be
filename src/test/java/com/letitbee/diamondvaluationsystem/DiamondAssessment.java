@@ -136,4 +136,26 @@ public class DiamondAssessment {
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testPolistBlank() throws Exception {
+        DiamondValuationNoteDTO diamondValuationNoteDTO = new DiamondValuationNoteDTO();
+        diamondValuationNoteDTO.setShape(Shape.valueOf("ROUND"));
+        diamondValuationNoteDTO.setCaratWeight(1.0F);
+        diamondValuationNoteDTO.setColor(Color.valueOf("D"));
+        diamondValuationNoteDTO.setClarity(Clarity.valueOf("IF"));
+        diamondValuationNoteDTO.setCut(Cut.valueOf("EXCELLENT"));
+        diamondValuationNoteDTO.setPolish(null);
+        diamondValuationNoteDTO.setSymmetry(Symmetry.valueOf("EXCELLENT"));
+        diamondValuationNoteDTO.setFluorescence(Fluorescence.valueOf("NONE"));
+
+        String accountJson = objectMapper.writeValueAsString(diamondValuationNoteDTO);
+
+        mockMvc.perform(put("/api/v1/diamond-valuation-notes/130")
+                        .contentType("application/json")
+                        .content(accountJson))
+                .andExpect(status().isBadRequest());
+    }
 }
