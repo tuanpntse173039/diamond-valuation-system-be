@@ -34,7 +34,7 @@ public class DiamondValuationNote {
 
     @Test
     public void testSearchCertificateIdNotFound() throws Exception {
-        String certificateId = "0367304355";
+        String certificateId = "98888888";
 
         mockMvc.perform(get("/api/v1/diamond-valuation-notes/search")
                 .param("certificateId", certificateId)
