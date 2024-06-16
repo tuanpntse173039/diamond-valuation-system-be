@@ -1,6 +1,5 @@
-package com.letitbee.diamondvaluationsystem.register;
+package com.letitbee.diamondvaluationsystem;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import org.junit.jupiter.api.Test;
@@ -17,7 +16,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SignUpTest {
+public class SignUp {
     @Autowired
     private MockMvc mockMvc;
 
