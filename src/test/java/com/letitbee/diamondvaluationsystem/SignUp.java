@@ -1,8 +1,11 @@
 package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
+import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
+import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -75,4 +78,25 @@ public class SignUp {
 
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void testFirstnameBlank() throws Exception {
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("");
+        customerDTO.setLastName("testLastname");
+        customerDTO.setPhone("testPhone");
+        customerDTO.setAddress("testAddress");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(Long.valueOf(40));
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(post("/api/v1/customers")
+                        .contentType("application/json")
+                        .content(customerJson))
+                .andExpect(status().isBadRequest());
+    }
 }
