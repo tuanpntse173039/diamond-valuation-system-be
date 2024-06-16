@@ -12,7 +12,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.transaction.annotation.Transactional;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -20,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser(authorities = "CUSTOMER")
 public class ValuationRequestControllerTest {
 
     @Autowired
@@ -29,6 +33,8 @@ public class ValuationRequestControllerTest {
     private ValuationRequestService valuationRequestService;
 
     @Test
+    @Transactional
+    @Rollback
     public void testCreateValuationRequest() throws Exception {
         ValuationRequestDTO valuationRequestDTO = new ValuationRequestDTO();
         ServiceDTO serviceDTO = new ServiceDTO();
@@ -45,9 +51,10 @@ public class ValuationRequestControllerTest {
     }
 
     @Test
-    public void testCreateValuationRequest_ServiceBlank() throws Exception {
+    @Transactional
+    @Rollback
+    public void testCreateValuationRequestServiceBlank() throws Exception {
         ValuationRequestDTO valuationRequestDTO = new ValuationRequestDTO();
-        valuationRequestDTO.setService(null);
         valuationRequestDTO.setDiamondAmount(1);
         valuationRequestDTO.setCustomerID(Long.valueOf(2));
 
@@ -58,7 +65,9 @@ public class ValuationRequestControllerTest {
     }
 
     @Test
-    public void testCreateValuationRequest_QuantityZero() throws Exception {
+    @Transactional
+    @Rollback
+    public void testCreateValuationRequestQuantityZero() throws Exception {
         ValuationRequestDTO valuationRequestDTO = new ValuationRequestDTO();
         ServiceDTO serviceDTO = new ServiceDTO();
         serviceDTO.setId(1);

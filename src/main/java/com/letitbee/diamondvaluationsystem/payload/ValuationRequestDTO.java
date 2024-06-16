@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.payload;
 
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.format.annotation.NumberFormat;
 
@@ -27,6 +28,7 @@ public class ValuationRequestDTO {
     private RequestStatus status;
     private Set<PaymentDTO> payment = new HashSet<>();
     private Set<ValuationRequestDetailDTO> valuationRequestDetails = new HashSet<>();
+    @NotNull
     private ServiceDTO service;
     private Long customerID;
     private Long staffID;
