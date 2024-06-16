@@ -90,5 +90,23 @@ public class AccountServiceImpl implements AccountService {
         return "Update password successfully";
     }
 
+    @Override
+    public AccountResponse updateAccount(Long id, AccountDTO accountDTO) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
+        account.setUsername(accountDTO.getUsername());
+        account.setPassword(accountDTO.getPassword());
+        account.setRole(accountDTO.getRole());
+        account.setIs_active(accountDTO.getIs_active());
+        accountRepository.save(account);
+
+        AccountResponse newAccount = new AccountResponse();
+        newAccount.setId(account.getId());
+        newAccount.setUsername(account.getUsername());
+        newAccount.setRole(account.getRole());
+        newAccount.setIs_active(account.getIs_active());
+        return newAccount;
+    }
+
 
 }

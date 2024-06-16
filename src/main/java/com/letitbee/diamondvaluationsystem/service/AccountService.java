@@ -10,4 +10,6 @@ public interface AccountService {
     AccountResponse register(AccountDTO accountDTO);
 
     String updatePassword(String newPassword, Long id);
+
+    AccountResponse updateAccount(Long id, AccountDTO accountDTO);
 }
