@@ -55,5 +55,24 @@ public class SignUp {
                         .contentType("application/json")
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
+
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testUsernameAlreadyExists() throws Exception {
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setUsername("customer");
+        accountDTO.setPassword("testPassword");
+        accountDTO.setRole(Role.CUSTOMER);
+        String accountJson = objectMapper.writeValueAsString(accountDTO);
+
+        mockMvc.perform(post("/api/v1/accounts/signup")
+                        .contentType("application/json")
+                        .content(accountJson))
+                .andExpect(status().isBadRequest());
+
+    }
+
 }
