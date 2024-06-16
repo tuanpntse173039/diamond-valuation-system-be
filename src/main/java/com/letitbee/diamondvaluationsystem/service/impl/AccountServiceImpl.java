@@ -17,6 +17,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -82,7 +85,7 @@ public class AccountServiceImpl implements AccountService {
             }
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
-            String refreshToken = jwtTokenProvider.generateRefreshToken();
+            String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
@@ -102,7 +105,6 @@ public class AccountServiceImpl implements AccountService {
             refreshTokenCookie.setMaxAge(24 * 60 * 60 * 30);
             response.addCookie(refreshTokenCookie);
 
-            jwtAuthResponse.setRefreshToken(refreshToken);
             loginResponse.setUserToken(jwtAuthResponse);
             return loginResponse;
         }catch (BadCredentialsException ex) {
@@ -183,7 +185,7 @@ public class AccountServiceImpl implements AccountService {
         }
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
         jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
-        jwtAuthResponse.setRefreshToken(jwtTokenProvider.generateRefreshToken());
+        jwtAuthResponse.setRefreshToken(jwtTokenProvider.generateRefreshToken(authentication));
         loginResponse.setUserToken(jwtAuthResponse);
         return loginResponse;
     }
