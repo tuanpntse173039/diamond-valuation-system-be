@@ -41,32 +41,32 @@ public class ValuationRequestControllerTest {
                 .andExpect(status().isCreated());
     }
 
-//    @Test
-//    public void testCreateValuationRequest_ServiceBlank() throws Exception {
-//        ValuationRequestDTO valuationRequestDTO = new ValuationRequestDTO();
-//        valuationRequestDTO.setService(null);
-//        valuationRequestDTO.setDiamondAmount(1);
-//        valuationRequestDTO.setCustomerID(Long.valueOf(2));
-//
-//        mockMvc.perform(post("/api/v1/valuation-requests")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(new ObjectMapper().writeValueAsString(valuationRequestDTO)))
-//                .andExpect(status().isBadRequest());
-//    }
-//
-//    @Test
-//    public void testCreateValuationRequest_QuantityZero() throws Exception {
-//        ValuationRequestDTO valuationRequestDTO = new ValuationRequestDTO();
-//        ServiceDTO serviceDTO = new ServiceDTO();
-//        serviceDTO.setId(1);
-//        valuationRequestDTO.setService(serviceDTO);
-//        valuationRequestDTO.setDiamondAmount(0);
-//        valuationRequestDTO.setCustomerID(Long.valueOf(2));
-//
-//        mockMvc.perform(post("/api/v1/valuation-requests")
-//                .contentType(MediaType.APPLICATION_JSON)
-//                .content(new ObjectMapper().writeValueAsString(valuationRequestDTO)))
-//                .andExpect(status().isBadRequest());
-//    }
+    @Test
+    public void testCreateValuationRequest_ServiceBlank() throws Exception {
+        ValuationRequestDTO valuationRequestDTO = new ValuationRequestDTO();
+        valuationRequestDTO.setService(null);
+        valuationRequestDTO.setDiamondAmount(1);
+        valuationRequestDTO.setCustomerID(Long.valueOf(2));
+
+        mockMvc.perform(post("/api/v1/valuation-requests")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(valuationRequestDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    public void testCreateValuationRequest_QuantityZero() throws Exception {
+        ValuationRequestDTO valuationRequestDTO = new ValuationRequestDTO();
+        ServiceDTO serviceDTO = new ServiceDTO();
+        serviceDTO.setId(1);
+        valuationRequestDTO.setService(serviceDTO);
+        valuationRequestDTO.setDiamondAmount(0);
+        valuationRequestDTO.setCustomerID(Long.valueOf(2));
+
+        mockMvc.perform(post("/api/v1/valuation-requests")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(new ObjectMapper().writeValueAsString(valuationRequestDTO)))
+                .andExpect(status().isBadRequest());
+    }
 
 }
