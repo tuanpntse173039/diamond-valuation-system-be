@@ -188,4 +188,27 @@ public class SignUp {
                         .content(customerJson))
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testEmailInvalid() throws Exception {
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("John");
+        customerDTO.setLastName("Doe");
+        customerDTO.setPhone("1234567890");
+        customerDTO.setAddress("testAddress");
+        customerDTO.setEmail("invalid-email"); // Invalid email
+        customerDTO.setIdentityDocument("123456789012");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(40L);
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(post("/api/v1/customers")
+                        .contentType("application/json")
+                        .content(customerJson))
+                .andExpect(status().isBadRequest());
+    }
 }
