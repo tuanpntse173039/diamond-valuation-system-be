@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,12 +24,31 @@ public class SignUp {
     @Autowired
     private ObjectMapper objectMapper;
 
+
     @Test
     @Transactional
     @Rollback
     public void testUsernameBlank() throws Exception {
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setUsername("");
+        accountDTO.setPassword("testPassword");
+        accountDTO.setRole(Role.CUSTOMER);
+        String accountJson = objectMapper.writeValueAsString(accountDTO);
+
+        mockMvc.perform(post("/api/v1/accounts/signup")
+                        .contentType("application/json")
+                        .content(accountJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testUsernameIsNot6To24CharacterS() throws Exception {
+        AccountDTO accountDTO = new AccountDTO();
+        accountDTO.setUsername("test5");
+        accountDTO.setPassword("testPassword");
+        accountDTO.setRole(Role.CUSTOMER);
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
         mockMvc.perform(post("/api/v1/accounts/signup")
