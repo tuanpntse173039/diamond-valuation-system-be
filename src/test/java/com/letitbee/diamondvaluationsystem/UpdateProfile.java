@@ -79,6 +79,30 @@ public class UpdateProfile {
     @Test
     @Transactional
     @Rollback
+    public void testFirstNameIsContainNumberOrSpecialCharacter() throws Exception {
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("d@nny1");
+        customerDTO.setLastName("testLastname");
+        customerDTO.setPhone("testPhone");
+        customerDTO.setAddress("testAddress");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(Long.valueOf(1));
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(put("/api/v1/customers/1")
+                        .contentType("application/json")
+                        .content(customerJson))
+                .andExpect(status().isBadRequest());
+    }
+
+
+
+    @Test
+    @Transactional
+    @Rollback
     public void testLastNameBlank() throws Exception {
 
         CustomerDTO customerDTO = new CustomerDTO();
@@ -101,19 +125,113 @@ public class UpdateProfile {
     @Test
     @Transactional
     @Rollback
-    public void testUsernameAlreadyExists() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setUsername("customer");
-        accountDTO.setPassword("testPassword");
-        accountDTO.setRole(Role.CUSTOMER);
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
+    public void testLastNameIsNot2To24CharacterS() throws Exception {
 
-        mockMvc.perform(post("/api/v1/accounts/signup")
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("testFirstname");
+        customerDTO.setLastName("t");
+        customerDTO.setPhone("testPhone");
+        customerDTO.setAddress("testAddress");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(Long.valueOf(1));
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(put("/api/v1/customers/1")
                         .contentType("application/json")
-                        .content(accountJson))
+                        .content(customerJson))
                 .andExpect(status().isBadRequest());
 
     }
 
+    @Test
+    @Transactional
+    @Rollback
+    public void testLastNameIsContainNumberOrSpecialCharacter() throws Exception {
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("testFirstname");
+        customerDTO.setLastName("d@nny1");
+        customerDTO.setPhone("testPhone");
+        customerDTO.setAddress("testAddress");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(Long.valueOf(1));
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(put("/api/v1/customers/1")
+                        .contentType("application/json")
+                        .content(customerJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testPhoneBlank() throws Exception {
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("testFirstname");
+        customerDTO.setLastName("testLastname");
+        customerDTO.setPhone(null);
+        customerDTO.setAddress("testAddress");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(Long.valueOf(1));
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(put("/api/v1/customers/1")
+                        .contentType("application/json")
+                        .content(customerJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testPhoneIsNot10Digits() throws Exception {
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("testFirstname");
+        customerDTO.setLastName("testLastname");
+        customerDTO.setPhone("123456789");
+        customerDTO.setAddress("testAddress");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(Long.valueOf(1));
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(put("/api/v1/customers/1")
+                        .contentType("application/json")
+                        .content(customerJson))
+                .andExpect(status().isBadRequest());
+
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testPhoneIsContainCharacter() throws Exception {
+
+        CustomerDTO customerDTO = new CustomerDTO();
+        customerDTO.setFirstName("testFirstname");
+        customerDTO.setLastName("testLastname");
+        customerDTO.setPhone("123456789a");
+        customerDTO.setAddress("testAddress");
+        AccountResponse accountResponse = new AccountResponse();
+        accountResponse.setId(Long.valueOf(1));
+        customerDTO.setAccount(accountResponse);
+
+        String customerJson = objectMapper.writeValueAsString(customerDTO);
+
+        mockMvc.perform(put("/api/v1/customers/1")
+                        .contentType("application/json")
+                        .content(customerJson))
+                .andExpect(status().isBadRequest());
+    }
 
 }
