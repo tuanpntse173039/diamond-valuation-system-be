@@ -36,15 +36,15 @@ public class DiamondValuationNoteControllerTest {
                 .andExpect(status().isOk());
     }
 
-//    @Test
-//    public void testGetAllDiamondValuationNoteByCertificateId_NotNumeric() throws Exception {
-//        String certificateId = "notNumeric";
-//
-//        mockMvc.perform(get("/api/v1/diamond-valuation-notes/search")
-//                .param("certificateId", certificateId)
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
+    @Test
+    public void testGetAllDiamondValuationNoteByCertificateId_NotNumeric() throws Exception {
+        String certificateId = "notNumeric";
+
+        mockMvc.perform(get("/api/v1/diamond-valuation-notes/search")
+                .param("certificateId", certificateId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 //
 //    @Test
 //    public void testGetAllDiamondValuationNoteByCertificateId_Not10Digits() throws Exception {
