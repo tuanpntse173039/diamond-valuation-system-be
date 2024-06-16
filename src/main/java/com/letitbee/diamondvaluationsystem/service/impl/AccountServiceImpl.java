@@ -1,40 +1,53 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Account;
+import com.letitbee.diamondvaluationsystem.entity.Customer;
+import com.letitbee.diamondvaluationsystem.entity.Staff;
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
+import com.letitbee.diamondvaluationsystem.exception.CredentialsException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
-import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
-import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
+import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
-//import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
+import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
+import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
+import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
-//import org.springframework.security.crypto.password.PasswordEncoder;
-//import org.springframework.security.authentication.AuthenticationManager;
-//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class AccountServiceImpl implements AccountService {
     private AccountRepository accountRepository;
-//    private PasswordEncoder passwordEncoder;
-//    private JwtTokenProvider jwtTokenProvider;
-//    private AuthenticationManager authenticationManager;
+    private PasswordEncoder passwordEncoder;
+    private JwtTokenProvider jwtTokenProvider;
+    private AuthenticationManager authenticationManager;
+    private CustomerRepository customerRepository;
+    private StaffRepository staffRepository;
 
     private ModelMapper mapper;
 
-    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper
-                              //JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager,
-                             /* PasswordEncoder passwordEncoder*/) {
+    public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper,
+                              JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager,
+                              PasswordEncoder passwordEncoder, CustomerRepository customerRepository, StaffRepository staffRepository) {
         this.accountRepository = accountRepository;
         this.mapper = mapper;
-//        this.jwtTokenProvider = jwtTokenProvider;
-//        this.authenticationManager = authenticationManager;
-//        this.passwordEncoder = passwordEncoder;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.authenticationManager = authenticationManager;
+        this.passwordEncoder = passwordEncoder;
+        this.customerRepository = customerRepository;
+        this.staffRepository = staffRepository;
     }
     private AccountDTO mapToDto(Account account){
         AccountDTO accountDto = mapper.map(account, AccountDTO.class);
@@ -45,6 +58,7 @@ public class AccountServiceImpl implements AccountService {
         Account account = mapper.map(accountDto, Account.class);
         return account;
     }
+
     @Override
     public LoginResponse login(HttpServletRequest request, HttpServletResponse response, AccountDTO accountDTO) {
 
@@ -93,6 +107,12 @@ public class AccountServiceImpl implements AccountService {
         }
     }
 
+
+    @Override
+    public String login(AccountDTO accountDTO) {
+        return null;
+    }
+
     @Override
     public AccountResponse register(AccountDTO accountDTO) {
         //add check for username exists in database
@@ -103,8 +123,8 @@ public class AccountServiceImpl implements AccountService {
         //save account to db
         Account account = new Account();
         account.setUsername(accountDTO.getUsername());
-//        account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
-        account.setPassword(accountDTO.getPassword());
+        account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
+//        account.setPassword(accountDTO.getPassword());
         account.setRole(accountDTO.getRole());
         account.setIs_active(true);
         account = accountRepository.save(account);
