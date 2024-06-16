@@ -1,7 +1,6 @@
 package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
@@ -10,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@WithMockUser
 public class SignUp {
     @Autowired
     private MockMvc mockMvc;
@@ -38,7 +39,7 @@ public class SignUp {
         accountDTO.setRole(Role.CUSTOMER);
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
-        mockMvc.perform(post("/api/v1/accounts/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType("application/json")
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
@@ -54,7 +55,7 @@ public class SignUp {
         accountDTO.setRole(Role.CUSTOMER);
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
-        mockMvc.perform(post("/api/v1/accounts/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType("application/json")
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
@@ -71,7 +72,7 @@ public class SignUp {
         accountDTO.setRole(Role.CUSTOMER);
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
-        mockMvc.perform(post("/api/v1/accounts/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType("application/json")
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
@@ -266,7 +267,7 @@ public class SignUp {
         accountDTO.setRole(Role.CUSTOMER);
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
-        mockMvc.perform(post("/api/v1/accounts/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType("application/json")
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
@@ -282,7 +283,7 @@ public class SignUp {
         accountDTO.setRole(Role.CUSTOMER);
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
-        mockMvc.perform(post("/api/v1/accounts/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType("application/json")
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
@@ -298,7 +299,7 @@ public class SignUp {
         accountDTO.setRole(Role.CUSTOMER);
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
-        mockMvc.perform(post("/api/v1/accounts/signup")
+        mockMvc.perform(post("/api/v1/auth/signup")
                         .contentType("application/json")
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
