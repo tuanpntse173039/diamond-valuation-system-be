@@ -21,6 +21,7 @@ public class CustomerDTO {
       @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name must contain only letters")
       private String lastName;
       @Email(message = "Invalid email address")
+      @NotEmpty(message = "Email cannot be empty")
       private String email;
       @NotEmpty(message = "Phone number cannot be empty")
       @Size(min = 10, max = 10, message = "Phone number must be exactly 10 digits")
