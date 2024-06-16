@@ -33,7 +33,6 @@ public class ValuationRequestControllerTest {
         valuationRequestDTO.setService(serviceDTO);
         valuationRequestDTO.setDiamondAmount(1);
         valuationRequestDTO.setCustomerID(Long.valueOf(2));
-
         when(valuationRequestService.createValuationRequest(valuationRequestDTO)).thenReturn(valuationRequestDTO);
 
         mockMvc.perform(post("/api/v1/valuation-requests")
