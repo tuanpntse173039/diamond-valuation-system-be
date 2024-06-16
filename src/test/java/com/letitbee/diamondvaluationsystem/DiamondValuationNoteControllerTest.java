@@ -45,14 +45,14 @@ public class DiamondValuationNoteControllerTest {
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
-//
-//    @Test
-//    public void testGetAllDiamondValuationNoteByCertificateId_Not10Digits() throws Exception {
-//        String certificateId = "12345";
-//
-//        mockMvc.perform(get("/api/v1/diamond-valuation-notes/search")
-//                .param("certificateId", certificateId)
-//                .contentType(MediaType.APPLICATION_JSON))
-//                .andExpect(status().isBadRequest());
-//    }
+
+    @Test
+    public void testGetAllDiamondValuationNoteByCertificateId_Not10Digits() throws Exception {
+        String certificateId = "12345";
+
+        mockMvc.perform(get("/api/v1/diamond-valuation-notes/search")
+                .param("certificateId", certificateId)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
 }
