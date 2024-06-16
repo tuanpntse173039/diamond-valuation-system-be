@@ -7,6 +7,7 @@ import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -19,7 +20,7 @@ public class DiamondValuationAssignController {
         this.diamondValuationAssignService = diamondValuationAssignService;
     }
 
-//    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<DiamondValuationAssignDTO> createDiamondValuationAssign
             (@RequestBody DiamondValuationAssignDTO diamondValuationAssignDTO) {
@@ -27,7 +28,7 @@ public class DiamondValuationAssignController {
                 HttpStatus.CREATED);
     }
 
-//    @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<DiamondValuationAssignDTO> updateDiamondValuationAssign
             (@PathVariable("id") long id,

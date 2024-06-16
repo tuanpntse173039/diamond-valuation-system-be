@@ -6,6 +6,7 @@ import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public class ServicePriceListController
         return new ResponseEntity<>(servicePriceListService.getServicePriceListById(id), HttpStatus.OK);
     }
 
-//    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
     @PostMapping()
     public ResponseEntity<ServicePriceListDTO> createServicePriceList(@RequestBody @Valid ServicePriceListDTO servicePriceListDto) {
         return new ResponseEntity<>(servicePriceListService.createServicePriceList(servicePriceListDto), HttpStatus.CREATED);
