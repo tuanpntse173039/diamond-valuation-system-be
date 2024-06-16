@@ -1,14 +1,12 @@
 package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.letitbee.diamondvaluationsystem.controller.ValuationRequestController;
 import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -24,7 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(authorities = "CUSTOMER")
-public class ValuationRequestControllerTest {
+public class ValuationRequest {
 
     @Autowired
     private MockMvc mockMvc;
