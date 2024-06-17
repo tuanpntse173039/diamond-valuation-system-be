@@ -55,8 +55,15 @@ public class AuthController {
 
     //register Customer
     @PostMapping(value = {"/register", "/signup"})
-    public ResponseEntity<AccountResponse> register(@RequestBody @Valid AccountDTO accountDTO){
-        AccountResponse response = accountService.register(accountDTO);
+    public ResponseEntity<AccountResponse> register(@RequestBody @Valid CustomerRegisterDTO customerRegisterDTO){
+        AccountResponse response = accountService.register(customerRegisterDTO);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    //register Staff
+    @PostMapping(value = {"/register-staff", "/signup-staff"})
+    public ResponseEntity<AccountResponse> registerStaff(@RequestBody @Valid StaffRegisterDTO staffRegisterDTO){
+        AccountResponse response = accountService.registerStaff(staffRegisterDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 

@@ -115,20 +115,65 @@ public class AccountServiceImpl implements AccountService {
 
 
     @Override
-    public AccountResponse register(AccountDTO accountDTO) {
+    public AccountResponse register(CustomerRegisterDTO customerRegisterDTO) {
         //add check for username exists in database
-        if (accountRepository.existsByUsername(accountDTO.getUsername())){
+        if (accountRepository.existsByUsername(customerRegisterDTO.getUsername())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Account is already taken");
         }
 
         //save account to db
         Account account = new Account();
-        account.setUsername(accountDTO.getUsername());
-        account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
-        account.setRole(accountDTO.getRole());
+        account.setUsername(customerRegisterDTO.getUsername());
+        account.setPassword(passwordEncoder.encode(customerRegisterDTO.getPassword()));
+        account.setRole(Role.CUSTOMER);
         account.setIs_active(true);
-        account.setEmail(accountDTO.getEmail());
+        account.setEmail(customerRegisterDTO.getEmail());
         account = accountRepository.save(account);
+
+        //save customer to db
+        Customer customer = new Customer();
+        customer.setFirstName(customerRegisterDTO.getFirstName());
+        customer.setLastName(customerRegisterDTO.getLastName());
+        customer.setPhone(customerRegisterDTO.getPhone());
+        customer.setAddress(customerRegisterDTO.getAddress());
+        customer.setIdentityDocument(customerRegisterDTO.getIdentityDocument());
+        customer.setAvatar(customerRegisterDTO.getAvatar());
+        customer.setAccount(account);
+        customerRepository.save(customer);
+        //return account to client without password
+        AccountResponse newAccount = new AccountResponse();
+        newAccount.setId(account.getId());
+        newAccount.setUsername(account.getUsername());
+        newAccount.setRole(account.getRole());
+        newAccount.setIs_active(account.getIs_active());
+        newAccount.setEmail(account.getEmail());
+        return newAccount;
+    }
+
+    @Override
+    public AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO) {
+        if (accountRepository.existsByUsername(staffRegisterDTO.getUsername())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Account is already taken");
+        }
+
+        //save account to db
+        Account account = new Account();
+        account.setUsername(staffRegisterDTO.getUsername());
+        account.setPassword(passwordEncoder.encode(staffRegisterDTO.getPassword()));
+        account.setRole(staffRegisterDTO.getRole());
+        account.setIs_active(true);
+        account.setEmail(staffRegisterDTO.getEmail());
+        account = accountRepository.save(account);
+
+        //save customer to db
+        Staff staff = new Staff();
+        staff.setFirstName(staffRegisterDTO.getFirstName());
+        staff.setLastName(staffRegisterDTO.getLastName());
+        staff.setPhone(staffRegisterDTO.getPhone());
+        staff.setExperience(staffRegisterDTO.getExperience());
+        staff.setCertificateLink(staffRegisterDTO.getCertificateLink());
+        staff.setAccount(account);
+        staffRepository.save(staff);
 
         //return account to client without password
         AccountResponse newAccount = new AccountResponse();
