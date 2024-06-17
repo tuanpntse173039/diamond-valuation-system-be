@@ -1,9 +1,12 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestResponseV2;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
+import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import jakarta.validation.Valid;
 import org.springframework.data.repository.query.Param;
@@ -19,18 +22,22 @@ import java.util.List;
 @RequestMapping("api/v1/staffs")
 public class StaffController {
     private StaffService staffService;
+    private ValuationRequestService valuationRequestService;
 
-    public StaffController(StaffService staffService) {
+    public StaffController(StaffService staffService, ValuationRequestService valuationRequestService) {
         this.staffService = staffService;
+        this.valuationRequestService = valuationRequestService;
     }
 
     @PreAuthorize("hasAnyAuthority('MANAGER')")
     @GetMapping
-    public ResponseEntity<Response<StaffDTO>> getAllStaffs(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
-                                                 @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
-                                                 @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
-                                                 @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir) {
-        return new ResponseEntity<>(staffService.getAllStaffs(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
+    public ResponseEntity<Response<StaffDTO>> getAllStaffs
+            (@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+             @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
+             @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
+             @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+             @RequestParam(name = "role", required = false) Role role) {
+        return new ResponseEntity<>(staffService.getAllStaffs(pageNo, pageSize, sortBy, sortDir, role), HttpStatus.OK);
     }
 
     @GetMapping("/search")
@@ -59,6 +66,18 @@ public class StaffController {
         staffService.deleteStaffById(id);
         return new ResponseEntity<>("Staff deleted successfully", HttpStatus.OK);
     }
+    @PreAuthorize("hasAnyAuthority('MANAGER' , 'CONSULTANT_STAFF')")
+    @GetMapping("/{id}/valuation-requests")
+    public ResponseEntity<Response<ValuationRequestResponseV2>> getValuationRequestResponseByStaff(
+            @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+            @PathVariable("id") Long staffId){
+        return new ResponseEntity<>(valuationRequestService.
+                getValuationRequestResponseByStaff(pageNo, pageSize, sortBy, sortDir,staffId), HttpStatus.OK);
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<StaffDTO> getStaffById(@PathVariable("id") Long id) {

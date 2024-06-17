@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.*;
@@ -148,9 +149,43 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<ValuationRequest> page;
-        if(status != null){
+        if(status != null ){
             page = valuationRequestRepository.findAllByStatus(status, pageable);
-        } else {
+        }else {
+            page = valuationRequestRepository.findAll(pageable);
+        }
+
+        List<ValuationRequest> valuationRequests = page.getContent();
+
+        List<ValuationRequestResponseV2> listDTO = valuationRequests.
+                stream().
+                map(valuationRequest -> this.mapToResponse(valuationRequest, ValuationRequestResponseV2.class)).collect(Collectors.toList());
+
+        Response<ValuationRequestResponseV2> response = new Response<>();
+
+        response.setContent(listDTO);
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalPage(page.getTotalPages());
+        response.setTotalElement(page.getTotalElements());
+        response.setLast(page.isLast());
+
+        return response;
+    }
+
+    @Override
+    public Response<ValuationRequestResponseV2> getValuationRequestResponseByStaff(
+            int pageNo, int pageSize, String sortBy, String sortDir, Long staffId) {
+
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
+        //Set size page and pageNo
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<ValuationRequest> page;
+
+        Staff staff = staffRepository.findById(staffId).orElse(null);
+        if(staffId != null && staff != null && staff.getAccount().getRole().equals(Role.CONSULTANT_STAFF)){
+            page = valuationRequestRepository.findValuationRequestByStaff_Id(staffId, pageable);
+        }else {
             page = valuationRequestRepository.findAll(pageable);
         }
 
