@@ -26,7 +26,7 @@ public class StaffController {
         this.valuationRequestService = valuationRequestService;
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'VALUATION_STAFF')")
     @GetMapping
     public ResponseEntity<Response<StaffDTO>> getAllStaffs
             (@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,

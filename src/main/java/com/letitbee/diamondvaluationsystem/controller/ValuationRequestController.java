@@ -54,7 +54,7 @@ public class ValuationRequestController {
         return new ResponseEntity<>(valuationRequestService.createValuationRequest(valuationRequestDT), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CUSTOMER', 'CONSULTANT_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<ValuationRequestDTO> updateValuationRequest(
             @PathVariable("id") long id,
