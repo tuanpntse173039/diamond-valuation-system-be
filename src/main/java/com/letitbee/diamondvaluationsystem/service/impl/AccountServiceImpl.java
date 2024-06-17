@@ -70,10 +70,10 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
+                    new UsernamePasswordAuthenticationToken(accountDTO.getUsernameOrEmail(), accountDTO.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            Account account = accountRepository.findByUsername(accountDTO.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsername()));
+            Account account = accountRepository.findByUsernameOrEmail(accountDTO.getUsernameOrEmail(), accountDTO.getUsernameOrEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsernameOrEmail()));
             LoginResponse loginResponse = new LoginResponse();
 
             if (account.getRole().equals(Role.CUSTOMER)) {

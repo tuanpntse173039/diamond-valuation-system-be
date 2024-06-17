@@ -19,4 +19,5 @@ public class AccountDTO {
     private String email;
     private Boolean is_active;
     private Role role;
+    private String usernameOrEmail;
 }
