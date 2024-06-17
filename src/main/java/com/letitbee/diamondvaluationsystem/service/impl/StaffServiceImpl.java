@@ -162,11 +162,6 @@ public class StaffServiceImpl implements StaffService {
     //convert Entity to DTO
     private StaffDTO mapToDto(Staff staff){
         StaffDTO staffDto = mapper.map(staff, StaffDTO.class);
-        Set<Long> valuationRequestList = valuationRequestRepository.findAllByStaff(staff);
-        staffDto.setValuationRequestIDSet(valuationRequestList);
-        Set<Long> diamondValuationAssignList = diamondValuationAssignRepository.findAllByStaff(staff);
-        staffDto.setDiamondValuationAssignIDSet(diamondValuationAssignList);
-
         int countProject = 0;
         int countCurrentProject = 0;
         if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.CONSULTANT_STAFF.toString())) {
