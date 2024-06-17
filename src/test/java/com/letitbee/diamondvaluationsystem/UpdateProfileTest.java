@@ -1,9 +1,6 @@
 package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.letitbee.diamondvaluationsystem.entity.Customer;
-import com.letitbee.diamondvaluationsystem.enums.Role;
-import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import org.junit.jupiter.api.Test;
@@ -23,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(authorities = {"CUSTOMER"})
-public class UpdateProfile {
+public class UpdateProfileTest {
     @Autowired
     private MockMvc mockMvc;
 
