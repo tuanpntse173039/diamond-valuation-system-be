@@ -56,7 +56,13 @@ public class StaffServiceImpl implements StaffService {
         //create Pageable intance
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
-        Page<Staff> staffs = staffRepository.findStaffByRole(role,pageable);        //get content for page obj
+        Page<Staff> staffs = null;
+        if(role != null) {
+            staffs = staffRepository.findStaffByRole(role, pageable);        //get content for page obj
+        }else {
+            staffs = staffRepository.findAll(pageable);
+        }
+
         List<Staff> listOfStaff = staffs.getContent();
         List<StaffDTO> content =  listOfStaff.stream().map(staff -> mapToDto(staff)).collect(Collectors.toList());
 
