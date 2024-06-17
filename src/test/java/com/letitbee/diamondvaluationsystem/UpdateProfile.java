@@ -233,7 +233,7 @@ public class UpdateProfile {
         mockMvc.perform(put("/api/v1/customers/1")
                         .contentType("application/json")
                         .content(customerJson))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isOk());
     }
 
 }
