@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.service;
 
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 
 import java.util.List;
 
@@ -17,4 +18,7 @@ public interface StaffService {
     StaffDTO createStaffInformation(StaffDTO staffDto);
 
     void deleteStaffById(Long id);
+
+    Response<ValuationRequestDetailDTO> getAllValuationRequestDetailByStaff(Long staffID, int pageNo, int pageSize, String sortBy, String sortDir);
+
 }

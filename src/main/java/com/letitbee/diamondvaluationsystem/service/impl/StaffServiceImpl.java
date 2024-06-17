@@ -3,15 +3,14 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
-import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
-import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
-import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
+import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -34,20 +33,18 @@ public class StaffServiceImpl implements StaffService {
     private ValuationRequestRepository valuationRequestRepository;
 
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
+    private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private ModelMapper mapper;
 
-    public StaffServiceImpl(StaffRepository staffRepository,
-                            AccountRepository accountRepository,
-                            ValuationRequestRepository valuationRequestRepository,
-                            DiamondValuationAssignRepository diamondValuationAssignRepository,
-                            ModelMapper mapper) {
+    public StaffServiceImpl(StaffRepository staffRepository, AccountRepository accountRepository, ValuationRequestRepository valuationRequestRepository,
+                            DiamondValuationAssignRepository diamondValuationAssignRepository, ValuationRequestDetailRepository valuationRequestDetailRepository, ModelMapper mapper) {
         this.staffRepository = staffRepository;
         this.accountRepository = accountRepository;
         this.valuationRequestRepository = valuationRequestRepository;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
+        this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.mapper = mapper;
     }
-
     @Override
     public Response getAllStaffs(int pageNo, int pageSize, String sortBy, String sortDir) {
 
@@ -131,6 +128,29 @@ public class StaffServiceImpl implements StaffService {
         accountWithStaffID.setIs_active(false);
         accountRepository.save(accountWithStaffID);
     }
+
+    @Override
+    public Response<ValuationRequestDetailDTO> getAllValuationRequestDetailByStaff(Long staffID, int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
+        Page<ValuationRequestDetail> details = valuationRequestDetailRepository.findAllByValuationStaff(staffID, pageable);
+        //get content for page obj
+        List<ValuationRequestDetail> listOfDetail = details.getContent();
+        List<ValuationRequestDetailDTO> content =  listOfDetail.stream().map(valuationRequestDetail ->
+                mapper.map(valuationRequestDetail, ValuationRequestDetailDTO.class)).collect(Collectors.toList());
+
+        Response<ValuationRequestDetailDTO> detailResponse = new Response<>();
+
+        detailResponse.setContent(content);
+        detailResponse.setPageNumber(details.getNumber());
+        detailResponse.setPageSize(details.getSize());
+        detailResponse.setTotalElement(details.getTotalElements());
+        detailResponse.setTotalPage(details.getTotalPages());
+        detailResponse.setLast(details.isLast());
+
+        return detailResponse;
+    }
+
 
     //convert Entity to DTO
     private StaffDTO mapToDto(Staff staff){
