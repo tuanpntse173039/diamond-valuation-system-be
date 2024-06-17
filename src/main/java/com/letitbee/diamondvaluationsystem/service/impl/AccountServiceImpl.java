@@ -125,9 +125,9 @@ public class AccountServiceImpl implements AccountService {
         Account account = new Account();
         account.setUsername(accountDTO.getUsername());
         account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
-//        account.setPassword(accountDTO.getPassword());
         account.setRole(accountDTO.getRole());
         account.setIs_active(true);
+        account.setEmail(accountDTO.getEmail());
         account = accountRepository.save(account);
 
         //return account to client without password
@@ -136,6 +136,7 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setUsername(account.getUsername());
         newAccount.setRole(account.getRole());
         newAccount.setIs_active(account.getIs_active());
+        newAccount.setEmail(account.getEmail());
         return newAccount;
     }
 

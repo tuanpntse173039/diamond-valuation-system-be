@@ -1,10 +1,7 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
 import com.letitbee.diamondvaluationsystem.enums.Role;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
@@ -16,6 +13,9 @@ public class AccountDTO {
     @NotEmpty(message = "Password cannot be empty")
     @Pattern(regexp = "^(?=.*[0-9]).{6,24}$", message = "Password must contain at least one numeric digit")
     @Size(min = 6, max = 24, message = "Password must be between 6 and 24 characters")
+    @NotEmpty(message = "Email cannot be empty")
+    @Email(message = "Invalid email")
+    private String email;
     private String password;
     private Boolean is_active;
     private Role role;

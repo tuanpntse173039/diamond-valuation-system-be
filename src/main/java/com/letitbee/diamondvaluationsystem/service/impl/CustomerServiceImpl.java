@@ -85,7 +85,6 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
         customer.setAddress(customerDto.getAddress());
         customer.setAvatar(customerDto.getAvatar());
         customer.setIdentityDocument(customerDto.getIdentityDocument());
@@ -102,7 +101,6 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
         customer.setAddress(customerDto.getAddress());
         customer.setAvatar(customerDto.getAvatar());
         customer.setIdentityDocument(customerDto.getIdentityDocument());

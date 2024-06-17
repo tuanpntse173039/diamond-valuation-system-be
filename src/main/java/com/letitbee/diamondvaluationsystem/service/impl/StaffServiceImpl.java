@@ -54,13 +54,7 @@ public class StaffServiceImpl implements StaffService {
         //create Pageable intance
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
-        Page<Staff> staffs = null;
-        if(role != null) {
-            staffs = staffRepository.findStaffByRole(role, pageable);        //get content for page obj
-        }else {
-            staffs = staffRepository.findAll(pageable);
-        }
-
+        Page<Staff> staffs = staffRepository.findStaffByRole(role, pageable);
         List<Staff> listOfStaff = staffs.getContent();
         List<StaffDTO> content =  listOfStaff.stream().map(staff -> mapToDto(staff)).collect(Collectors.toList());
 
@@ -106,7 +100,6 @@ public class StaffServiceImpl implements StaffService {
         staff.setPhone(staffDto.getPhone());
         staff.setExperience(staffDto.getExperience());
         staff.setCertificateLink(staffDto.getCertificateLink());
-        staff.setEmail(staffDto.getEmail());
 
         return mapToDto(staffRepository.save(staff));
     }
@@ -122,7 +115,6 @@ public class StaffServiceImpl implements StaffService {
         staff.setPhone(staffDto.getPhone());
         staff.setExperience(staffDto.getExperience());
         staff.setCertificateLink(staffDto.getCertificateLink());
-        staff.setEmail(staffDto.getEmail());
         staff.setAccount(account);
 
         return mapToDto(staffRepository.save(staff));
