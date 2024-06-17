@@ -24,7 +24,7 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
     @Query("SELECT s " +
             "FROM Staff s " +
             "INNER JOIN  Account a ON s.account = a " +
-            "WHERE a.role = :role ")
+            "WHERE a.role = :role or :role IS NULL ")
     Page<Staff> findStaffByRole(Role role, org.springframework.data.domain.Pageable pageable);
 
     @Query("Select v " +
