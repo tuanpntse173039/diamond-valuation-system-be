@@ -37,7 +37,7 @@ public class ManageAccount {
     public void testNewPasswordBlank() throws Exception {
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setUsername(accountRepository.findById(1L).get().getUsername());
-        accountDTO.setPassword(null);
+        accountDTO.setPassword("");
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
         mockMvc.perform(put("/api/v1/accounts/password/1")
@@ -82,7 +82,7 @@ public class ManageAccount {
     public void testConfirmPasswordBlank() throws Exception {
         AccountDTO accountDTO = new AccountDTO();
         accountDTO.setUsername(accountRepository.findById(1L).get().getUsername());
-        accountDTO.setPassword(null);
+        accountDTO.setPassword("");
         String accountJson = objectMapper.writeValueAsString(accountDTO);
 
         mockMvc.perform(put("/api/v1/accounts/password/1")

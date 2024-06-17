@@ -32,7 +32,7 @@ public class BlogManagement {
     @Rollback
     public void testCreateTitleBlank() throws Exception {
         PostDTO postDTO = new PostDTO();
-        postDTO.setTitle(null);
+        postDTO.setTitle("");
         postDTO.setContent("testContent");
         postDTO.setCreationDate(new Date());
         postDTO.setDescription("testDescription");
@@ -55,7 +55,7 @@ public class BlogManagement {
         postDTO.setTitle("t");
         postDTO.setContent("testContent");
         postDTO.setCreationDate(new Date());
-        postDTO.setDescription(null);
+        postDTO.setDescription("");
         postDTO.setPublishedDate(new Date());
         postDTO.setReference("https://www.test.com");
         postDTO.setThumbnail("testThumbnail");
@@ -77,7 +77,7 @@ public class BlogManagement {
         postDTO.setCreationDate(new Date());
         postDTO.setDescription("testDescription");
         postDTO.setPublishedDate(new Date());
-        postDTO.setReference(null);
+        postDTO.setReference("");
         postDTO.setThumbnail("testThumbnail");
         String postJson = objectMapper.writeValueAsString(postDTO);
 
@@ -113,7 +113,7 @@ public class BlogManagement {
     public void testCreateContextBlank() throws Exception {
         PostDTO postDTO = new PostDTO();
         postDTO.setTitle("testTitle");
-        postDTO.setContent(null);
+        postDTO.setContent("null");
         postDTO.setCreationDate(new Date());
         postDTO.setDescription("testDescription");
         postDTO.setPublishedDate(new Date());

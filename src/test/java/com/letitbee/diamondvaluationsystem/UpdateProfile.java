@@ -37,7 +37,7 @@ public class UpdateProfile {
     public void testFirstnameBlank() throws Exception {
 
         CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setFirstName(null);
+        customerDTO.setFirstName("");
         customerDTO.setLastName("testLastname");
         customerDTO.setPhone("testPhone");
         customerDTO.setAddress("testAddress");
@@ -109,7 +109,7 @@ public class UpdateProfile {
 
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName("testFirstname");
-        customerDTO.setLastName(null);
+        customerDTO.setLastName("");
         customerDTO.setPhone("testPhone");
         customerDTO.setAddress("testAddress");
         AccountResponse accountResponse = new AccountResponse();
@@ -177,7 +177,7 @@ public class UpdateProfile {
         CustomerDTO customerDTO = new CustomerDTO();
         customerDTO.setFirstName("testFirstname");
         customerDTO.setLastName("testLastname");
-        customerDTO.setPhone(null);
+        customerDTO.setPhone("");
         customerDTO.setAddress("testAddress");
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(Long.valueOf(1));

@@ -30,7 +30,7 @@ public class ServiceManagement {
     @Rollback
     public void testServiceNameBlank() throws Exception {
         ServiceDTO serviceDTO = new ServiceDTO();
-        serviceDTO.setName(null);
+        serviceDTO.setName("");
         serviceDTO.setDescription("testDescription");
         serviceDTO.setPeriod(1);
         String serviceJson = objectMapper.writeValueAsString(serviceDTO);
