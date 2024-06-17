@@ -3,11 +3,13 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
@@ -130,6 +132,31 @@ public class StaffServiceImpl implements StaffService {
         Account accountWithStaffID =  staff.getAccount();
         accountWithStaffID.setIs_active(false);
         accountRepository.save(accountWithStaffID);
+    }
+
+    @Override
+    public Response<ValuationRequestDetailDTO> getAllValuationRequestsByStaffId(Long staffId, int pageNo, int pageSize, String sortBy, String sortDir) {
+
+
+        //create Pageable intance
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
+        Page<ValuationRequestDetail> valuationRequestDetails = staffRepository.findAllByValuationStaff(staffId, pageable);
+        //get content for page obj
+        List<ValuationRequestDetail> listOfValuationRequestDetails = valuationRequestDetails.getContent();
+        List<ValuationRequestDetailDTO> content =  listOfValuationRequestDetails.stream().map(valuationRequestDetail ->
+                mapper.map(valuationRequestDetail, ValuationRequestDetailDTO.class)).collect(Collectors.toList());
+
+        Response<ValuationRequestDetailDTO> valuationRequestDetailResponse = new Response<>();
+
+        valuationRequestDetailResponse.setContent(content);
+        valuationRequestDetailResponse.setPageNumber(valuationRequestDetails.getNumber());
+        valuationRequestDetailResponse.setPageSize(valuationRequestDetails.getSize());
+        valuationRequestDetailResponse.setTotalElement(valuationRequestDetails.getTotalElements());
+        valuationRequestDetailResponse.setTotalPage(valuationRequestDetails.getTotalPages());
+        valuationRequestDetailResponse.setLast(valuationRequestDetails.isLast());
+
+        return valuationRequestDetailResponse;
     }
 
     //convert Entity to DTO

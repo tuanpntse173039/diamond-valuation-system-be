@@ -2,9 +2,11 @@ package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import jakarta.validation.Valid;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
@@ -62,4 +64,15 @@ public class StaffController {
     public ResponseEntity<StaffDTO> getStaffById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(staffService.getStaffById(id));
     }
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
+    @GetMapping("/{id}/valuation-request-details")
+    public ResponseEntity<Response<ValuationRequestDetailDTO>> getValuationRequestDetailsByStaffId(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+                                                                                                   @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
+                                                                                                   @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
+                                                                                                   @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+                                                                                                   @PathVariable("id") Long id) {
+        return new ResponseEntity<>(staffService.getAllValuationRequestsByStaffId(id, pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
+    }
+
+
 }
