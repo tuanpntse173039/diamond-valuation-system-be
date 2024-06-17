@@ -1,10 +1,7 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.enums.Role;
-import com.letitbee.diamondvaluationsystem.payload.Response;
-import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
-import com.letitbee.diamondvaluationsystem.payload.ValuationRequestResponseV2;
-import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
+import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
@@ -84,8 +81,8 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getStaffById(id));
     }
     @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
-    @GetMapping("/{id}/valuation-request-details")
-    public ResponseEntity<Response<ValuationRequestDetailDTO>> getValuationRequestDetailsByStaffId(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+    @GetMapping("/{id}/diamond-assigns")
+    public ResponseEntity<Response<DiamondValuationAssignDTO>> getValuationRequestDetailsByStaffId(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                                                                                                    @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
                                                                                                    @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
                                                                                                    @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,

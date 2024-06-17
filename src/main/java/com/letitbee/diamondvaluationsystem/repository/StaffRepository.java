@@ -1,10 +1,8 @@
 package com.letitbee.diamondvaluationsystem.repository;
 
-import com.letitbee.diamondvaluationsystem.entity.Account;
-import com.letitbee.diamondvaluationsystem.entity.Staff;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
+import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.Role;
+import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -27,10 +25,9 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
             "WHERE a.role = :role or :role IS NULL ")
     Page<Staff> findStaffByRole(Role role, org.springframework.data.domain.Pageable pageable);
 
-    @Query("Select v " +
-            "from ValuationRequestDetail v " +
-            "RIGHT JOIN DiamondValuationAssign d ON d.valuationRequestDetail = v " +
-            "WHERE d.staff.id = :valuationStaffId")
-    Page<ValuationRequestDetail> findAllByValuationStaff(Long valuationStaffId, Pageable pageable);
+    @Query("Select d " +
+            "from DiamondValuationAssign d " +
+            "WHERE d.staff = :staff")
+    Page<DiamondValuationAssign> findAllByValuationStaff(Staff staff, Pageable pageable);
 
 }
