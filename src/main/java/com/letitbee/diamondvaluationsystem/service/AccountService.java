@@ -1,8 +1,6 @@
 package com.letitbee.diamondvaluationsystem.service;
 
-import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
-import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
-import com.letitbee.diamondvaluationsystem.payload.LoginResponse;
+import com.letitbee.diamondvaluationsystem.payload.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -10,7 +8,9 @@ public interface AccountService {
 
     String login(AccountDTO accountDTO);
 
-    AccountResponse register(AccountDTO accountDTO);
+    AccountResponse register(CustomerRegisterDTO customerRegisterDTO);
+
+    AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO);
 
     String updatePassword(String newPassword, Long id);
 

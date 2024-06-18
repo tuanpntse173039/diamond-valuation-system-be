@@ -109,7 +109,7 @@ public class SignUpTest {
         customerDTO.setLastName("Doe");
         customerDTO.setPhone("1234567890");
         customerDTO.setAddress("testAddress");
-        customerDTO.setEmail("test@example.com");
+//        customerDTO.setEmail("test@example.com");
         customerDTO.setIdentityDocument("123456789012");
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(40L);
@@ -131,7 +131,7 @@ public class SignUpTest {
         customerDTO.setLastName(""); // Blank last name
         customerDTO.setPhone("1234567890");
         customerDTO.setAddress("testAddress");
-        customerDTO.setEmail("test@example.com");
+//        customerDTO.setEmail("test@example.com");
         customerDTO.setIdentityDocument("123456789012");
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(40L);
@@ -154,7 +154,7 @@ public class SignUpTest {
         customerDTO.setLastName("Doe123"); // Invalid last name
         customerDTO.setPhone("1234567890");
         customerDTO.setAddress("testAddress");
-        customerDTO.setEmail("test@example.com");
+//        customerDTO.setEmail("test@example.com");
         customerDTO.setIdentityDocument("123456789012");
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(40L);
@@ -176,7 +176,7 @@ public class SignUpTest {
         customerDTO.setLastName("Doe");
         customerDTO.setPhone("1234567890");
         customerDTO.setAddress("testAddress");
-        customerDTO.setEmail(""); // Blank email
+//        customerDTO.setEmail(""); // Blank email
         customerDTO.setIdentityDocument("123456789012");
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(40L);
@@ -199,7 +199,7 @@ public class SignUpTest {
         customerDTO.setLastName("Doe");
         customerDTO.setPhone("1234567890");
         customerDTO.setAddress("testAddress");
-        customerDTO.setEmail("invalid-email"); // Invalid email
+//        customerDTO.setEmail("invalid-email"); // Invalid email
         customerDTO.setIdentityDocument("123456789012");
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(40L);
@@ -222,7 +222,7 @@ public class SignUpTest {
         customerDTO.setLastName("Doe");
         customerDTO.setPhone(""); // Blank phone
         customerDTO.setAddress("testAddress");
-        customerDTO.setEmail("test@example.com");
+//        customerDTO.setEmail("test@example.com");
         customerDTO.setIdentityDocument("123456789012");
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(40L);
@@ -244,7 +244,7 @@ public class SignUpTest {
         customerDTO.setLastName("Doe");
         customerDTO.setPhone("12345abcde"); // Non-numeric phone
         customerDTO.setAddress("testAddress");
-        customerDTO.setEmail("test@example.com");
+//        customerDTO.setEmail("test@example.com");
         customerDTO.setIdentityDocument("123456789012");
         AccountResponse accountResponse = new AccountResponse();
         accountResponse.setId(40L);

@@ -17,6 +17,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -64,10 +67,10 @@ public class AccountServiceImpl implements AccountService {
 
         try {
             Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(accountDTO.getUsername(), accountDTO.getPassword()));
+                    new UsernamePasswordAuthenticationToken(accountDTO.getUsernameOrEmail(), accountDTO.getPassword()));
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            Account account = accountRepository.findByUsername(accountDTO.getUsername())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsername()));
+            Account account = accountRepository.findByUsernameOrEmail(accountDTO.getUsernameOrEmail(), accountDTO.getUsernameOrEmail())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsernameOrEmail()));
             LoginResponse loginResponse = new LoginResponse();
 
             if (account.getRole().equals(Role.CUSTOMER)) {
@@ -79,7 +82,7 @@ public class AccountServiceImpl implements AccountService {
             }
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
-            String refreshToken = jwtTokenProvider.generateRefreshToken();
+            String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
             Cookie[] cookies = request.getCookies();
             if (cookies != null) {
                 for (Cookie cookie : cookies) {
@@ -99,7 +102,6 @@ public class AccountServiceImpl implements AccountService {
             refreshTokenCookie.setMaxAge(24 * 60 * 60 * 30);
             response.addCookie(refreshTokenCookie);
 
-            jwtAuthResponse.setRefreshToken(refreshToken);
             loginResponse.setUserToken(jwtAuthResponse);
             return loginResponse;
         }catch (BadCredentialsException ex) {
@@ -114,20 +116,65 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponse register(AccountDTO accountDTO) {
+    public AccountResponse register(CustomerRegisterDTO customerRegisterDTO) {
         //add check for username exists in database
-        if (accountRepository.existsByUsername(accountDTO.getUsername())){
+        if (accountRepository.existsByUsername(customerRegisterDTO.getUsername())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Account is already taken");
         }
 
         //save account to db
         Account account = new Account();
-        account.setUsername(accountDTO.getUsername());
-        account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
-//        account.setPassword(accountDTO.getPassword());
-        account.setRole(accountDTO.getRole());
+        account.setUsername(customerRegisterDTO.getUsername());
+        account.setPassword(passwordEncoder.encode(customerRegisterDTO.getPassword()));
+        account.setRole(Role.CUSTOMER);
         account.setIs_active(true);
+        account.setEmail(customerRegisterDTO.getEmail());
         account = accountRepository.save(account);
+
+        //save customer to db
+        Customer customer = new Customer();
+        customer.setFirstName(customerRegisterDTO.getFirstName());
+        customer.setLastName(customerRegisterDTO.getLastName());
+        customer.setPhone(customerRegisterDTO.getPhone());
+        customer.setAddress(customerRegisterDTO.getAddress());
+        customer.setIdentityDocument(customerRegisterDTO.getIdentityDocument());
+        customer.setAvatar(customerRegisterDTO.getAvatar());
+        customer.setAccount(account);
+        customerRepository.save(customer);
+        //return account to client without password
+        AccountResponse newAccount = new AccountResponse();
+        newAccount.setId(account.getId());
+        newAccount.setUsername(account.getUsername());
+        newAccount.setRole(account.getRole());
+        newAccount.setIs_active(account.getIs_active());
+        newAccount.setEmail(account.getEmail());
+        return newAccount;
+    }
+
+    @Override
+    public AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO) {
+        if (accountRepository.existsByUsername(staffRegisterDTO.getUsername())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Account is already taken");
+        }
+
+        //save account to db
+        Account account = new Account();
+        account.setUsername(staffRegisterDTO.getUsername());
+        account.setPassword(passwordEncoder.encode(staffRegisterDTO.getPassword()));
+        account.setRole(staffRegisterDTO.getRole());
+        account.setIs_active(true);
+        account.setEmail(staffRegisterDTO.getEmail());
+        account = accountRepository.save(account);
+
+        //save customer to db
+        Staff staff = new Staff();
+        staff.setFirstName(staffRegisterDTO.getFirstName());
+        staff.setLastName(staffRegisterDTO.getLastName());
+        staff.setPhone(staffRegisterDTO.getPhone());
+        staff.setExperience(staffRegisterDTO.getExperience());
+        staff.setCertificateLink(staffRegisterDTO.getCertificateLink());
+        staff.setAccount(account);
+        staffRepository.save(staff);
 
         //return account to client without password
         AccountResponse newAccount = new AccountResponse();
@@ -135,6 +182,7 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setUsername(account.getUsername());
         newAccount.setRole(account.getRole());
         newAccount.setIs_active(account.getIs_active());
+        newAccount.setEmail(account.getEmail());
         return newAccount;
     }
 
@@ -184,7 +232,7 @@ public class AccountServiceImpl implements AccountService {
         }
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
         jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
-        jwtAuthResponse.setRefreshToken(jwtTokenProvider.generateRefreshToken());
+        jwtAuthResponse.setRefreshToken(jwtTokenProvider.generateRefreshToken(authentication));
         loginResponse.setUserToken(jwtAuthResponse);
         return loginResponse;
     }

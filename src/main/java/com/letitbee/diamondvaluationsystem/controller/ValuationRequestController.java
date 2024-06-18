@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestResponse;
@@ -53,7 +54,7 @@ public class ValuationRequestController {
         return new ResponseEntity<>(valuationRequestService.createValuationRequest(valuationRequestDT), HttpStatus.CREATED);
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CUSTOMER', 'CONSULTANT_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<ValuationRequestDTO> updateValuationRequest(
             @PathVariable("id") long id,
@@ -79,6 +80,8 @@ public class ValuationRequestController {
         return new ResponseEntity<>(valuationRequestService.
                 getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir,status), HttpStatus.OK);
     }
+
+
 
     @GetMapping("/customer/{customerId}")
     public ResponseEntity<Response<ValuationRequestResponseV2>> getValuationRequestByCustomerId(

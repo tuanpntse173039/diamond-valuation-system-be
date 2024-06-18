@@ -33,7 +33,7 @@ public class ValuationRequestDetailController {
         return ResponseEntity.ok(valuationRequestDetailService.getValuationRequestDetailById(id));
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<ValuationRequestDetailDTO> updateValuationRequestDetail(
             @PathVariable long id,
