@@ -10,6 +10,7 @@ import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService;
 import com.letitbee.diamondvaluationsystem.utils.Tools;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -103,7 +104,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     }
 
     @Override
-    @Cacheable(value = "valuationRequestDetails", key = "#id")
+    @CachePut(value = "valuationRequestDetails", key = "#id")
     public ValuationRequestDetailDTO updateValuationRequestDetail(long id, ValuationRequestDetailDTO valuationRequestDetailDTO) {
         //get valuation request detail
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository

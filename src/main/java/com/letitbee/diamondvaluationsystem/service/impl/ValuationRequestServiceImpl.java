@@ -10,6 +10,7 @@ import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -74,7 +75,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
 
     @Override
-    @Cacheable(value = "valuationRequest", key = "#id")
+    @Cacheable(value = "valuationRequests", key = "#id")
     public ValuationRequestDTO getValuationRequestById(Long id) {
         ValuationRequest valuationRequest = valuationRequestRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Valuation request", "id", id + ""));
@@ -82,6 +83,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
+    @CacheEvict(value = "valuationRequests", allEntries = true)
     public ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto) {
         ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
         valuationRequest.setStatus(RequestStatus.PENDING);
@@ -102,7 +104,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @CachePut(value = "valuationRequest", key = "#id")
+    @CachePut(value = "valuationRequests", key = "#id")
     public ValuationRequestDTO updateValuationRequest(long id, ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = valuationRequestRepository
                 .findById(id)
