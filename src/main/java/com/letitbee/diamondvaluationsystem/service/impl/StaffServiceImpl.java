@@ -14,6 +14,7 @@ import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +50,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    @Cacheable(value = "staffs")
     public Response<StaffDTO> getAllStaffs(int pageNo, int pageSize, String sortBy, String sortDir,Role role) {
 
         //create Pageable intance
@@ -70,7 +72,9 @@ public class StaffServiceImpl implements StaffService {
         return staffResponse;
     }
 
+
     @Override
+    @Cacheable(value = "staffs")
     public StaffDTO getStaffById(Long id) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff", "Id", id + ""));
@@ -130,6 +134,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
+    @Cacheable(value = "staffs")
     public Response<DiamondValuationAssignDTO> getAllValuationRequestsByStaffId(Long staffId, int pageNo, int pageSize, String sortBy, String sortDir) {
 
         //create Pageable intance

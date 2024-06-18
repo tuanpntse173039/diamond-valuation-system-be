@@ -9,6 +9,8 @@ import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationNoteRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationNoteService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
     }
 
     @Override
+    @CachePut(value = "diamondValuationNotes", key = "#id")
     public DiamondValuationNoteDTO updateDiamondValuationNote(long id,
                                                               DiamondValuationNoteDTO diamondValuationNoteDTO) {
         DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
@@ -66,6 +69,7 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
     }
 
     @Override
+    @Cacheable(value = "diamondValuationNotes")
     public DiamondValuationNoteDTO getDiamondValuationNoteById(long id) {
         DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
                 .findById(id)
