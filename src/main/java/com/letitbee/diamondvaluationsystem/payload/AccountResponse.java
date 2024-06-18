@@ -13,6 +13,7 @@ import lombok.Setter;
 public class AccountResponse {
     private Long id;
     private String username;
+    private String email;
     private Boolean is_active;
     private Role role;
 }

@@ -26,8 +26,6 @@ public class Customer {
     private String firstName;
     @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String lastName;
-    @Column(columnDefinition = "varchar(100)", nullable = false)
-    private String email;
     @Column(columnDefinition = "char(20)", nullable = false)
     private String phone;
     @Column(columnDefinition = "nvarchar(500)")

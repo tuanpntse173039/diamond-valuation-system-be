@@ -1,19 +1,20 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
-import com.letitbee.diamondvaluationsystem.entity.Account;
-import com.letitbee.diamondvaluationsystem.entity.Staff;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
+import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
+import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -49,13 +50,13 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Response getAllStaffs(int pageNo, int pageSize, String sortBy, String sortDir) {
+    @Cacheable(value = "staffs")
+    public Response<StaffDTO> getAllStaffs(int pageNo, int pageSize, String sortBy, String sortDir,Role role) {
 
         //create Pageable intance
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
         Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
-        Page<Staff> staffs = staffRepository.findAll(pageable);
-        //get content for page obj
+        Page<Staff> staffs = staffRepository.findStaffByRole(role, pageable);
         List<Staff> listOfStaff = staffs.getContent();
         List<StaffDTO> content =  listOfStaff.stream().map(staff -> mapToDto(staff)).collect(Collectors.toList());
 
@@ -71,7 +72,9 @@ public class StaffServiceImpl implements StaffService {
         return staffResponse;
     }
 
+
     @Override
+    @Cacheable(value = "staffs")
     public StaffDTO getStaffById(Long id) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff", "Id", id + ""));
@@ -101,7 +104,6 @@ public class StaffServiceImpl implements StaffService {
         staff.setPhone(staffDto.getPhone());
         staff.setExperience(staffDto.getExperience());
         staff.setCertificateLink(staffDto.getCertificateLink());
-        staff.setEmail(staffDto.getEmail());
 
         return mapToDto(staffRepository.save(staff));
     }
@@ -117,7 +119,6 @@ public class StaffServiceImpl implements StaffService {
         staff.setPhone(staffDto.getPhone());
         staff.setExperience(staffDto.getExperience());
         staff.setCertificateLink(staffDto.getCertificateLink());
-        staff.setEmail(staffDto.getEmail());
         staff.setAccount(account);
 
         return mapToDto(staffRepository.save(staff));
@@ -132,14 +133,35 @@ public class StaffServiceImpl implements StaffService {
         accountRepository.save(accountWithStaffID);
     }
 
+    @Override
+    @Cacheable(value = "staffs")
+    public Response<DiamondValuationAssignDTO> getAllValuationRequestsByStaffId(Long staffId, int pageNo, int pageSize, String sortBy, String sortDir) {
+
+        //create Pageable intance
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
+        Staff staff = staffRepository.findById(staffId).orElseThrow(() -> new ResourceNotFoundException("Staff", "Id", staffId + ""));
+        Page<DiamondValuationAssign> diamondValuationAssigns = staffRepository.findAllByValuationStaff(staff, pageable);
+
+        List<DiamondValuationAssign> listOfStaff = diamondValuationAssigns.getContent();
+        List<DiamondValuationAssignDTO> content =  listOfStaff.stream().map(diamondValuationAssign -> mapper.map(diamondValuationAssign, DiamondValuationAssignDTO.class)).collect(Collectors.toList());
+
+        Response<DiamondValuationAssignDTO> staffResponse = new Response<>();
+
+        staffResponse.setContent(content);
+        staffResponse.setPageNumber(diamondValuationAssigns.getNumber());
+        staffResponse.setPageSize(diamondValuationAssigns.getSize());
+        staffResponse.setTotalElement(diamondValuationAssigns.getTotalElements());
+        staffResponse.setTotalPage(diamondValuationAssigns.getTotalPages());
+        staffResponse.setLast(diamondValuationAssigns.isLast());
+
+        return staffResponse;
+
+    }
+
     //convert Entity to DTO
     private StaffDTO mapToDto(Staff staff){
         StaffDTO staffDto = mapper.map(staff, StaffDTO.class);
-        Set<Long> valuationRequestList = valuationRequestRepository.findAllByStaff(staff);
-        staffDto.setValuationRequestIDSet(valuationRequestList);
-        Set<Long> diamondValuationAssignList = diamondValuationAssignRepository.findAllByStaff(staff);
-        staffDto.setDiamondValuationAssignIDSet(diamondValuationAssignList);
-
         int countProject = 0;
         int countCurrentProject = 0;
         if(staff.getAccount().getRole().toString().equalsIgnoreCase(Role.CONSULTANT_STAFF.toString())) {

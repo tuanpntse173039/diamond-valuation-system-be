@@ -15,7 +15,9 @@
 	<name>DiamondValuationSystemBE</name>
 	<description>DiamondValuationSystemBE</description>
 	<properties>
-		<java.version>17</java.version>
+		<maven.compiler.source>17</maven.compiler.source>
+		<maven.compiler.target>17</maven.compiler.target>
+		<surefire.plugin.version>2.22.2</surefire.plugin.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -79,39 +81,100 @@
 			<version>3.1.1</version>
 		</dependency>
 
-<!--&lt;!&ndash;		&lt;!&ndash; https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl &ndash;&gt;&ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>io.jsonwebtoken</groupId>-->
-<!--			<artifactId>jjwt-impl</artifactId>-->
-<!--			<version>0.11.5</version>-->
-<!--			<scope>runtime</scope>-->
-<!--		</dependency>-->
+<!--		&lt;!&ndash; https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl &ndash;&gt;-->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-impl</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
 
-<!--		&lt;!&ndash; https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>io.jsonwebtoken</groupId>-->
-<!--			<artifactId>jjwt-api</artifactId>-->
-<!--			<version>0.11.5</version>-->
-<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-api</artifactId>
+			<version>0.11.5</version>
+		</dependency>
 
-<!--		&lt;!&ndash; https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>io.jsonwebtoken</groupId>-->
-<!--			<artifactId>jjwt-jackson</artifactId>-->
-<!--			<version>0.11.5</version>-->
-<!--			<scope>runtime</scope>-->
-<!--		</dependency>-->
-<!--				<dependency>-->
-<!--					<groupId>org.springframework.boot</groupId>-->
-<!--					<artifactId>spring-boot-starter-security</artifactId>-->
-<!--				</dependency>-->
-<!--		&lt;!&ndash; https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-resource-server &ndash;&gt;-->
-<!--		<dependency>-->
-<!--			<groupId>org.springframework.boot</groupId>-->
-<!--			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>-->
-<!--			<version>3.2.5</version>-->
-<!--		</dependency>-->
+		<!-- https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-jackson -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt-jackson</artifactId>
+			<version>0.11.5</version>
+			<scope>runtime</scope>
+		</dependency>
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-security</artifactId>
+				</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-resource-server -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
+			<version>3.2.5</version>
+		</dependency>
 
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-engine</artifactId>
+			<version>5.10.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>5.10.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-params -->
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter-params</artifactId>
+			<version>5.10.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.junit.vintage/junit-vintage-engine -->
+		<dependency>
+			<groupId>org.junit.vintage</groupId>
+			<artifactId>junit-vintage-engine</artifactId>
+			<version>5.10.1</version>
+			<scope>test</scope>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-suite-engine -->
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-suite-engine</artifactId>
+			<version>1.10.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher -->
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-launcher</artifactId>
+			<version>1.10.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-surefire-plugin -->
+		<dependency>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<version>2.22.2</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-cache</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-actuator</artifactId>
+		</dependency>
 
 	</dependencies>
 
@@ -129,6 +192,18 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>${surefire.plugin.version}</version>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>${surefire.plugin.version}</version>
+			</plugin>
+
 		</plugins>
 	</build>
 

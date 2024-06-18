@@ -5,8 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 
 @Data
-public class AccountDTO {
-    private Long id;
+public class StaffRegisterDTO {
+
     @NotEmpty(message = "Username cannot be empty")
     @Size(min = 6, max = 24, message = "Username must be between 6 and 24 characters")
     private String username;
@@ -17,7 +17,16 @@ public class AccountDTO {
     @NotEmpty(message = "Email cannot be empty")
     @Email(message = "Invalid email")
     private String email;
-    private Boolean is_active;
+    @NotEmpty(message = "First name cannot be empty")
+    @Size(min = 2, max = 24, message = "First name must be between 2 and 24 characters")
+    private String firstName;
+    @NotEmpty(message = "Last name cannot be empty")
+    @Size(min = 2, max = 24, message = "Last name must be between 2 and 24 characters")
+    private String lastName;
+    @Size(min = 10, max = 10, message = "Invalid phone number")
+    private String phone;
+    @Min(value = 0, message = "Experience must be greater than or equal to 0")
+    private int experience;
+    private String certificateLink;
     private Role role;
-    private String usernameOrEmail;
 }

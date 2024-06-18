@@ -13,6 +13,7 @@ import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -39,6 +40,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    @Cacheable(value = "customers")
     public Response<CustomerDTO> getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
@@ -85,7 +87,6 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
         customer.setAddress(customerDto.getAddress());
         customer.setAvatar(customerDto.getAvatar());
         customer.setIdentityDocument(customerDto.getIdentityDocument());
@@ -102,7 +103,6 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
         customer.setAddress(customerDto.getAddress());
         customer.setAvatar(customerDto.getAvatar());
         customer.setIdentityDocument(customerDto.getIdentityDocument());

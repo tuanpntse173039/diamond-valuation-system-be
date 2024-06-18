@@ -32,7 +32,8 @@ public class Account  {
     private String password;
     @Column(columnDefinition = "bit default 1")
     private Boolean is_active;
-
+    @Column(columnDefinition = "varchar(100)", nullable = false)
+    private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
 
