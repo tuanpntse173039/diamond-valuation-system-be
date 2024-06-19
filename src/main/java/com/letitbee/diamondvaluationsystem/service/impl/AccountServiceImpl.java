@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
+import com.letitbee.diamondvaluationsystem.entity.RefreshToken;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
@@ -10,6 +11,7 @@ import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
+import com.letitbee.diamondvaluationsystem.repository.RefreshTokenRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
@@ -41,12 +43,15 @@ public class AccountServiceImpl implements AccountService {
     private AuthenticationManager authenticationManager;
     private CustomerRepository customerRepository;
     private StaffRepository staffRepository;
+    private RefreshTokenRepository refreshTokenRepository;
 
     private ModelMapper mapper;
 
     public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper,
                               JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager,
-                             PasswordEncoder passwordEncoder, CustomerRepository customerRepository, StaffRepository staffRepository) {
+                             PasswordEncoder passwordEncoder, CustomerRepository customerRepository,
+                              StaffRepository staffRepository,
+                              RefreshTokenRepository refreshTokenRepository) {
         this.accountRepository = accountRepository;
         this.mapper = mapper;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -54,6 +59,7 @@ public class AccountServiceImpl implements AccountService {
         this.passwordEncoder = passwordEncoder;
         this.customerRepository = customerRepository;
         this.staffRepository = staffRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
     }
     private AccountDTO mapToDto(Account account){
         AccountDTO accountDto = mapper.map(account, AccountDTO.class);
@@ -85,10 +91,22 @@ public class AccountServiceImpl implements AccountService {
             }
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
-            String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
+            String refreshToken = null;
+            RefreshToken token = refreshTokenRepository.findByAccount(account)
+                    .orElse(new RefreshToken());
+            if(token.getToken() != null){
+                refreshToken = token.getToken();
+                jwtAuthResponse.setRefreshToken(refreshToken);
+            }else {
+                refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
+                token.setToken(refreshToken);
+                token.setExpiryDate(jwtTokenProvider.getExpirationDate(refreshToken));
+                token.setAccount(account);
+                refreshTokenRepository.save(token);
+                jwtAuthResponse.setRefreshToken(refreshToken);
+            }
             loginResponse.setUserToken(jwtAuthResponse);
 
-            loginResponse.setUserToken(jwtAuthResponse);
             return loginResponse;
         }catch (BadCredentialsException ex) {
             throw new CredentialsException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
@@ -179,26 +197,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public LoginResponse refreshToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        String refreshToken = null;
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
-                    refreshToken = cookie.getValue();
-                }
-            }
-        }
-        if (refreshToken == null) {
-            throw new APIException(HttpStatus.BAD_REQUEST, "Refresh token is missing");
-        }
-        if (!jwtTokenProvider.validateToken(refreshToken)) {
-            throw new APIException(HttpStatus.BAD_REQUEST, "Invalid refresh token");
-        }
-        String accessToken = request.getHeader("Authorization");
-        if (accessToken != null && accessToken.startsWith("Bearer ")) {
-            accessToken = accessToken.substring(7);  // Correct substring index
-        }
+    public JwtAuthResponse refreshToken(String refreshToken) {
+        RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
+                .orElseThrow(() -> new APIException(HttpStatus.BAD_REQUEST, "Invalid refresh token"));
+        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+
         String username = jwtTokenProvider.getUsername(accessToken);
         Account account = accountRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + username));

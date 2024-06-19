@@ -77,6 +77,16 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
+    //get expiration date from JWT token
+    public Date getExpirationDate(String token){
+        return Jwts.parserBuilder()
+                .setSigningKey(key())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getExpiration();
+    }
+
     //validate JWT token
 
     public boolean validateToken(String token) {

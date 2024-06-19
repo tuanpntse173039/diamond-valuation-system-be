@@ -17,5 +17,5 @@ public interface AccountService {
 
     String updatePassword(String newPassword, Long id);
 
-    LoginResponse refreshToken(HttpServletRequest request);
+    JwtAuthResponse refreshToken(String refreshToken);
 }
