@@ -82,7 +82,7 @@ public class StaffController {
     }
     @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
     @GetMapping("/{id}/diamond-assigns")
-    public ResponseEntity<Response<DiamondValuationAssignDTO>> getValuationRequestDetailsByStaffId(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+    public ResponseEntity<Response<DiamondValuationAssignResponse>> getValuationRequestDetailsByStaffId(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                                                                                                    @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
                                                                                                    @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
                                                                                                    @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,

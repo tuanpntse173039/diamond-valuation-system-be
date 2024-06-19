@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.repository;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import org.springframework.data.domain.Page;
@@ -47,4 +48,9 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
     Page<ValuationRequest> findValuationRequestByCustomer_Id(Long customerId, Pageable pageable);
 
     Page<ValuationRequest> findValuationRequestByStaff_Id(Long staffId, Pageable pageable);
+
+    @Query("SELECT v " +
+            "FROM ValuationRequest v JOIN v.valuationRequestDetails d " +
+            "WHERE d = :valuationRequestDetail ")
+    ValuationRequest findValuationRequestByValuationRequestDetails(ValuationRequestDetail valuationRequestDetail);
 }
