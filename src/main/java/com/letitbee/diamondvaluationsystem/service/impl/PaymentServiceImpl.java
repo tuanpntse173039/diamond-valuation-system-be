@@ -37,7 +37,6 @@ public class PaymentServiceImpl implements PaymentService {
         this.valuationRequestRepository = valuationRequestRepository;
     }
     @Override
-    @CacheEvict(value = "valuationRequests", allEntries = true)
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
         ValuationRequest valuationRequest = valuationRequestRepository.findById(
                         paymentDTO.getValuationRequestID())

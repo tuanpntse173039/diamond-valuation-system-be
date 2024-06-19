@@ -32,7 +32,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
     }
 
     @Override
-    @CacheEvict(value = "valuationRequestDetails", allEntries = true)
     public DiamondValuationNoteDTO updateDiamondValuationNote(long id,
                                                               DiamondValuationNoteDTO diamondValuationNoteDTO) {
         DiamondValuationNote diamondValuationNote = diamondValuationNoteRepository
