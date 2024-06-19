@@ -47,7 +47,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @Cacheable(value = "valuationRequests")
     public Response<ValuationRequestResponse> getAllValuationRequests(int pageNo, int pageSize, String sortBy, String sortDir, Date startDate, Date endDate) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
@@ -75,7 +74,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
 
     @Override
-    @Cacheable(value = "valuationRequests", key = "#id")
     public ValuationRequestDTO getValuationRequestById(Long id) {
         ValuationRequest valuationRequest = valuationRequestRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Valuation request", "id", id + ""));
@@ -83,7 +81,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @CacheEvict(value = "valuationRequests", allEntries = true)
     public ValuationRequestDTO createValuationRequest(ValuationRequestDTO valuationRequestDto) {
         ValuationRequest valuationRequest = mapToEntity(valuationRequestDto);
         valuationRequest.setStatus(RequestStatus.PENDING);
@@ -104,8 +101,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @CachePut(value = "valuationRequests", key = "#id")
-    @CacheEvict(value = "valuationRequests", allEntries = true)
     public ValuationRequestDTO updateValuationRequest(long id, ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = valuationRequestRepository
                 .findById(id)
@@ -151,7 +146,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @Cacheable(value = "valuationRequests")
     public Response<ValuationRequestResponseV2> getValuationRequestResponse(
             int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();

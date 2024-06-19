@@ -42,7 +42,6 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         this.staffRepository = staffRepository;
     }
     @Override
-    @CacheEvict(value = "valuationRequestDetails", allEntries = true)
     public DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = new DiamondValuationAssign();
         Staff staff = staffRepository.findById(diamondValuationAssignDTO.getStaffId())
@@ -65,7 +64,6 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     }
 
     @Override
-    @CacheEvict(value = "valuationRequestDetails", allEntries = true)
     public DiamondValuationAssignDTO updateDiamondValuationAssign(long id, DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = diamondValuationAssignRepository
                 .findById(id)
