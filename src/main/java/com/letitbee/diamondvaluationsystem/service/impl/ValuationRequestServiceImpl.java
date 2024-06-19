@@ -151,7 +151,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @Cacheable(value = "valuationRequest")
+    @Cacheable(value = "valuationRequests")
     public Response<ValuationRequestResponseV2> getValuationRequestResponse(
             int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
@@ -183,7 +183,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @Cacheable(value = "valuationRequest")
     public Response<ValuationRequestResponseV2> getValuationRequestResponseByStaff(
             int pageNo, int pageSize, String sortBy, String sortDir, Long staffId) {
 
