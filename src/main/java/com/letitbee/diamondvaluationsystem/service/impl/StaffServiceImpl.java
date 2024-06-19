@@ -47,7 +47,6 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    @Cacheable(value = "staffs")
     public Response<StaffDTO> getAllStaffs(int pageNo, int pageSize, String sortBy, String sortDir,Role role) {
 
         //create Pageable intance

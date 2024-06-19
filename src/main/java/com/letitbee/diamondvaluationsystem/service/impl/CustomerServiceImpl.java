@@ -41,7 +41,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @Cacheable(value = "customers")
     public Response<CustomerDTO> getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
@@ -96,7 +95,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @CachePut(value = "customers")
     public CustomerDTO updateCustomerInformation(CustomerDTO customerDto, Long id) {
         Customer customer = customerRepository.
                 findById(id).
