@@ -180,9 +180,17 @@ public class StaffServiceImpl implements StaffService {
         DiamondValuationAssignResponse diamondValuationAssignResponse = new DiamondValuationAssignResponse();
         ValuationRequest valuationRequest = valuationRequestRepository.findValuationRequestByValuationRequestDetails(diamondValuationAssign.getValuationRequestDetail());
         diamondValuationAssignResponse.setId(diamondValuationAssign.getId());
-        diamondValuationAssignResponse.setCertificateId(diamondValuationAssign.getValuationRequestDetail().getDiamondValuationNote().getCertificateId());
-        diamondValuationAssignResponse.setCaratWeight(diamondValuationAssign.getValuationRequestDetail().getDiamondValuationNote().getCaratWeight());
-        diamondValuationAssignResponse.setDiamondOrigin(diamondValuationAssign.getValuationRequestDetail().getDiamondValuationNote().getDiamondOrigin());
+
+        DiamondValuationNote diamondValuationNote = diamondValuationAssign.getValuationRequestDetail().getDiamondValuationNote();
+        if (diamondValuationNote != null) {
+            diamondValuationAssignResponse.setCertificateId(diamondValuationNote.getCertificateId());
+            diamondValuationAssignResponse.setCaratWeight(diamondValuationNote.getCaratWeight());
+            diamondValuationAssignResponse.setDiamondOrigin(diamondValuationNote.getDiamondOrigin());
+        } else {
+            diamondValuationAssignResponse.setCertificateId(null);
+            diamondValuationAssignResponse.setCaratWeight(null);
+            diamondValuationAssignResponse.setDiamondOrigin(null);
+        }
         diamondValuationAssignResponse.setStaffName(diamondValuationAssign.getStaff().getFirstName() + " " + diamondValuationAssign.getStaff().getLastName());
         diamondValuationAssignResponse.setDeadline(valuationRequest.getReturnDate());
         diamondValuationAssignResponse.setServiceName(valuationRequest.getService().getServiceName());
