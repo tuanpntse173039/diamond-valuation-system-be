@@ -47,7 +47,10 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
             "WHERE v.customer.id = :customerId ")
     Page<ValuationRequest> findValuationRequestByCustomer_Id(Long customerId, Pageable pageable);
 
-    Page<ValuationRequest> findValuationRequestByStaff_Id(Long staffId, Pageable pageable);
+    @Query("SELECT v " +
+            "FROM ValuationRequest v " +
+            "WHERE v.staff = :staff ")
+    Page<ValuationRequest> findValuationRequestByStaff_Id(Staff staff, Pageable pageable);
 
     @Query("SELECT v " +
             "FROM ValuationRequest v JOIN v.valuationRequestDetails d " +
