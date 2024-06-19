@@ -66,7 +66,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public LoginResponse login(HttpServletRequest request, HttpServletResponse response, AccountDTO accountDTO) {
+    public LoginResponse login(AccountDTO accountDTO) {
 
         try {
             Authentication authentication = authenticationManager.authenticate(
@@ -86,24 +86,7 @@ public class AccountServiceImpl implements AccountService {
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
             String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
-            Cookie[] cookies = request.getCookies();
-            if (cookies != null) {
-                for (Cookie cookie : cookies) {
-                    if (cookie.getName().equals("refreshToken")) {
-                        refreshToken = cookie.getValue();
-                        jwtAuthResponse.setRefreshToken(refreshToken);
-                    }
-                }
-            } else {
-                jwtAuthResponse.setRefreshToken(refreshToken);
-            }
             loginResponse.setUserToken(jwtAuthResponse);
-            // Set refresh token cookie in the response
-            Cookie refreshTokenCookie = new Cookie("refreshToken", refreshToken);
-            refreshTokenCookie.setHttpOnly(true);
-            refreshTokenCookie.setPath("/");
-            refreshTokenCookie.setMaxAge(24 * 60 * 60 * 30);
-            response.addCookie(refreshTokenCookie);
 
             loginResponse.setUserToken(jwtAuthResponse);
             return loginResponse;

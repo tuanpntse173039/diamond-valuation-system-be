@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public interface AccountService {
 
-    LoginResponse login(HttpServletRequest request, HttpServletResponse response, AccountDTO accountDTO);
+    LoginResponse login(AccountDTO accountDTO);
 
     AccountResponse register(CustomerRegisterDTO customerRegisterDTO);
 

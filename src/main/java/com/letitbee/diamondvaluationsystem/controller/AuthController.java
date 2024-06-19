@@ -49,8 +49,8 @@ public class AuthController {
     }
 
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<LoginResponse> login(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountDTO accountDTO){
-        return ResponseEntity.ok(accountService.login(request,response, accountDTO));
+    public ResponseEntity<LoginResponse> login( @RequestBody AccountDTO accountDTO){
+        return ResponseEntity.ok(accountService.login(accountDTO));
     }
 
     //register Customer
