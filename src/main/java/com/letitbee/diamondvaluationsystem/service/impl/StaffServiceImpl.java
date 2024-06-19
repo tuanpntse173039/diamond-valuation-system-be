@@ -71,7 +71,6 @@ public class StaffServiceImpl implements StaffService {
 
 
     @Override
-    @Cacheable(value = "staffs")
     public StaffDTO getStaffById(Long id) {
         Staff staff = staffRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff", "Id", id + ""));
@@ -131,7 +130,6 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    @Cacheable(value = "staffs")
     public Response<DiamondValuationAssignResponse> getAllValuationRequestsByStaffId(Long staffId, int pageNo, int pageSize, String sortBy, String sortDir) {
 
         //create Pageable intance
