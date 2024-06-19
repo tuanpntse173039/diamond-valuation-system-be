@@ -12,6 +12,7 @@ import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,6 +42,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         this.staffRepository = staffRepository;
     }
     @Override
+    @CacheEvict(value = "valuationRequestDetails", allEntries = true)
     public DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = new DiamondValuationAssign();
         Staff staff = staffRepository.findById(diamondValuationAssignDTO.getStaffId())
@@ -63,6 +65,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     }
 
     @Override
+    @CacheEvict(value = "valuationRequestDetails", allEntries = true)
     public DiamondValuationAssignDTO updateDiamondValuationAssign(long id, DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = diamondValuationAssignRepository
                 .findById(id)
@@ -70,10 +73,6 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         diamondValuationAssign.setValuationPrice(diamondValuationAssignDTO.getValuationPrice());
         diamondValuationAssign.setComment(diamondValuationAssignDTO.getComment());
         diamondValuationAssign.setStatus(diamondValuationAssignDTO.isStatus());
-        diamondValuationAssign.setStaff(staffRepository.findById(diamondValuationAssignDTO.getStaffId())
-                .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", diamondValuationAssignDTO.getStaffId() + "")));
-        diamondValuationAssign.setValuationRequestDetailId(valuationRequestDetailRepository.findById(diamondValuationAssignDTO.getValuationRequestDetailId())
-                .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + "")));
         if (diamondValuationAssign.isStatus()) {
             diamondValuationAssign.setCreationDate((new Date()));
         } // update date when status is true
