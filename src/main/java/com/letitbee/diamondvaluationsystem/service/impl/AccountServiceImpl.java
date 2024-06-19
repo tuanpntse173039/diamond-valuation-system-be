@@ -21,6 +21,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -44,6 +47,9 @@ public class AccountServiceImpl implements AccountService {
     private CustomerRepository customerRepository;
     private StaffRepository staffRepository;
     private RefreshTokenRepository refreshTokenRepository;
+
+    @Value("${app-jwt-expiration-refresh-token-milliseconds}")
+    private long jwtExpirationRefreshDate;
 
     private ModelMapper mapper;
 
@@ -98,9 +104,12 @@ public class AccountServiceImpl implements AccountService {
                 refreshToken = token.getToken();
                 jwtAuthResponse.setRefreshToken(refreshToken);
             }else {
-                refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
+                refreshToken = UUID.randomUUID().toString();
                 token.setToken(refreshToken);
-                token.setExpiryDate(jwtTokenProvider.getExpirationDate(refreshToken));
+                long currentTimeMillis = System.currentTimeMillis();
+                long expirationTimeMillis = currentTimeMillis + jwtExpirationRefreshDate;
+                Date expiryDate = new Date(expirationTimeMillis);
+                token.setExpiryDate(expiryDate);
                 token.setAccount(account);
                 refreshTokenRepository.save(token);
                 jwtAuthResponse.setRefreshToken(refreshToken);
@@ -197,28 +206,22 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public JwtAuthResponse refreshToken(String refreshToken) {
-        RefreshToken token = refreshTokenRepository.findByToken(refreshToken)
+    public JwtAuthResponse refreshToken(RefreshToken refreshToken) {
+        RefreshToken token = refreshTokenRepository.findByToken(refreshToken.getToken())
                 .orElseThrow(() -> new APIException(HttpStatus.BAD_REQUEST, "Invalid refresh token"));
-        JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-
-        String username = jwtTokenProvider.getUsername(accessToken);
-        Account account = accountRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + username));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(account.getUsername(), account.getPassword());
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        LoginResponse loginResponse = new LoginResponse();
-        if (account.getRole().equals(Role.CUSTOMER)) {
-            Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
-            loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
-        } else {
-            Staff staff = staffRepository.findStaffByAccount_Id(account.getId());
-            loginResponse.setUserInformation(staff == null ? null : mapper.map(staff, StaffDTO.class));
+        if(token.getExpiryDate().compareTo(new Date()) < 0){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Refresh token is expired");
         }
         JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
-        jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
-        jwtAuthResponse.setRefreshToken(jwtTokenProvider.generateRefreshToken(authentication));
-        loginResponse.setUserToken(jwtAuthResponse);
-        return loginResponse;
+        jwtAuthResponse.setAccessToken(jwtTokenProvider.generateTokenWithUsername(token.getAccount().getUsername()));
+        String refreshToken1 = UUID.randomUUID().toString();
+        jwtAuthResponse.setRefreshToken(refreshToken1);
+        token.setToken(refreshToken1);
+        long currentTimeMillis = System.currentTimeMillis();
+        long expirationTimeMillis = currentTimeMillis + jwtExpirationRefreshDate;
+        Date expiryDate = new Date(expirationTimeMillis);
+        token.setExpiryDate(expiryDate);
+        refreshTokenRepository.save(token);
+        return jwtAuthResponse;
     }
 }

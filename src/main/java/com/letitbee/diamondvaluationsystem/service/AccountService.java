@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.service;
 
+import com.letitbee.diamondvaluationsystem.entity.RefreshToken;
 import com.letitbee.diamondvaluationsystem.payload.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,5 +18,5 @@ public interface AccountService {
 
     String updatePassword(String newPassword, Long id);
 
-    JwtAuthResponse refreshToken(String refreshToken);
+    JwtAuthResponse refreshToken(RefreshToken refreshToken);
 }

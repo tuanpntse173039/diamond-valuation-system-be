@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
+import com.letitbee.diamondvaluationsystem.entity.RefreshToken;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.*;
@@ -73,7 +74,7 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/refresh-token")
-    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody String refreshToken) {
+    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody RefreshToken refreshToken) {
         return ResponseEntity.ok(accountService.refreshToken(refreshToken));
     }
 }
