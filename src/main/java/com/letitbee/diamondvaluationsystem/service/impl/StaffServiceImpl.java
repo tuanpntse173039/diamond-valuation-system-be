@@ -191,7 +191,7 @@ public class StaffServiceImpl implements StaffService {
         diamondValuationAssignResponse.setStaffName(diamondValuationAssign.getStaff().getFirstName() + " " + diamondValuationAssign.getStaff().getLastName());
         diamondValuationAssignResponse.setDeadline(valuationRequest.getReturnDate());
         diamondValuationAssignResponse.setServiceName(valuationRequest.getService().getServiceName());
-        diamondValuationAssignResponse.setStatus(diamondValuationAssign.getValuationRequestDetail().getStatus());
+        diamondValuationAssignResponse.setStatus(diamondValuationAssign.isStatus());
         diamondValuationAssignResponse.setValuationPrice(diamondValuationAssign.getValuationPrice());
         return diamondValuationAssignResponse;
     }

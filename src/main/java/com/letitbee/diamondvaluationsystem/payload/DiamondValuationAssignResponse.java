@@ -16,5 +16,5 @@ public class DiamondValuationAssignResponse {
     private DiamondOrigin diamondOrigin;
     private Float caratWeight;
     private Double valuationPrice;
-    private RequestDetailStatus status;
+    private boolean status;
 }
