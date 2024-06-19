@@ -5,11 +5,13 @@ import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
+import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignResponse;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
+import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -30,16 +32,18 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private StaffRepository staffRepository;
+    private ValuationRequestRepository valuationRequestRepository;
 
 
     public DiamondValuationAssignImpl(ModelMapper mapper,
                                       DiamondValuationAssignRepository diamondValuationAssignRepository,
                                       ValuationRequestDetailRepository valuationRequestDetailRepository,
-                                      StaffRepository staffRepository) {
+                                      StaffRepository staffRepository, ValuationRequestRepository valuationRequestRepository) {
         this.mapper = mapper;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
+        this.valuationRequestRepository = valuationRequestRepository;
     }
     @Override
     public DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO) {
@@ -98,7 +102,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     }
 
     @Override
-    public Response<DiamondValuationAssignDTO> getAllDiamondValuationAssign(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response<DiamondValuationAssignResponse> getAllDiamondValuationAssign(int pageNo, int pageSize, String sortBy, String sortDir) {
 
         //create Pageable intance
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -109,10 +113,10 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         //get content for page obj
 
         List<DiamondValuationAssign> diamondValuationAssignList = diamondValuationAssigns.getContent();
-        List<DiamondValuationAssignDTO> content =  diamondValuationAssignList.stream()
-                .map(diamondValuationAssign -> mapToDTO(diamondValuationAssign)).collect(Collectors.toList());
+        List<DiamondValuationAssignResponse> content =  diamondValuationAssignList.stream()
+                .map(diamondValuationAssign -> mapToDiamondValuationAssignResponse(diamondValuationAssign)).collect(Collectors.toList());
 
-        Response<DiamondValuationAssignDTO> response = new Response<>();
+        Response<DiamondValuationAssignResponse> response = new Response<>();
         response.setContent(content);
         response.setPageNumber(diamondValuationAssigns.getNumber());
         response.setPageSize(diamondValuationAssigns.getSize());
@@ -128,6 +132,28 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         DiamondValuationAssign diamondValuationAssign = diamondValuationAssignRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Diamond valuation assign", "id", id + ""));
         return mapToDTO(diamondValuationAssign);
+    }
+    private DiamondValuationAssignResponse mapToDiamondValuationAssignResponse(DiamondValuationAssign diamondValuationAssign){
+        DiamondValuationAssignResponse diamondValuationAssignResponse = new DiamondValuationAssignResponse();
+        ValuationRequest valuationRequest = valuationRequestRepository.findValuationRequestByValuationRequestDetails(diamondValuationAssign.getValuationRequestDetail());
+        diamondValuationAssignResponse.setId(diamondValuationAssign.getId());
+
+        DiamondValuationNote diamondValuationNote = diamondValuationAssign.getValuationRequestDetail().getDiamondValuationNote();
+        if (diamondValuationNote != null) {
+            diamondValuationAssignResponse.setCertificateId(diamondValuationNote.getCertificateId());
+            diamondValuationAssignResponse.setCaratWeight(diamondValuationNote.getCaratWeight());
+            diamondValuationAssignResponse.setDiamondOrigin(diamondValuationNote.getDiamondOrigin());
+        } else {
+            diamondValuationAssignResponse.setCertificateId(null);
+            diamondValuationAssignResponse.setCaratWeight(null);
+            diamondValuationAssignResponse.setDiamondOrigin(null);
+        }
+        diamondValuationAssignResponse.setStaffName(diamondValuationAssign.getStaff().getFirstName() + " " + diamondValuationAssign.getStaff().getLastName());
+        diamondValuationAssignResponse.setDeadline(valuationRequest.getReturnDate());
+        diamondValuationAssignResponse.setServiceName(valuationRequest.getService().getServiceName());
+        diamondValuationAssignResponse.setStatus(diamondValuationAssign.getValuationRequestDetail().getStatus());
+        diamondValuationAssignResponse.setValuationPrice(diamondValuationAssign.getValuationPrice());
+        return diamondValuationAssignResponse;
     }
 
     private DiamondValuationAssign mapToEntity(DiamondValuationAssignDTO diamondValuationAssignDTO) {

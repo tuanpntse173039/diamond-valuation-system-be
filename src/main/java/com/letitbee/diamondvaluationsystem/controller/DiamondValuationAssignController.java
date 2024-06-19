@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
+import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignResponse;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
@@ -42,7 +43,7 @@ public class DiamondValuationAssignController {
     }
 
     @GetMapping
-    public ResponseEntity<Response<DiamondValuationAssignDTO>> getAllDiamondValuationAssign(
+    public ResponseEntity<Response<DiamondValuationAssignResponse>> getAllDiamondValuationAssign(
             @RequestParam(value = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
