@@ -50,6 +50,31 @@ public class BlogManagement {
     @Test
     @Transactional
     @Rollback
+    public void testCreateTitleExist() throws Exception {
+        PostDTO postDTO = new PostDTO();
+        postDTO.setTitle("testTitle");
+        postDTO.setContent("testContent");
+        postDTO.setCreationDate(new Date());
+        postDTO.setDescription("testDescription");
+        postDTO.setPublishedDate(new Date());
+        postDTO.setReference("https://www.test.com");
+        postDTO.setThumbnail("testThumbnail");
+        String postJson = objectMapper.writeValueAsString(postDTO);
+
+        mockMvc.perform(post("/api/v1/posts")
+                        .contentType("application/json")
+                        .content(postJson))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(post("/api/v1/posts")
+                        .contentType("application/json")
+                        .content(postJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
     public void testCreateContentBlank() throws Exception {
         PostDTO postDTO = new PostDTO();
         postDTO.setTitle("testTitle");
