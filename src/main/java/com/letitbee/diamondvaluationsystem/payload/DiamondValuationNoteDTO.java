@@ -30,6 +30,6 @@ public class DiamondValuationNoteDTO {
     private double fairPrice;
     private double minPrice;
     private double maxPrice;
-    private double cutScore;
+    private float cutScore;
     private Set<DiamondImageDTO> diamondImages = new HashSet<>();
 }

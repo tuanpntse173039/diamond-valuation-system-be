@@ -9,6 +9,9 @@ import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationNoteRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationNoteService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -38,8 +41,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setDiamondOrigin(diamondValuationNoteDTO.getDiamondOrigin());
         diamondValuationNote.setClarity(diamondValuationNoteDTO.getClarity());
         diamondValuationNote.setCaratWeight(diamondValuationNoteDTO.getCaratWeight());
-        diamondValuationNote.setCertificateId(diamondValuationNoteDTO.getCertificateId());
-        diamondValuationNote.setCertificateDate(new Date());
         diamondValuationNote.setClarityCharacteristicLink(diamondValuationNoteDTO.getClarityCharacteristicLink());
         diamondValuationNote.setColor(diamondValuationNoteDTO.getColor());
         diamondValuationNote.setCut(diamondValuationNoteDTO.getCut());
@@ -48,9 +49,11 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
         diamondValuationNote.setProportions(diamondValuationNoteDTO.getProportions());
         diamondValuationNote.setShape(diamondValuationNoteDTO.getShape());
         diamondValuationNote.setSymmetry(diamondValuationNoteDTO.getSymmetry());
+        diamondValuationNote.setCutScore(diamondValuationNoteDTO.getCutScore());
         diamondValuationNote.setClarityCharacteristic(
                 diamondValuationNoteDTO.getClarityCharacteristic()
                         .stream().collect(Collectors.joining(",")));
+
         diamondValuationNote = diamondValuationNoteRepository.save(diamondValuationNote);
         return mapToDTO(diamondValuationNote, diamondValuationNoteDTO.getClarityCharacteristic());
     }

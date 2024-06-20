@@ -4,16 +4,14 @@ import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
-import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
-import com.letitbee.diamondvaluationsystem.payload.Response;
-import com.letitbee.diamondvaluationsystem.payload.StaffDTO;
-import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
+import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -69,6 +67,7 @@ public class StaffServiceImpl implements StaffService {
 
         return staffResponse;
     }
+
 
     @Override
     public StaffDTO getStaffById(Long id) {
@@ -130,7 +129,7 @@ public class StaffServiceImpl implements StaffService {
     }
 
     @Override
-    public Response<DiamondValuationAssignDTO> getAllValuationRequestsByStaffId(Long staffId, int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response<DiamondValuationAssignResponse> getAllValuationRequestsByStaffId(Long staffId, int pageNo, int pageSize, String sortBy, String sortDir) {
 
         //create Pageable intance
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
@@ -139,9 +138,11 @@ public class StaffServiceImpl implements StaffService {
         Page<DiamondValuationAssign> diamondValuationAssigns = staffRepository.findAllByValuationStaff(staff, pageable);
 
         List<DiamondValuationAssign> listOfStaff = diamondValuationAssigns.getContent();
-        List<DiamondValuationAssignDTO> content =  listOfStaff.stream().map(diamondValuationAssign -> mapper.map(diamondValuationAssign, DiamondValuationAssignDTO.class)).collect(Collectors.toList());
+        List<DiamondValuationAssignResponse> content =
+                listOfStaff.stream().map(
+                        diamondValuationAssign -> mapToDiamondValuationAssignResponse(diamondValuationAssign)).collect(Collectors.toList());
 
-        Response<DiamondValuationAssignDTO> staffResponse = new Response<>();
+        Response<DiamondValuationAssignResponse> staffResponse = new Response<>();
 
         staffResponse.setContent(content);
         staffResponse.setPageNumber(diamondValuationAssigns.getNumber());
@@ -170,6 +171,29 @@ public class StaffServiceImpl implements StaffService {
         staffDto.setCurrentTotalProject(countCurrentProject);
 
         return staffDto;
+    }
+
+    private DiamondValuationAssignResponse mapToDiamondValuationAssignResponse(DiamondValuationAssign diamondValuationAssign){
+        DiamondValuationAssignResponse diamondValuationAssignResponse = new DiamondValuationAssignResponse();
+        ValuationRequest valuationRequest = valuationRequestRepository.findValuationRequestByValuationRequestDetails(diamondValuationAssign.getValuationRequestDetail());
+        diamondValuationAssignResponse.setId(diamondValuationAssign.getId());
+
+        DiamondValuationNote diamondValuationNote = diamondValuationAssign.getValuationRequestDetail().getDiamondValuationNote();
+        if (diamondValuationNote != null) {
+            diamondValuationAssignResponse.setCertificateId(diamondValuationNote.getCertificateId());
+            diamondValuationAssignResponse.setCaratWeight(diamondValuationNote.getCaratWeight());
+            diamondValuationAssignResponse.setDiamondOrigin(diamondValuationNote.getDiamondOrigin());
+        } else {
+            diamondValuationAssignResponse.setCertificateId(null);
+            diamondValuationAssignResponse.setCaratWeight(null);
+            diamondValuationAssignResponse.setDiamondOrigin(null);
+        }
+        diamondValuationAssignResponse.setStaffName(diamondValuationAssign.getStaff().getFirstName() + " " + diamondValuationAssign.getStaff().getLastName());
+        diamondValuationAssignResponse.setDeadline(valuationRequest.getReturnDate());
+        diamondValuationAssignResponse.setServiceName(valuationRequest.getService().getServiceName());
+        diamondValuationAssignResponse.setStatus(diamondValuationAssign.isStatus());
+        diamondValuationAssignResponse.setValuationPrice(diamondValuationAssign.getValuationPrice());
+        return diamondValuationAssignResponse;
     }
     //convert DTO to Entity
     private Staff mapToEntity(StaffDTO staffDto){
