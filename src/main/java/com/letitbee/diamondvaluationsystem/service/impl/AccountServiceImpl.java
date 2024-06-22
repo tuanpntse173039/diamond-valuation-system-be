@@ -21,10 +21,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -47,11 +49,14 @@ public class AccountServiceImpl implements AccountService {
     private CustomerRepository customerRepository;
     private StaffRepository staffRepository;
     private RefreshTokenRepository refreshTokenRepository;
+    private ModelMapper mapper;
+
+    @Autowired
+    private JavaMailSender javaMailSender;
+
 
     @Value("${app-jwt-expiration-refresh-token-milliseconds}")
     private long jwtExpirationRefreshDate;
-
-    private ModelMapper mapper;
 
     public AccountServiceImpl(AccountRepository accountRepository, ModelMapper mapper,
                               JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager,
@@ -90,10 +95,27 @@ public class AccountServiceImpl implements AccountService {
 
             if (account.getRole().equals(Role.CUSTOMER)) {
                 Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
-                loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
+                if(customer == null){
+                    throw new APIException(HttpStatus.BAD_REQUEST, "Customer not found");
+                }
+                loginResponse.setCustomerOrStaffId(customer.getId());
+                loginResponse.setFirstName(customer.getFirstName());
+                loginResponse.setLastName(customer.getLastName());
+                loginResponse.setUsername(account.getUsername());
+                loginResponse.setEmail(account.getEmail());
+                loginResponse.setRole(account.getRole());
+
             } else {
                 Staff staff = staffRepository.findStaffByAccount_Id(account.getId());
-                loginResponse.setUserInformation(staff == null ? null : mapper.map(staff, StaffDTO.class));
+                if(staff == null){
+                    throw new APIException(HttpStatus.BAD_REQUEST, "Staff not found");
+                }
+                loginResponse.setCustomerOrStaffId(staff.getId());
+                loginResponse.setFirstName(staff.getFirstName());
+                loginResponse.setLastName(staff.getLastName());
+                loginResponse.setUsername(account.getUsername());
+                loginResponse.setEmail(account.getEmail());
+                loginResponse.setRole(account.getRole());
             }
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
@@ -127,8 +149,8 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse register(CustomerRegisterDTO customerRegisterDTO) {
         //add check for username exists in database
-        if (accountRepository.existsByUsername(customerRegisterDTO.getUsername())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Account is already taken");
+        if (accountRepository.existsByUsernameOrEmail(customerRegisterDTO.getUsername(), customerRegisterDTO.getEmail())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Username or email is already taken");
         }
 
         //save account to db
@@ -157,13 +179,22 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setRole(account.getRole());
         newAccount.setIs_active(account.getIs_active());
         newAccount.setEmail(account.getEmail());
+
+
         return newAccount;
     }
+//
+//    private void sendVerificationEmail(CustomerRegisterDTO customerRegisterDTO) {
+//        String subject = "Please verify your registration";
+//        String url = "http://localhost:8080/api/auth/verify-email?token=" + token;
+//        String message = "Click the link below to verify your email: \n" + url;
+//        EmailService.sendEmail(javaMailSender, email, subject, message);
+//    }
 
     @Override
     public AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO) {
-        if (accountRepository.existsByUsername(staffRegisterDTO.getUsername())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Account is already taken");
+        if (accountRepository.existsByUsernameOrEmail(staffRegisterDTO.getUsername(), staffRegisterDTO.getEmail())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Username or email is already taken");
         }
 
         //save account to db
@@ -196,11 +227,11 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String updatePassword(String newPassword, Long id) {
+    public String updatePassword(AccountDTO accountDTO, Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
         //happycase
-        account.setPassword(newPassword);
+        account.setPassword(accountDTO.getPassword());
         accountRepository.save(account);
         return "Update password successfully";
     }

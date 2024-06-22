@@ -70,7 +70,7 @@ public class AuthController {
 
     @PutMapping("/{id}")
     public ResponseEntity<String> updatePassword(@RequestBody @Valid AccountDTO accountDTO, @PathVariable(name = "id") long id){
-        String response = accountService.updatePassword(accountDTO, id);
+        String response = accountService.updatePassword(accountDTO,id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/refresh-token")

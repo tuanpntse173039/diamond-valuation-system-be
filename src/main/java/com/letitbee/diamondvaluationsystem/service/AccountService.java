@@ -2,11 +2,7 @@ package com.letitbee.diamondvaluationsystem.service;
 
 import com.letitbee.diamondvaluationsystem.entity.RefreshToken;
 import com.letitbee.diamondvaluationsystem.payload.*;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-
-import java.net.http.HttpRequest;
-import java.util.ArrayList;
+import org.springframework.http.ResponseEntity;
 
 public interface AccountService {
 
@@ -16,7 +12,7 @@ public interface AccountService {
 
     AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO);
 
-    String updatePassword(String newPassword, Long id);
+    String updatePassword(AccountDTO accountDTO, Long id);
 
     JwtAuthResponse refreshToken(RefreshToken refreshToken);
 }
