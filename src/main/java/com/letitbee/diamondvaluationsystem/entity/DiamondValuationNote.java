@@ -43,6 +43,9 @@ public class DiamondValuationNote {
     @Column(nullable = true)
     private Float caratWeight;
 
+    @Column(nullable = true)
+    private Float cutScore;
+
     @Enumerated(EnumType.STRING)
     private Color color;
 

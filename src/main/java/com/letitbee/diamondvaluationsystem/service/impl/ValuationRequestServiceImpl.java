@@ -10,6 +10,7 @@ import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -46,7 +47,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @Cacheable(value = "valuationRequests")
     public Response<ValuationRequestResponse> getAllValuationRequests(int pageNo, int pageSize, String sortBy, String sortDir, Date startDate, Date endDate) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
@@ -72,9 +72,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
 
-
     @Override
-    @Cacheable(value = "valuationRequest", key = "#id")
     public ValuationRequestDTO getValuationRequestById(Long id) {
         ValuationRequest valuationRequest = valuationRequestRepository.findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Valuation request", "id", id + ""));
@@ -102,7 +100,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @CachePut(value = "valuationRequest", key = "#id")
     public ValuationRequestDTO updateValuationRequest(long id, ValuationRequestDTO valuationRequestDTO) {
         ValuationRequest valuationRequest = valuationRequestRepository
                 .findById(id)
@@ -117,13 +114,13 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         valuationRequest.setReturnLink(valuationRequestDTO.getReturnLink());
         valuationRequest.setResultLink(valuationRequestDTO.getResultLink());
         valuationRequest.setSealingRecordLink(valuationRequestDTO.getSealingRecordLink());
-        if(valuationRequest.getReceiptLink() == null && valuationRequestDTO.getReceiptLink() != null) {
+        if (valuationRequest.getReceiptLink() == null && valuationRequestDTO.getReceiptLink() != null) {
             valuationRequest.setReceiptDate(new Date());
         }
         valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
-        if(valuationRequest.getReceiptLink() != null){
+        if (valuationRequest.getReceiptLink() != null) {
             valuationRequest.setReturnDate(getReturnDate(valuationRequest));
         }
 
@@ -148,16 +145,15 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @Cacheable(value = "valuationRequest")
     public Response<ValuationRequestResponseV2> getValuationRequestResponse(
             int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<ValuationRequest> page;
-        if(status != null ){
+        if (status != null) {
             page = valuationRequestRepository.findAllByStatus(status, pageable);
-        }else {
+        } else {
             page = valuationRequestRepository.findAll(pageable);
         }
 
@@ -180,7 +176,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     }
 
     @Override
-    @Cacheable(value = "valuationRequest")
     public Response<ValuationRequestResponseV2> getValuationRequestResponseByStaff(
             int pageNo, int pageSize, String sortBy, String sortDir, Long staffId) {
 
@@ -189,12 +184,9 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<ValuationRequest> page;
 
-        Staff staff = staffRepository.findById(staffId).orElse(null);
-        if(staffId != null && staff != null && staff.getAccount().getRole().equals(Role.CONSULTANT_STAFF)){
-            page = valuationRequestRepository.findValuationRequestByStaff_Id(staffId, pageable);
-        }else {
-            page = valuationRequestRepository.findAll(pageable);
-        }
+        Staff staff = staffRepository.findById(staffId)
+                .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", staffId + ""));
+        page = valuationRequestRepository.findValuationRequestByStaff_Id(staff, pageable);
 
         List<ValuationRequest> valuationRequests = page.getContent();
 
@@ -246,9 +238,9 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
         ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);
         Set<ValuationRequestDetailDTO> valuationRequestDetailDTOSet = new HashSet<>();
-        for(ValuationRequestDetail valuationRequestDetail : valuationRequest.getValuationRequestDetails()){
+        for (ValuationRequestDetail valuationRequestDetail : valuationRequest.getValuationRequestDetails()) {
             ValuationRequestDetailDTO valuationRequestDetailDTO = mapper.map(valuationRequestDetail, ValuationRequestDetailDTO.class);
-            if(valuationRequestDetail.getDiamondValuationNote() != null
+            if (valuationRequestDetail.getDiamondValuationNote() != null
                     && valuationRequestDetail.getDiamondValuationNote().getClarityCharacteristic() != null) {
                 DiamondValuationNoteDTO diamondValuationNoteDTO =
                         diamondValuationNoteServiceImpl.getDiamondValuationNoteById(

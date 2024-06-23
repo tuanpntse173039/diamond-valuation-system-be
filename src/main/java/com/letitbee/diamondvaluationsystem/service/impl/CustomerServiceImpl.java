@@ -13,6 +13,7 @@ import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -40,7 +41,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    @Cacheable(value = "customers")
     public Response<CustomerDTO> getAllCustomer(int pageNo, int pageSize, String sortBy, String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo

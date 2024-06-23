@@ -27,7 +27,7 @@ public class ValuationRequestController {
         this.valuationRequestService = valuationRequestService;
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'VALUATION_STAFF')")
     @GetMapping
     public ResponseEntity<Response<ValuationRequestResponse>>
     getAllValuationRequest(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
@@ -42,7 +42,7 @@ public class ValuationRequestController {
         return new ResponseEntity<>(valuationRequestService.getAllValuationRequests(pageNo, pageSize, sortBy, sortDir, startDateParse, endDateParse), HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'CUSTOMER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'CUSTOMER', 'VALUATION_STAFF')")
     @GetMapping("/{id}")
     public ResponseEntity<ValuationRequestDTO> getValuationRequest(@PathVariable("id") long id) {
         return ResponseEntity.ok(valuationRequestService.getValuationRequestById(id));
