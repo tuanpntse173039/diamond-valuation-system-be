@@ -120,7 +120,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
-        if (valuationRequest.getReceiptLink() != null) {
+        if (valuationRequest.getReceiptLink() != null && valuationRequest.getReturnDate() == null) {
             valuationRequest.setReturnDate(getReturnDate(valuationRequest));
         }
 
