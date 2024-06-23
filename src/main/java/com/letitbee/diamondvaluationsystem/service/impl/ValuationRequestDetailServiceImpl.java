@@ -193,9 +193,13 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         double servicePrice = servicePriceList.getInitPrice() +
                 servicePriceList.getUnitPrice() * (sizeDTO - servicePriceList.getMinSize());
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
-        double totalPrice = valuationRequest.getTotalServicePrice();
-        totalPrice = totalPrice + servicePrice - valuationRequestDetail.getServicePrice();
-
+        Double totalPrice = valuationRequest.getTotalServicePrice();
+        if (totalPrice != null) {
+            double totalServicePriceValue = totalPrice.doubleValue();
+            totalPrice = totalServicePriceValue + servicePrice - valuationRequestDetail.getServicePrice();
+        } else {
+            totalPrice = servicePrice;
+        }
         valuationRequestDetail.setServicePrice(servicePrice);
         valuationRequest.setTotalServicePrice(totalPrice);
         valuationRequestRepository.save(valuationRequest);
