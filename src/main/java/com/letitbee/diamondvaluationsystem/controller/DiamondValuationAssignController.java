@@ -1,13 +1,16 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
+import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignResponse;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("api/v1/diamond-valuation-assigns")
@@ -40,7 +43,7 @@ public class DiamondValuationAssignController {
     }
 
     @GetMapping
-    public ResponseEntity<Response<DiamondValuationAssignDTO>> getAllDiamondValuationAssign(
+    public ResponseEntity<Response<DiamondValuationAssignResponse>> getAllDiamondValuationAssign(
             @RequestParam(value = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,

@@ -13,6 +13,8 @@ import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
 import org.modelmapper.ModelMapper;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -69,13 +71,13 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.
                 findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id
-                + ""));
+                        + ""));
         return mapToDTO(customer);
     }
 
     @Override
     public CustomerDTO createCustomerInformation(CustomerDTO customerDto) {
-        if(!customerDto.getAccount().getRole().toString().equalsIgnoreCase(Role.CUSTOMER.toString())) {
+        if (!customerDto.getAccount().getRole().toString().equalsIgnoreCase(Role.CUSTOMER.toString())) {
             throw new APIException(HttpStatus.BAD_REQUEST, "Invalid Role");
         }
         Account account = mapper.map(customerDto.getAccount(), Account.class);
@@ -85,7 +87,6 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
         customer.setAddress(customerDto.getAddress());
         customer.setAvatar(customerDto.getAvatar());
         customer.setIdentityDocument(customerDto.getIdentityDocument());
@@ -102,7 +103,6 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setFirstName(customerDto.getFirstName());
         customer.setLastName(customerDto.getLastName());
         customer.setPhone(customerDto.getPhone());
-        customer.setEmail(customerDto.getEmail());
         customer.setAddress(customerDto.getAddress());
         customer.setAvatar(customerDto.getAvatar());
         customer.setIdentityDocument(customerDto.getIdentityDocument());
@@ -111,10 +111,10 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO  getCustomerByPhoneOrName(String phone, String name) {
+    public CustomerDTO getCustomerByPhoneOrName(String phone, String name) {
 
         Customer customer = customerRepository.findCustomerByPhoneOrFirstNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(
-                    phone, "%" + name + "%", "%" + name + "%" ).orElseThrow(() -> new ResourceNotFoundException("Customer", "phone or name", phone + name));
+                phone, "%" + name + "%", "%" + name + "%").orElseThrow(() -> new ResourceNotFoundException("Customer", "phone or name", phone + name));
 
         return mapToDTO(customer);
     }
@@ -122,15 +122,11 @@ public class CustomerServiceImpl implements CustomerService {
 
     private CustomerDTO mapToDTO(Customer customer) {
         CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);
-        //get List valuation request
-        Set<ValuationRequest> valuationRequestList = valuationRequestRepository.findAllByCustomer(customer)
-                .orElse(null);
-        if (valuationRequestList != null) {
-            //convert to DTO
-            Set<ValuationRequestDTO> valuationRequestDTOList = valuationRequestList.stream()
-                    .map(valuationRequest -> (mapper.map(valuationRequest, ValuationRequestDTO.class))).collect(Collectors.toSet());
-            customerDTO.setValuationRequestSet(valuationRequestDTOList);
-        }
+        //get List valuation request by customer
+        Set<Long> valuationRequestList = valuationRequestRepository
+                .findAllByCustomer(customer);
+
+            customerDTO.setValuationRequestIDSet(valuationRequestList);
         return customerDTO;
     }
 

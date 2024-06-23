@@ -5,14 +5,19 @@ import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import lombok.Data;
 
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 public class DiamondValuationNoteDTO {
-    private Long id;
+    private long id;
     private String certificateId;
+    private Date certificateDate;
     private String proportions;
-    private String clarityCharacteristic;
+    private ArrayList<String> clarityCharacteristic = new ArrayList<>();
+    private String clarityCharacteristicLink;
     private DiamondOrigin diamondOrigin;
     private float caratWeight;
     private Color color;
@@ -22,8 +27,9 @@ public class DiamondValuationNoteDTO {
     private Symmetry symmetry;
     private Shape shape;
     private Fluorescence fluorescence;
-    private Double fairPrice;
-    private Double minPrice;
-    private Double maxPrice;
-    private Set<DiamondImageDTO> diamondImages;
+    private double fairPrice;
+    private double minPrice;
+    private double maxPrice;
+    private float cutScore;
+    private Set<DiamondImageDTO> diamondImages = new HashSet<>();
 }

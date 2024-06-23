@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -24,9 +25,8 @@ public class DiamondValuationNote {
     @Column(columnDefinition = "varchar(10)")
     private String certificateId;
 
-
     @Column(columnDefinition = "datetime")
-    private String certificateDate;
+    private Date certificateDate;
 
     @Column(columnDefinition = "varchar(1000)")
     private String proportions;
@@ -34,11 +34,17 @@ public class DiamondValuationNote {
     @Column(columnDefinition = "varchar(1000)")
     private String clarityCharacteristic;
 
+    @Column(columnDefinition = "varchar(1000)")
+    private String clarityCharacteristicLink;
+
     @Enumerated(EnumType.STRING)
     private DiamondOrigin diamondOrigin;
 
     @Column(nullable = true)
-    private float caratWeight;
+    private Float caratWeight;
+
+    @Column(nullable = true)
+    private Float cutScore;
 
     @Enumerated(EnumType.STRING)
     private Color color;

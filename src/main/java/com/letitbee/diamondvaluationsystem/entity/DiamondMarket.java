@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,12 +24,16 @@ public class DiamondMarket {
     private Long id;
     @Column(columnDefinition = "varchar(1000)", nullable = false)
     private String diamondImage;
+    @Column(columnDefinition = "datetime")
+    private Date creationDate;
     @Column(nullable = false)
     private float caratWeight;
     @Enumerated(EnumType.STRING)
     private DiamondOrigin diamondOrigin;
     @Enumerated(EnumType.STRING)
     private Color color;
+    @Enumerated(EnumType.STRING)
+    private Cut cut;
     @Enumerated(EnumType.STRING)
     private Clarity clarity;
     @Enumerated(EnumType.STRING)

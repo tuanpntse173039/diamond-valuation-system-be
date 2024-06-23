@@ -7,9 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+//import org.springframework.security.core.GrantedAuthority;
+//import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -17,7 +18,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Table
 @Entity
-public class Account {
+public class Account  {
 
     @Id
     @GeneratedValue(
@@ -31,7 +32,8 @@ public class Account {
     private String password;
     @Column(columnDefinition = "bit default 1")
     private Boolean is_active;
-
+    @Column(columnDefinition = "varchar(100)", nullable = false)
+    private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
 
@@ -41,5 +43,11 @@ public class Account {
     @OneToOne(mappedBy = "account")
     private Customer customer;
 
+    @OneToMany(
+            mappedBy = "account",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<Notification> notifications = new HashSet<>();
 
 }

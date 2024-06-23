@@ -8,16 +8,17 @@ import java.util.Set;
 
 @Data
 public class ValuationRequestDetailDTO {
-    private Long id;
+    private long id;
     private double valuationPrice;
     private boolean isMode;
-    private String sealingRecordLink;
-    private float size;
+    private Float size;
     private RequestDetailStatus status;
     private boolean isDiamond;
     private DiamondValuationAssignDTO diamondValuationAssign;
     private Long valuationRequestID;
-    private Double servicePrice;
+    private double servicePrice;
+    private String resultLink;
+    private String cancelReason;
     private DiamondValuationNoteDTO diamondValuationNote;
     private Set<DiamondValuationAssignDTO> diamondValuationAssigns;
 }
