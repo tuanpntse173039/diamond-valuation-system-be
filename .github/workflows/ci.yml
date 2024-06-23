@@ -20,14 +20,9 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-
-    - name: Build with Maven
-      id: build
-      run: mvn clean test
-      continue-on-error: true
-
-    - name: Extract Jira Issue Key
-      id: extract_jira_key
+        
+    - name: Extract Jira Issue Key, Test Class, and Test Method
+      id: extract_jira_key_and_test
       run: |
         commit_message=$(git log -1 --pretty=%B)
         echo "Commit message: $commit_message"
@@ -38,19 +33,37 @@ jobs:
           echo "No Jira issue key found in commit message"
           exit 1
         fi
+        if [[ "$commit_message" =~ ([a-zA-Z0-9_]+#[a-zA-Z0-9_]+) ]]; then
+          echo "Found test class and method: ${BASH_REMATCH[1]}"
+          echo "TEST_CLASS_AND_METHOD=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+        else
+          echo "No test class and method found in commit message"
+          exit 1
+        fi
+
+    - name: Build with Maven
+      id: build
+      run: mvn clean test -Dtest=${TEST_CLASS_AND_METHOD}
+      continue-on-error: true
 
     - name: Set Jira update data based on build result
       id: set_jira_data
       run: |
         if [ "${{ steps.build.outcome }}" == 'success' ]; then
-          echo '{ "fields":{ "customfield_10050": {"self": "https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/customFieldOption/10026", "id" : "10026", "value" : "Pass"} }}' > data.json
+          echo '{"transition": {"id": 31}}' > data.json
         else
-          echo '{"fields": {"customfield_10050" : {"self": "https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/customFieldOption/10027", "value": "Fail", "id": "10027"}}}' > data.json
+          echo '{
+            "fields": {
+              "issuetype": {
+                "name": "Bug"
+              }
+            }
+          }' > data.json
         fi
 
     - name: Update Jira
       if: env.JIRA_ISSUE_KEY
       run: |
         curl -D- -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
-        -X PUT --data @data.json -H "Content-Type: application/json" \
-        https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/issue/${{ env.JIRA_ISSUE_KEY }}
+        -X POST --data @data.json -H "Content-Type: application/json" \
+        https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/issue/${{ env.JIRA_ISSUE_KEY }}/transitions?expand=transitions.fields
