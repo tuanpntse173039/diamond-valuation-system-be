@@ -20,7 +20,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
-
+        
     - name: Extract Jira Issue Key, Test Class, and Test Method
       id: extract_jira_key_and_test
       run: |
