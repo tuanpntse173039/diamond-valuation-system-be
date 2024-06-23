@@ -15,6 +15,8 @@ import com.letitbee.diamondvaluationsystem.repository.RefreshTokenRepository;
 import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
 import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -27,6 +29,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -36,6 +39,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
@@ -53,7 +57,6 @@ public class AccountServiceImpl implements AccountService {
 
     @Autowired
     private JavaMailSender javaMailSender;
-
 
     @Value("${app-jwt-expiration-refresh-token-milliseconds}")
     private long jwtExpirationRefreshDate;
@@ -180,16 +183,33 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setIs_active(account.getIs_active());
         newAccount.setEmail(account.getEmail());
 
-
+        try {
+            sendVerificationEmail(customerRegisterDTO, "http://localhost:8080");
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         return newAccount;
     }
-//
-//    private void sendVerificationEmail(CustomerRegisterDTO customerRegisterDTO) {
-//        String subject = "Please verify your registration";
-//        String url = "http://localhost:8080/api/auth/verify-email?token=" + token;
-//        String message = "Click the link below to verify your email: \n" + url;
-//        EmailService.sendEmail(javaMailSender, email, subject, message);
-//    }
+
+    private void sendVerificationEmail(CustomerRegisterDTO customerRegisterDTO, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        String subject = "Please verify your registration";
+        String senderName = "H&T Diamond";
+        String mailContent = "<p>Dear " + customerRegisterDTO.getFirstName() + " " + customerRegisterDTO.getLastName() + ",</p>";
+        mailContent += "<p>Thank you for registering with H&T Diamond. Please click the link below to verify your registration:</p>";
+
+        String verifyURL = siteURL + "/verify";
+        mailContent += "<h3><a href=\"" + verifyURL + "\">Verify your account</a></h3>";
+
+        mailContent += "<p>Thank you,<br>The H&T Diamond Team</p>";
+
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setFrom("hungdmse173190@fpt.edu.vn", senderName);
+        helper.setTo(customerRegisterDTO.getEmail());
+        helper.setSubject(subject);
+        helper.setText(mailContent, true);
+        javaMailSender.send(message);
+    }
 
     @Override
     public AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO) {

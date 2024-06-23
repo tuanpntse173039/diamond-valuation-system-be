@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.service;
 
 import com.letitbee.diamondvaluationsystem.entity.RefreshToken;
 import com.letitbee.diamondvaluationsystem.payload.*;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
 
 public interface AccountService {
