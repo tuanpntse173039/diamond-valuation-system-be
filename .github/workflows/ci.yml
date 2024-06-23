@@ -51,12 +51,7 @@ jobs:
       run: |
         if [ "${{ steps.build.outcome }}" == 'success' ]; then
           echo '{
-            "fields": {
-              "status": {
-                "name": "Done",
-                "id": "10001"
-              }
-            }
+            {"transition":{"id":"31"}}
           }' > data.json
         else
           echo '{
@@ -72,5 +67,5 @@ jobs:
       if: env.JIRA_ISSUE_KEY
       run: |
         curl -D- -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
-        -X PUT --data @data.json -H "Content-Type: application/json" \
-        https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/issue/${{ env.JIRA_ISSUE_KEY }}
+        -X POST --data @data.json -H "Content-Type: application/json" \
+        https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/issue/${{ env.JIRA_ISSUE_KEY }}/transitions?expand=transitions.fields
