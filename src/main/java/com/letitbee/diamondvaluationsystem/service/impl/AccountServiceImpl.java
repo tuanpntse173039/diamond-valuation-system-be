@@ -247,11 +247,16 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String updatePassword(AccountDTO accountDTO, Long id) {
+    public String update(AccountDTO accountDTO, Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
         //happycase
-        account.setPassword(accountDTO.getPassword());
+        if(accountRepository.existsByUsernameOrEmail(accountDTO.getUsername(), accountDTO.getEmail())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Username or email is already taken");
+        }
+        account.setUsername(accountDTO.getUsername());
+        account.setEmail(accountDTO.getEmail());
+        account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
         accountRepository.save(account);
         return "Update password successfully";
     }

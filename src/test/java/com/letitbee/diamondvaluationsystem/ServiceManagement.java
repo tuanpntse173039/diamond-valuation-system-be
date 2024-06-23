@@ -1,8 +1,10 @@
 package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.letitbee.diamondvaluationsystem.entity.Service;
 import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
 import com.letitbee.diamondvaluationsystem.payload.ServicePriceListDTO;
+import com.letitbee.diamondvaluationsystem.repository.ServiceRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -17,13 +19,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = {"MANAGER"})
 public class ServiceManagement {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private ServiceRepository serviceRepository;
 
     @Test
     @Transactional
@@ -39,6 +44,31 @@ public class ServiceManagement {
                         .contentType("application/json")
                         .content(serviceJson))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testServiceNameAlreadyExist() throws Exception {
+        ServiceDTO serviceDTO = new ServiceDTO();
+        serviceDTO.setName("Normal  pricing");
+        serviceDTO.setDescription("testDescription");
+        serviceDTO.setPeriod(1);
+        String serviceJson = objectMapper.writeValueAsString(serviceDTO);
+        Boolean service = serviceRepository.existsByServiceName(serviceDTO.getName());
+        if (service) {
+            mockMvc.perform(post("/api/v1/services")
+                            .contentType("application/json")
+                            .content(serviceJson))
+                    .andExpect(status().isBadRequest());
+        }else{
+            mockMvc.perform(post("/api/v1/services")
+                            .contentType("application/json")
+                            .content(serviceJson))
+                    .andExpect(status().isCreated());
+        }
+
+
     }
 
     @Test

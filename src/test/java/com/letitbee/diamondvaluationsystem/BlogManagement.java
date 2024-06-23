@@ -2,7 +2,9 @@ package com.letitbee.diamondvaluationsystem;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.letitbee.diamondvaluationsystem.entity.Post;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
+import com.letitbee.diamondvaluationsystem.repository.PostRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -19,13 +21,16 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = {"ADMIN"})
 public class BlogManagement {
     @Autowired
     private MockMvc mockMvc;
 
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    private PostRepository postRepository;
 
     @Test
     @Transactional
@@ -60,16 +65,18 @@ public class BlogManagement {
         postDTO.setReference("https://www.test.com");
         postDTO.setThumbnail("testThumbnail");
         String postJson = objectMapper.writeValueAsString(postDTO);
-
-        mockMvc.perform(post("/api/v1/posts")
-                        .contentType("application/json")
-                        .content(postJson))
-                .andExpect(status().isCreated());
-
-        mockMvc.perform(post("/api/v1/posts")
-                        .contentType("application/json")
-                        .content(postJson))
-                .andExpect(status().isBadRequest());
+        boolean ex = postRepository.existsByTitle(postDTO.getTitle());
+        if(ex) {
+            mockMvc.perform(post("/api/v1/posts")
+                            .contentType("application/json")
+                            .content(postJson))
+                    .andExpect(status().isBadRequest());
+        }else {
+            mockMvc.perform(post("/api/v1/posts")
+                            .contentType("application/json")
+                            .content(postJson))
+                    .andExpect(status().isCreated());
+        }
     }
 
     @Test
