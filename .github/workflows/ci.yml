@@ -50,9 +50,7 @@ jobs:
       id: set_jira_data
       run: |
         if [ "${{ steps.build.outcome }}" == 'success' ]; then
-          echo '{
-            "transition":[{"id":"31"}]
-          }' > data.json
+          echo '{"transition": {"id": 31}}' > data.json
         else
           echo '{
             "fields": {
