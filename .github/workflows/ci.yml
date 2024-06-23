@@ -53,7 +53,8 @@ jobs:
           echo '{
             "fields": {
               "status": {
-                "name": "Done"
+                "name": "Done",
+                "id": "10001"
               }
             }
           }' > data.json
