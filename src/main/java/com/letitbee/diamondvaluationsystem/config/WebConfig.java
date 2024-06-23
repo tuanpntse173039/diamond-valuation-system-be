@@ -13,7 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
             .allowedOrigins("http://localhost:3000",
                     "https://localhost:3000",
                     "https://localhost:8080",
-                    "https://hntdiamond.store",
+                    "https://www.hntdiamond.store",
                     "https://console.hntdiamond.store",
                     "http://localhost:5173",
                     "http://localhost:5174",
