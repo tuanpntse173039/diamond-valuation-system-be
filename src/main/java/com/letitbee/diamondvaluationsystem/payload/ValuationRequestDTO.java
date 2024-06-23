@@ -17,7 +17,7 @@ public class ValuationRequestDTO {
     private Date returnDate;
     @Min(value = 1, message = "Diamond amount must be greater than 0")
     private int diamondAmount;
-    private Double totalServicePrice;
+    private double totalServicePrice;
     private String receiptLink;
     private String returnLink;
     private String resultLink;
