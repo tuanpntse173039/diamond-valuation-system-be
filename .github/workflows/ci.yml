@@ -50,9 +50,21 @@ jobs:
       id: set_jira_data
       run: |
         if [ "${{ steps.build.outcome }}" == 'success' ]; then
-          echo '{ "fields":{ "customfield_10050": {"self": "https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/customFieldOption/10026", "id" : "10026", "value" : "Pass"} }}' > data.json
+          echo '{
+            "fields": {
+              "status": {
+                "name": "Done"
+              }
+            }
+          }' > data.json
         else
-          echo '{"fields": {"customfield_10050" : {"self": "https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/customFieldOption/10027", "value": "Fail", "id": "10027"}}}' > data.json
+          echo '{
+            "fields": {
+              "issuetype": {
+                "name": "Bug"
+              }
+            }
+          }' > data.json
         fi
 
     - name: Update Jira
