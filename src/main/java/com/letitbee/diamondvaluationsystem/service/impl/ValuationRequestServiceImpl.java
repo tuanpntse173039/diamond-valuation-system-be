@@ -120,10 +120,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
-        if (valuationRequest.getReceiptLink() != null && valuationRequest.getReturnDate() == null) {
-            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
-        }
-
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
         //map to dto
@@ -264,38 +260,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
             valuationRequest.setStaff(null);
         }
         return valuationRequest;
-    }
-
-    private Date getReturnDate(ValuationRequest valuationRequest) {
-        com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequest.getService();
-        int period = service.getPeriod();
-        int totalHourService = valuationRequest.getDiamondAmount() * period;
-        Date receiptDate = valuationRequest.getReceiptDate();
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(receiptDate);
-        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-        int minuteOfDay = calendar.get(Calendar.MINUTE);
-        int secondOfDay = calendar.get(Calendar.SECOND);
-
-        int remainHourInDay = 17 - hourOfDay - ((minuteOfDay > 0 || secondOfDay > 0) ? 1 : 0);
-        int remainHourService = totalHourService - remainHourInDay;
-
-        if (remainHourService <= 0) {
-            calendar.add(Calendar.HOUR_OF_DAY, totalHourService);
-            return calendar.getTime();
-        }
-
-        int count = 0;
-        while (remainHourService > 9) {
-            count++;
-            remainHourService -= 9;
-        }
-        int hourInLastDay = remainHourService;
-
-        calendar.add(Calendar.DAY_OF_MONTH, count);
-        calendar.set(Calendar.HOUR_OF_DAY, 8 + hourInLastDay);
-
-        return calendar.getTime();
     }
 
 
