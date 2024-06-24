@@ -2,9 +2,17 @@ package com.letitbee.diamondvaluationsystem.entity;
 
 import com.letitbee.diamondvaluationsystem.enums.RecordType;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Date;
 
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table
 public class Record {
@@ -14,7 +22,7 @@ public class Record {
     )
     private Long id;
 
-    @Column(columnDefinition = "varchar(1000)")
+    @Column(columnDefinition = "text")
     private String link;
 
     @Column(columnDefinition = "datetime", nullable = false)
