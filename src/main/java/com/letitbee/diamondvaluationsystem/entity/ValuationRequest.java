@@ -28,22 +28,11 @@ public class ValuationRequest {
     @Column(columnDefinition = "datetime", nullable = false)
     private Date creationDate;
     @Column(columnDefinition = "datetime")
-    private Date receiptDate;
-    @Column(columnDefinition = "datetime")
     private Date returnDate;
     @Column(columnDefinition = "int", nullable = false)
     private int diamondAmount;
     @Column(columnDefinition = "money")
     private Double totalServicePrice;
-    @Column(columnDefinition = "varchar(1000)")
-    private String receiptLink;
-    @Column(columnDefinition = "varchar(1000)")
-    private String returnLink;
-    @Column(columnDefinition = "varchar(1000)")
-    private String resultLink;
-    @Column(columnDefinition = "varchar(1000)")
-    private String sealingRecordLink;
-    @Column(columnDefinition = "text")
     private String feedback;
     @Column(columnDefinition = "varchar(1000)")
     private String cancelReason;
@@ -73,4 +62,6 @@ public class ValuationRequest {
             orphanRemoval = true)
     private Set<ValuationRequestDetail> valuationRequestDetails = new HashSet<>();
 
+    @OneToMany(mappedBy = "valuationRequest", cascade = CascadeType.ALL)
+    private Set<Record> records = new HashSet<>();
 }
