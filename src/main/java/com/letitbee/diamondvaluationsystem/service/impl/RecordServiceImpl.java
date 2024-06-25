@@ -1,10 +1,12 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Record;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.RecordType;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.RecordDTO;
 import com.letitbee.diamondvaluationsystem.repository.RecordRepository;
+import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.RecordService;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -19,16 +21,25 @@ public class RecordServiceImpl implements RecordService {
 
     private RecordRepository recordRepository;
     private ModelMapper mapper;
+    private ValuationRequestRepository valuationRequestRepository;
 
-    public RecordServiceImpl(RecordRepository recordRepository, ModelMapper mapper) {
+    public RecordServiceImpl(RecordRepository recordRepository, ModelMapper mapper, ValuationRequestRepository valuationRequestRepository) {
         this.recordRepository = recordRepository;
         this.mapper = mapper;
+        this.valuationRequestRepository = valuationRequestRepository;
     }
 
     @Override
     public RecordDTO createRecord(RecordDTO recordDTO) {
-        recordDTO.setCreationDate(new Date());
-        return mapToDTO(recordRepository.save(mapToEntity(recordDTO)));
+        ValuationRequest valuationRequest = valuationRequestRepository.findById(recordDTO.getValuationRequestId())
+                .orElseThrow(() -> new ResourceNotFoundException("ValuationRequest", "id", recordDTO.getValuationRequestId().toString()));
+        Record record = new Record();
+        record.setLink(recordDTO.getLink());
+        record.setStatus(recordDTO.getStatus());
+        record.setType(recordDTO.getType());
+        record.setCreationDate(new Date());
+        record.setValuationRequest(valuationRequest);
+        return mapToDTO(recordRepository.save(record));
     }
 
     @Override
@@ -62,7 +73,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public RecordDTO getRecordByRequestIdAndType(Long requestId, RecordType type) {
-        Record record = recordRepository.findByValuationRequestIdAndType(requestId, type.toString()).orElseThrow(()
+        Record record = recordRepository.findByValuationRequestIdAndType(requestId, type).orElseThrow(()
                 -> new ResourceNotFoundException("Record", "valuationRequestId", requestId.toString()));
         return mapToDTO(record);
     }

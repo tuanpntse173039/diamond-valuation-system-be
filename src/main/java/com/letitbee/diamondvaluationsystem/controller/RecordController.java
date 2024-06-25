@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/records")
+@RequestMapping("/api/v1/records")
 public class RecordController {
 
     private RecordService recordService;

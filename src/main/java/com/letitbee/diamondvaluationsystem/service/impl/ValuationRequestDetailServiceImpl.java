@@ -278,8 +278,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         Date receiptDate;
         if(valuationRequest.getReturnDate() != null) {
             receiptDate = valuationRequest.getReturnDate();
-        } else if(valuationRequest.getReceiptDate() != null) {
-            receiptDate = valuationRequest.getReceiptDate();
+//        } else if(valuationRequest.getReceiptDate() != null) {
+//            receiptDate = valuationRequest.getReceiptDate();
         } else {
             throw new IllegalArgumentException("Both returnDate and receiptDate are null");
         }
