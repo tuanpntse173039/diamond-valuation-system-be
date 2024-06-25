@@ -109,7 +109,13 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
         //set data to valuation request detail
-        valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
+        ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
+        if(valuationRequestDetail.getSize() ==  0 && valuationRequestDetailDTO.getSize() != 0) {
+            valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
+            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
+            valuationRequestRepository.save(valuationRequest);
+        }
+        valuationRequest = valuationRequestDetail.getValuationRequest();
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
         valuationRequestDetail.setCancelReason(valuationRequestDetailDTO.getCancelReason());
@@ -129,7 +135,6 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
-        ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
         if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                 || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
             changeValuationRequestStatusToValuating(valuationRequest);
@@ -265,6 +270,44 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
             }
         }
+    }
+
+    private Date getReturnDate(ValuationRequest valuationRequest) {
+        com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequest.getService();
+        int totalHourService = service.getPeriod();
+        Date receiptDate;
+        if(valuationRequest.getReturnDate() != null) {
+            receiptDate = valuationRequest.getReturnDate();
+        } else if(valuationRequest.getReceiptDate() != null) {
+            receiptDate = valuationRequest.getReceiptDate();
+        } else {
+            throw new IllegalArgumentException("Both returnDate and receiptDate are null");
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(receiptDate);
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        int minuteOfDay = calendar.get(Calendar.MINUTE);
+        int secondOfDay = calendar.get(Calendar.SECOND);
+
+        int remainHourInDay = 17 - hourOfDay - ((minuteOfDay > 0 || secondOfDay > 0) ? 1 : 0);
+        int remainHourService = totalHourService - remainHourInDay;
+
+        if (remainHourService <= 0) {
+            calendar.add(Calendar.HOUR_OF_DAY, totalHourService);
+            return calendar.getTime();
+        }
+
+        int count = 0;
+        while (remainHourService > 9) {
+            count++;
+            remainHourService -= 9;
+        }
+        int hourInLastDay = remainHourService;
+
+        calendar.add(Calendar.DAY_OF_MONTH, count);
+        calendar.set(Calendar.HOUR_OF_DAY, 8 + hourInLastDay);
+
+        return calendar.getTime();
     }
 
 }

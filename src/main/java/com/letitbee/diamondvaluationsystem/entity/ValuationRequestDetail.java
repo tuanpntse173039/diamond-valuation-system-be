@@ -28,7 +28,7 @@ public class ValuationRequestDetail {
     private Double valuationPrice;
 
     @Column(columnDefinition = "float")
-    private Float size;
+    private float size;
 
     @Enumerated(EnumType.STRING)
     private RequestDetailStatus status;
