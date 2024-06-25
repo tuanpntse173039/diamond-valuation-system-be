@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.*;
+import com.letitbee.diamondvaluationsystem.enums.RecordType;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.enums.Role;
@@ -110,19 +111,8 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         //update valuation request
         valuationRequest.setFeedback(valuationRequestDTO.getFeedback());
         valuationRequest.setReturnDate(valuationRequestDTO.getReturnDate());
-        valuationRequest.setReceiptDate(valuationRequestDTO.getReceiptDate());
-        valuationRequest.setReturnLink(valuationRequestDTO.getReturnLink());
-        valuationRequest.setResultLink(valuationRequestDTO.getResultLink());
-        valuationRequest.setSealingRecordLink(valuationRequestDTO.getSealingRecordLink());
-        if (valuationRequest.getReceiptLink() == null && valuationRequestDTO.getReceiptLink() != null) {
-            valuationRequest.setReceiptDate(new Date());
-        }
-        valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
-        if (valuationRequest.getReceiptLink() != null) {
-            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
-        }
 
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
@@ -270,7 +260,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequest.getService();
         int period = service.getPeriod();
         int totalHourService = valuationRequest.getDiamondAmount() * period;
-        Date receiptDate = valuationRequest.getReceiptDate();
+        Date receiptDate = valuationRequestRepository.findCreatedDateByTypeOfRecord(RecordType.RECEIPT, valuationRequest);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(receiptDate);
         int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
