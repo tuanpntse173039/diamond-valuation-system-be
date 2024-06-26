@@ -26,7 +26,7 @@ public class Payment {
     @Column(columnDefinition = "datetime",nullable = false)
     private Date paytime;
     @Column(columnDefinition = "money",nullable = false)
-    private double amount;
+    private Double amount;
     @Column(columnDefinition = "varchar(50)")
     private String externalTransaction;
 

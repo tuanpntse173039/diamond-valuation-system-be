@@ -14,15 +14,10 @@ import java.util.Set;
 public class ValuationRequestDTO {
     private long id;
     private Date creationDate;
-    private Date receiptDate;
     private Date returnDate;
     @Min(value = 1, message = "Diamond amount must be greater than 0")
     private int diamondAmount;
-    private double totalServicePrice;
-    private String receiptLink;
-    private String returnLink;
-    private String resultLink;
-    private String sealingRecordLink;
+    private Double totalServicePrice;
     private String feedback;
     private String cancelReason;
     private RequestStatus status;

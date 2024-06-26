@@ -46,3 +46,4 @@ public class DiamondValuationAssign {
     @JoinColumn(name = "valuation_staff_id", nullable = false)
     private Staff staff;
 }
+

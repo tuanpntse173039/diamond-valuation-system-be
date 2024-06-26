@@ -45,9 +45,9 @@ public class DiamondMarket {
     @Enumerated(EnumType.STRING)
     private Fluorescence fluorescence;
     @Column(nullable = false)
-    private double cutScore;
+    private Double cutScore;
     @Column(columnDefinition = "money", nullable = false)
-    private double price;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)

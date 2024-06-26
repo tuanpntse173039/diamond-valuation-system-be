@@ -4,6 +4,7 @@ import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
+import com.letitbee.diamondvaluationsystem.enums.RecordType;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import org.springframework.data.domain.Page;
@@ -56,4 +57,9 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
             "FROM ValuationRequest v JOIN v.valuationRequestDetails d " +
             "WHERE d = :valuationRequestDetail ")
     ValuationRequest findValuationRequestByValuationRequestDetails(ValuationRequestDetail valuationRequestDetail);
+
+    @Query("Select r.creationDate " +
+            "from Record r " +
+            "where r.type = :typeOfRecord and r.valuationRequest = :valuationRequest ")
+    Date findCreatedDateByTypeOfRecord(RecordType typeOfRecord, ValuationRequest valuationRequest);
 }
