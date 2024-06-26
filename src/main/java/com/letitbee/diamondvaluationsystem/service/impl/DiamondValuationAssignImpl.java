@@ -47,6 +47,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         this.staffRepository = staffRepository;
         this.valuationRequestRepository = valuationRequestRepository;
     }
+
     @Override
     public DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO) {
         DiamondValuationAssign diamondValuationAssign = new DiamondValuationAssign();
@@ -85,7 +86,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + ""));
         int flag = 0;
-        if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.VALUATING.toString())) {
+        if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.VALUATING.toString())) {
             for (DiamondValuationAssign dva : valuationRequestDetail.getDiamondValuationAssigns()) {
                 if (!dva.isStatus()) {
                     flag = 1;
@@ -97,8 +98,12 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 valuationRequestDetailRepository.save(valuationRequestDetail);
             }
         }
-        if(diamondValuationAssignDTO.isStatus() && diamondValuationAssignDTO.getValuationPrice() == 0) {
-            throw new APIException(HttpStatus.BAD_REQUEST, "Valuation price must be greater than 0");
+        if (diamondValuationAssignDTO.isStatus()) {
+            if (diamondValuationAssignDTO.getValuationPrice() == 0 ||
+                    diamondValuationAssignDTO.getComment() == null ||
+                    diamondValuationAssignDTO.getComment().isEmpty()) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Valuation price must be greater than 0");
+            }
         }
         //save to database
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
@@ -111,13 +116,13 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         //create Pageable intance
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
-        Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
 
         Page<DiamondValuationAssign> diamondValuationAssigns = diamondValuationAssignRepository.findAll(pageable);
         //get content for page obj
 
         List<DiamondValuationAssign> diamondValuationAssignList = diamondValuationAssigns.getContent();
-        List<DiamondValuationAssignResponse> content =  diamondValuationAssignList.stream()
+        List<DiamondValuationAssignResponse> content = diamondValuationAssignList.stream()
                 .map(diamondValuationAssign -> mapToDiamondValuationAssignResponse(diamondValuationAssign)).collect(Collectors.toList());
 
         Response<DiamondValuationAssignResponse> response = new Response<>();
@@ -137,7 +142,8 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 .orElseThrow(() -> new ResourceNotFoundException("Diamond valuation assign", "id", id + ""));
         return mapToDTO(diamondValuationAssign);
     }
-    private DiamondValuationAssignResponse mapToDiamondValuationAssignResponse(DiamondValuationAssign diamondValuationAssign){
+
+    private DiamondValuationAssignResponse mapToDiamondValuationAssignResponse(DiamondValuationAssign diamondValuationAssign) {
         DiamondValuationAssignResponse diamondValuationAssignResponse = new DiamondValuationAssignResponse();
         ValuationRequest valuationRequest = valuationRequestRepository.findValuationRequestByValuationRequestDetails(diamondValuationAssign.getValuationRequestDetail());
         diamondValuationAssignResponse.setId(diamondValuationAssign.getId());
