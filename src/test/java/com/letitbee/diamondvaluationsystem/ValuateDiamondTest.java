@@ -69,4 +69,21 @@ public class ValuateDiamondTest {
                         .content(diamondAssignJson))
                 .andExpect(status().isBadRequest());
     }
+    @Test
+    @Rollback
+    @Transactional
+    public void briefMustNotBeBlank() throws Exception {
+
+        DiamondValuationAssign diamondValuationAssign =  diamondValuationAssignRepository.findAll().get(1);
+        DiamondValuationAssignDTO diamondValuationAssignDTO = mapToDTO(diamondValuationAssign);
+        diamondValuationAssignDTO.setCommentDetail("");
+        String diamondAssignJson = objectMapper.writeValueAsString(diamondValuationAssignDTO);
+
+        mockMvc.perform(put("/api/v1/diamond-valuation-assigns/" + diamondValuationAssignDTO.getId())
+                        .contentType("application/json")
+                        .content(diamondAssignJson))
+                .andExpect(status().isBadRequest());
+    }
+
+
 }

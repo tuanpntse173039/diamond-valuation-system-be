@@ -101,7 +101,9 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         if (diamondValuationAssignDTO.isStatus()) {
             if (diamondValuationAssignDTO.getValuationPrice() == 0 ||
                     diamondValuationAssignDTO.getComment() == null ||
-                    diamondValuationAssignDTO.getComment().isEmpty()) {
+                    diamondValuationAssignDTO.getComment().isEmpty() ||
+                    diamondValuationAssignDTO.getCommentDetail() == null ||
+                    diamondValuationAssignDTO.getCommentDetail().isEmpty()) {
                 throw new APIException(HttpStatus.BAD_REQUEST, "Valuation price must be greater than 0");
             }
         }
