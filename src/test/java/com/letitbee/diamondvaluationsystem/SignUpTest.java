@@ -5,6 +5,7 @@ import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
+import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +29,8 @@ public class SignUpTest {
     @Autowired
     private ObjectMapper objectMapper;
 
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Test
     @Transactional
@@ -66,8 +69,9 @@ public class SignUpTest {
     @Transactional
     @Rollback
     public void testUsernameAlreadyExists() throws Exception {
+        String existingUsername = accountRepository.findAll().get(0).getUsername();
         AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setUsername("customer");
+        accountDTO.setUsername(existingUsername);
         accountDTO.setPassword("testPassword");
         accountDTO.setRole(Role.CUSTOMER);
         String accountJson = objectMapper.writeValueAsString(accountDTO);
