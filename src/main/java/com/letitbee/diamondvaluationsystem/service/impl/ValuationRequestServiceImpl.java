@@ -114,6 +114,12 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
 
+        if(valuationRequest.getStatus().toString().equals(RequestStatus.CANCEL.toString())) {
+            if(valuationRequest.getCancelReason() == null ||
+                    valuationRequest.getCancelReason().isEmpty()) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Please provide cancel reason!");
+            }
+        }
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
         //map to dto
