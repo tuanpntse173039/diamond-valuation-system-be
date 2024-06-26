@@ -49,6 +49,7 @@ public class ValuateDiamondTest {
                         .content(diamondAssignJson))
                 .andExpect(status().isBadRequest());
     }
+
     private DiamondValuationAssignDTO mapToDTO(DiamondValuationAssign diamondValuationAssign) {
         return modelMapper.map(diamondValuationAssign, DiamondValuationAssignDTO.class);
     }
