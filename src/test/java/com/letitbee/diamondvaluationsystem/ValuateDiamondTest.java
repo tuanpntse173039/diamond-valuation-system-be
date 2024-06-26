@@ -52,5 +52,4 @@ public class ValuateDiamondTest {
     private DiamondValuationAssignDTO mapToDTO(DiamondValuationAssign diamondValuationAssign) {
         return modelMapper.map(diamondValuationAssign, DiamondValuationAssignDTO.class);
     }
-
 }
