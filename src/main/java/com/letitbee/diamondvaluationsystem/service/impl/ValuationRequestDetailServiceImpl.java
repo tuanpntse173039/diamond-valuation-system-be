@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.*;
+import com.letitbee.diamondvaluationsystem.entity.Record;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
@@ -33,6 +34,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private DiamondMarketRepository diamondMarketRepository;
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
     private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
+    private RecordRepository recordRepository;
 
     public ValuationRequestDetailServiceImpl(ModelMapper mapper,
                                              ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -41,7 +43,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                              ServicePriceListRepository servicePriceListRepository,
                                              DiamondValuationAssignRepository diamondValuationAssignRepository,
                                              DiamondMarketRepository diamondMarketRepository,
-                                             DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl
+                                             DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl,
+                                             RecordRepository recordRepository
     ) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
@@ -51,6 +54,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
         this.diamondMarketRepository = diamondMarketRepository;
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
+        this.recordRepository = recordRepository;
     }
 
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
@@ -274,12 +278,16 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
     private Date getReturnDate(ValuationRequest valuationRequest) {
         com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequest.getService();
+        Record record = recordRepository.findByValuationRequestIdAndType(valuationRequest.getId(), RecordType.RECEIPT)
+                .orElseThrow(()
+                        -> new ResourceNotFoundException("Record", "valuationRequestId", valuationRequest.getId().toString()));
         int totalHourService = service.getPeriod();
         Date receiptDate;
+
         if(valuationRequest.getReturnDate() != null) {
             receiptDate = valuationRequest.getReturnDate();
-//        } else if(valuationRequest.getReceiptDate() != null) {
-//            receiptDate = valuationRequest.getReceiptDate();
+        } else if(record.getCreationDate() != null) {
+            receiptDate = record.getCreationDate();
         } else {
             throw new IllegalArgumentException("Both returnDate and receiptDate are null");
         }
