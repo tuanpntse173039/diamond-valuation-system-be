@@ -118,7 +118,7 @@ public class AccountServiceImpl implements AccountService {
     public AccountResponse register(CustomerRegisterDTO customerRegisterDTO) {
         //add check for username exists in database
         if (accountRepository.existsByUsername(customerRegisterDTO.getUsername())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Account is already taken");
+            throw new APIException(HttpStatus.BAD_REQUEST, "Username is already taken");
         }
 
         //save account to db
@@ -153,7 +153,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO) {
         if (accountRepository.existsByUsername(staffRegisterDTO.getUsername())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Account is already taken");
+            throw new APIException(HttpStatus.BAD_REQUEST, "Username is already taken");
         }
 
         //save account to db
