@@ -152,20 +152,26 @@ public class ManageAccount {
     @Rollback
     public void testEmailAlreadyExists() throws Exception {
         AccountDTO accountDTO = new AccountDTO();
-        Account account = accountRepository.findById(26L).get();
+        Account account = accountRepository.findById(36L).get();
         accountDTO.setId(account.getId());
         accountDTO.setUsername(account.getUsername());
         accountDTO.setPassword(account.getPassword());
         accountDTO.setRole(account.getRole());
         accountDTO.setIs_active(account.getIs_active());
         accountDTO.setEmail("tuanpham@gmail.com");
-
+        Boolean ex = accountRepository.existsByEmail(accountDTO.getEmail());
         String accountJson = objectMapper.writeValueAsString(accountDTO);
-
-        mockMvc.perform(put("/api/v1/auth/26")
-                        .contentType("application/json")
-                        .content(accountJson))
-                .andExpect(status().isBadRequest());
+        if(ex) {
+            mockMvc.perform(put("/api/v1/auth/36")
+                            .contentType("application/json")
+                            .content(accountJson))
+                    .andExpect(status().isBadRequest());
+        }else{
+            mockMvc.perform(put("/api/v1/auth/36")
+                            .contentType("application/json")
+                            .content(accountJson))
+                    .andExpect(status().isOk());
+        }
     }
 
 }

@@ -177,7 +177,7 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setEmail(account.getEmail());
 
         try {
-            sendVerificationEmail(customerRegisterDTO, "http://localhost:8080");
+            sendVerificationEmail(customerRegisterDTO, "https://www.hntdiamond.store/");
         } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -190,8 +190,7 @@ public class AccountServiceImpl implements AccountService {
         String mailContent = "<p>Dear " + customerRegisterDTO.getFirstName() + " " + customerRegisterDTO.getLastName() + ",</p>";
         mailContent += "<p>Thank you for registering with H&T Diamond. Please click the link below to verify your registration:</p>";
 
-        String verifyURL = siteURL + "/verify";
-        mailContent += "<h3><a href=\"" + verifyURL + "\">Verify your account</a></h3>";
+        mailContent += "<h3><a href=\"" + siteURL + "\">Verify your account</a></h3>";
 
         mailContent += "<p>Thank you,<br>The H&T Diamond Team</p>";
 
