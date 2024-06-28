@@ -43,6 +43,9 @@ public class Account  {
     @OneToOne(mappedBy = "account")
     private Customer customer;
 
+    @OneToOne(mappedBy = "account")
+    private RefreshToken refreshToken;
+
     @OneToMany(
             mappedBy = "account",
             cascade = CascadeType.ALL,

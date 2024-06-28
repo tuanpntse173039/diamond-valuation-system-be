@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
+import com.letitbee.diamondvaluationsystem.entity.RefreshToken;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.*;
@@ -49,8 +50,8 @@ public class AuthController {
     }
 
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<LoginResponse> login(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountDTO accountDTO){
-        return ResponseEntity.ok(accountService.login(request,response, accountDTO));
+    public ResponseEntity<LoginResponse> login( @RequestBody AccountDTO accountDTO){
+        return ResponseEntity.ok(accountService.login(accountDTO));
     }
 
     //register Customer
@@ -68,12 +69,12 @@ public class AuthController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updatePassword(@RequestBody String newPassword, @PathVariable(name = "id") long id){
-        String response = accountService.updatePassword(newPassword, id);
+    public ResponseEntity<String> update(@RequestBody @Valid AccountDTO accountDTO, @PathVariable(name = "id") long id){
+        String response = accountService.update(accountDTO,id);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
     @PostMapping("/refresh-token")
-    public ResponseEntity<LoginResponse> refreshToken(HttpServletRequest request) {
-        return ResponseEntity.ok(accountService.refreshToken(request));
+    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody RefreshToken refreshToken) {
+        return ResponseEntity.ok(accountService.refreshToken(refreshToken));
     }
 }
