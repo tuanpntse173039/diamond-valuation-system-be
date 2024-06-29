@@ -239,18 +239,31 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public String update(AccountDTO accountDTO, Long id) {
+    public AccountResponse update(AccountUpdate accountUpdate, Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
-        //happycase
-        if(accountRepository.existsByUsernameOrEmail(accountDTO.getUsername(), accountDTO.getEmail())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Username or email is already taken");
+        if(accountUpdate.getOldPassword() != null && !passwordEncoder.matches(accountUpdate.getOldPassword(), account.getPassword())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Incorrect old password");
+        }else if(accountUpdate.getOldPassword() != null
+                && passwordEncoder.matches(accountUpdate.getOldPassword(), account.getPassword())) {
+            account.setPassword(passwordEncoder.encode(accountUpdate.getNewPassword()));
+        }else if(accountUpdate.getNewPassword() != null && passwordEncoder.matches(accountUpdate.getNewPassword(), account.getPassword())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "New password must be different from old password");
         }
-        account.setUsername(accountDTO.getUsername());
-        account.setEmail(accountDTO.getEmail());
-        account.setPassword(passwordEncoder.encode(accountDTO.getPassword()));
+
+        if(accountUpdate.getNewEmail() != null && accountRepository.existsByEmail(accountUpdate.getNewEmail())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Email is already taken");
+        } else if (accountUpdate.getNewEmail() != null && !account.getEmail().equals(accountUpdate.getNewEmail())){
+            account.setEmail(accountUpdate.getNewEmail());
+        }
         accountRepository.save(account);
-        return "Update password successfully";
+        AccountResponse accountUpdateResponse = new AccountResponse();
+        accountUpdateResponse.setId(account.getId());
+        accountUpdateResponse.setUsername(account.getUsername());
+        accountUpdateResponse.setEmail(account.getEmail());
+        accountUpdateResponse.setIs_active(account.getIs_active());
+        accountUpdateResponse.setRole(account.getRole());
+        return accountUpdateResponse;
     }
 
     @Override

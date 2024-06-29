@@ -13,7 +13,7 @@ public interface AccountService {
 
     AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO);
 
-    String update(AccountDTO accountDTO, Long id);
+    AccountResponse update(AccountUpdate accountUpdate, Long id);
 
     JwtAuthResponse refreshToken(RefreshToken refreshToken);
 }

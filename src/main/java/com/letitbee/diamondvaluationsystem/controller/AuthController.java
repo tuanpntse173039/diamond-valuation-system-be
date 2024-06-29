@@ -27,26 +27,10 @@ import java.util.ArrayList;
 @RequestMapping("api/v1/auth")
 public class AuthController {
     private AccountService accountService;
-    private JwtTokenProvider jwtTokenProvider;
-    private AuthenticationManager authenticationManager;
-    private AccountRepository accountRepository;
-    private CustomerRepository customerRepository;
-    private StaffRepository staffRepository;
-    private ModelMapper mapper;
 
 
-    public AuthController(AccountService accountService,
-                          JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager
-                          , AccountRepository accountRepository,
-                          ModelMapper mapper
-                          , CustomerRepository customerRepository, StaffRepository staffRepository) {
+    public AuthController(AccountService accountService) {
         this.accountService = accountService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationManager = authenticationManager;
-        this.accountRepository = accountRepository;
-        this.mapper = mapper;
-        this.customerRepository = customerRepository;
-        this.staffRepository = staffRepository;
     }
 
     @PostMapping(value = {"/login", "/signin"})
@@ -69,9 +53,8 @@ public class AuthController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> update(@RequestBody @Valid AccountDTO accountDTO, @PathVariable(name = "id") long id){
-        String response = accountService.update(accountDTO,id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<AccountResponse> update(@RequestBody @Valid AccountUpdate accountUpdate, @PathVariable(name = "id") long id){
+        return new ResponseEntity<>(accountService.update(accountUpdate,id), HttpStatus.OK);
     }
     @PostMapping("/refresh-token")
     public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody RefreshToken refreshToken) {
