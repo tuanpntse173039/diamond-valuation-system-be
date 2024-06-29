@@ -7,6 +7,7 @@ import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
+import com.letitbee.diamondvaluationsystem.payload.CustomerUpdate;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
@@ -95,19 +96,25 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO updateCustomerInformation(CustomerDTO customerDto, Long id) {
+    public CustomerUpdate updateCustomerInformation(CustomerUpdate customerUpdate, Long id) {
         Customer customer = customerRepository.
                 findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id + ""));
-
-        customer.setFirstName(customerDto.getFirstName());
-        customer.setLastName(customerDto.getLastName());
-        customer.setPhone(customerDto.getPhone());
-        customer.setAddress(customerDto.getAddress());
-        customer.setAvatar(customerDto.getAvatar());
-        customer.setIdentityDocument(customerDto.getIdentityDocument());
-
-        return mapToDTO(customerRepository.save(customer));
+        customer.setFirstName(customerUpdate.getFirstName());
+        customer.setLastName(customerUpdate.getLastName());
+        customer.setPhone(customerUpdate.getPhone());
+        customer.setAddress(customerUpdate.getAddress());
+        customer.setAvatar(customerUpdate.getAvatar());
+        customer.setIdentityDocument(customerUpdate.getIdentityDocument());
+        customerRepository.save(customer);
+        CustomerUpdate customerUpdateResponse = new CustomerUpdate();
+        customerUpdateResponse.setFirstName(customer.getFirstName());
+        customerUpdateResponse.setLastName(customer.getLastName());
+        customerUpdateResponse.setPhone(customer.getPhone());
+        customerUpdateResponse.setAddress(customer.getAddress());
+        customerUpdateResponse.setAvatar(customer.getAvatar());
+        customerUpdateResponse.setIdentityDocument(customer.getIdentityDocument());
+        return customerUpdateResponse;
     }
 
     @Override
