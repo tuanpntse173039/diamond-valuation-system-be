@@ -121,13 +121,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     private CustomerDTO mapToDTO(Customer customer) {
-        CustomerDTO customerDTO = mapper.map(customer, CustomerDTO.class);
-        //get List valuation request by customer
-        Set<Long> valuationRequestList = valuationRequestRepository
-                .findAllByCustomer(customer);
-
-            customerDTO.setValuationRequestIDSet(valuationRequestList);
-        return customerDTO;
+        return mapper.map(customer, CustomerDTO.class);
     }
 
     private Customer mapToEntity(CustomerDTO customerDTO) {
