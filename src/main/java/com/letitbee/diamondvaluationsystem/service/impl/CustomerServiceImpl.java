@@ -10,6 +10,7 @@ import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import com.letitbee.diamondvaluationsystem.payload.CustomerUpdate;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDTO;
+import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
@@ -32,13 +33,13 @@ import java.util.stream.Collectors;
 public class CustomerServiceImpl implements CustomerService {
 
     private CustomerRepository customerRepository;
-    private ValuationRequestRepository valuationRequestRepository;
     private ModelMapper mapper;
+    private AccountRepository accountRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, ValuationRequestRepository valuationRequestRepository, ModelMapper mapper) {
+    public CustomerServiceImpl(CustomerRepository customerRepository,AccountRepository accountRepository, ModelMapper mapper) {
         this.customerRepository = customerRepository;
-        this.valuationRequestRepository = valuationRequestRepository;
         this.mapper = mapper;
+        this.accountRepository = accountRepository;
     }
 
     @Override
@@ -100,13 +101,17 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = customerRepository.
                 findById(id).
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id + ""));
-        customer.setFirstName(customerUpdate.getFirstName());
-        customer.setLastName(customerUpdate.getLastName());
-        customer.setPhone(customerUpdate.getPhone());
-        customer.setAddress(customerUpdate.getAddress());
-        customer.setAvatar(customerUpdate.getAvatar());
-        customer.setIdentityDocument(customerUpdate.getIdentityDocument());
+        if (customerUpdate.getFirstName() != null) { customer.setFirstName(customerUpdate.getFirstName()); }
+        if (customerUpdate.getLastName() != null) { customer.setLastName(customerUpdate.getLastName()); }
+        if (customerUpdate.getPhone() != null && !customerRepository.existsByPhone(customerUpdate.getPhone())) { customer.setPhone(customerUpdate.getPhone()); }
+        else if (customerUpdate.getPhone() != null) { throw new APIException(HttpStatus.BAD_REQUEST, "Phone number already exists"); }
+        if (customerUpdate.getAddress() != null) { customer.setAddress(customerUpdate.getAddress()); }
+        if (customerUpdate.getAvatar() != null) { customer.setAvatar(customerUpdate.getAvatar()); }
+        if (customerUpdate.getIdentityDocument() != null) { customer.setIdentityDocument(customerUpdate.getIdentityDocument()); }
+        Account account = customer.getAccount();
+        if (customerUpdate.getNewEmail() != null) { account.setEmail(customerUpdate.getNewEmail()); }
         customerRepository.save(customer);
+        accountRepository.save(account);
         CustomerUpdate customerUpdateResponse = new CustomerUpdate();
         customerUpdateResponse.setFirstName(customer.getFirstName());
         customerUpdateResponse.setLastName(customer.getLastName());
@@ -114,6 +119,7 @@ public class CustomerServiceImpl implements CustomerService {
         customerUpdateResponse.setAddress(customer.getAddress());
         customerUpdateResponse.setAvatar(customer.getAvatar());
         customerUpdateResponse.setIdentityDocument(customer.getIdentityDocument());
+        customerUpdateResponse.setNewEmail(account.getEmail());
         return customerUpdateResponse;
     }
 

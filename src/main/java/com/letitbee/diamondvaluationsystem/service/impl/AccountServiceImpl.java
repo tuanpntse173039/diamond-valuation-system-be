@@ -187,16 +187,24 @@ public class AccountServiceImpl implements AccountService {
     private void sendVerificationEmail(CustomerRegisterDTO customerRegisterDTO, String siteURL) throws MessagingException, UnsupportedEncodingException {
         String subject = "Please verify your registration";
         String senderName = "H&T Diamond";
-        String mailContent = "<p>Dear " + customerRegisterDTO.getFirstName() + " " + customerRegisterDTO.getLastName() + ",</p>";
-        mailContent += "<p>Thank you for registering with H&T Diamond. Please click the link below to verify your registration:</p>";
+        String mailContent = "<div style=\"font-family: Arial, sans-serif; background-color: #f0f0f0;\">";
+        mailContent += "<table width=\"100%\" border=\"0\" cellspacing=\"0\"" +
+                " cellpadding=\"0\" style=\"background: url('https://media.istockphoto.com/photos/diamond-on-the-water-picture-id639777488?k=6&m=639777488&s=612x612&w=0&h=JWUtKTN4CUTJ4dp0tPb2yXJq6Vh6s7smkZ-ZX4sgPbM=')" +
+                " no-repeat center center / cover; filter: blur(8px);\">";
+        mailContent += "<tr>";
+        mailContent += "<td align=\"center\" valign=\"top\" style=\"padding: 50px;\">";
+        mailContent += "<table width=\"50%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">";
+        mailContent += "<tr><td style=\"padding: 20px; text-align: center;\">";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">Dear " + customerRegisterDTO.getFirstName() + " " + customerRegisterDTO.getLastName() + ",</p>";
+        mailContent += "<p style=\"margin: 0 0 20px; color: #000000;\">Thank you for registering with H&T Diamond. Please click the link below to verify your registration</p>";
+        mailContent += "<h3 style=\"margin: 0 0 20px;\"><a href=\"" + siteURL + "\" style=\"color: #0066cc; text-decoration: none;\">Verify your account</a></h3>";
+        mailContent += "<p style=\"margin: 0; color: #000000;\">Thank you,<br>The H&T Diamond Team</p>";
+        mailContent += "</td></tr></table></td></tr></table></div>";
 
-        mailContent += "<h3><a href=\"" + siteURL + "\">Verify your account</a></h3>";
-
-        mailContent += "<p>Thank you,<br>The H&T Diamond Team</p>";
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
-        helper.setFrom("hungdmse173190@fpt.edu.vn", senderName);
+        helper.setFrom("hntdiamond@gmail.com", senderName);
         helper.setTo(customerRegisterDTO.getEmail());
         helper.setSubject(subject);
         helper.setText(mailContent, true);
@@ -239,7 +247,7 @@ public class AccountServiceImpl implements AccountService {
     }
 
     @Override
-    public AccountResponse update(AccountUpdate accountUpdate, Long id) {
+    public AccountResponse changePassword(AccountUpdate accountUpdate, Long id) {
         Account account = accountRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
         if(accountUpdate.getOldPassword() != null && !passwordEncoder.matches(accountUpdate.getOldPassword(), account.getPassword())){
@@ -249,12 +257,6 @@ public class AccountServiceImpl implements AccountService {
             account.setPassword(passwordEncoder.encode(accountUpdate.getNewPassword()));
         }else if(accountUpdate.getNewPassword() != null && passwordEncoder.matches(accountUpdate.getNewPassword(), account.getPassword())){
             throw new APIException(HttpStatus.BAD_REQUEST, "New password must be different from old password");
-        }
-
-        if(accountUpdate.getNewEmail() != null && accountRepository.existsByEmail(accountUpdate.getNewEmail())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Email is already taken");
-        } else if (accountUpdate.getNewEmail() != null && !account.getEmail().equals(accountUpdate.getNewEmail())){
-            account.setEmail(accountUpdate.getNewEmail());
         }
         accountRepository.save(account);
         AccountResponse accountUpdateResponse = new AccountResponse();

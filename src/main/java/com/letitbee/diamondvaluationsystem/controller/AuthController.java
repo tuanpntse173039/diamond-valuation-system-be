@@ -53,8 +53,8 @@ public class AuthController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<AccountResponse> update(@RequestBody @Valid AccountUpdate accountUpdate, @PathVariable(name = "id") long id){
-        return new ResponseEntity<>(accountService.update(accountUpdate,id), HttpStatus.OK);
+    public ResponseEntity<AccountResponse> changePassword(@RequestBody @Valid AccountUpdate accountUpdate, @PathVariable(name = "id") long id){
+        return new ResponseEntity<>(accountService.changePassword(accountUpdate,id), HttpStatus.OK);
     }
     @PostMapping("/refresh-token")
     public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody RefreshToken refreshToken) {
