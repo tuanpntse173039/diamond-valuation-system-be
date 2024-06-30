@@ -252,11 +252,12 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
         if(accountUpdate.getOldPassword() != null && !passwordEncoder.matches(accountUpdate.getOldPassword(), account.getPassword())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Incorrect old password");
-        }else if(accountUpdate.getOldPassword() != null
-                && passwordEncoder.matches(accountUpdate.getOldPassword(), account.getPassword())) {
-            account.setPassword(passwordEncoder.encode(accountUpdate.getNewPassword()));
         }else if(accountUpdate.getNewPassword() != null && passwordEncoder.matches(accountUpdate.getNewPassword(), account.getPassword())){
             throw new APIException(HttpStatus.BAD_REQUEST, "New password must be different from old password");
+        }
+        else if(accountUpdate.getOldPassword() != null
+                && passwordEncoder.matches(accountUpdate.getOldPassword(), account.getPassword())) {
+            account.setPassword(passwordEncoder.encode(accountUpdate.getNewPassword()));
         }
         accountRepository.save(account);
         AccountResponse accountUpdateResponse = new AccountResponse();
