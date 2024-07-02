@@ -57,7 +57,7 @@ public class StaffController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteStaffById(@PathVariable("id") long id) {
         staffService.deleteStaffById(id);

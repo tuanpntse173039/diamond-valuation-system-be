@@ -78,6 +78,17 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public void deleteCustomerById(long id) {
+        Customer customer = customerRepository.
+                findById(id).
+                orElseThrow(() -> new ResourceNotFoundException("Customer", "id", id
+                        + ""));
+        Account account = accountRepository.findById(customer.getAccount().getId()).orElse(null);
+        account.setIs_active(!account.getIs_active());
+        accountRepository.save(account);
+    }
+
+    @Override
     public CustomerDTO createCustomerInformation(CustomerDTO customerDto) {
         if (!customerDto.getAccount().getRole().toString().equalsIgnoreCase(Role.CUSTOMER.toString())) {
             throw new APIException(HttpStatus.BAD_REQUEST, "Invalid Role");
