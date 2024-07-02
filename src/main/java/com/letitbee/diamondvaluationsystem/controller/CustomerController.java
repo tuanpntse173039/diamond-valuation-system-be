@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
+import com.letitbee.diamondvaluationsystem.payload.CustomerUpdate;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.CustomerService;
 import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
@@ -50,8 +51,8 @@ public class CustomerController {
 
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     @PutMapping("/{id}")
-    public ResponseEntity<CustomerDTO> updateCustomerInformation(@RequestBody @Valid CustomerDTO customerDto, @PathVariable("id") long id){
-        CustomerDTO customer = customerService.updateCustomerInformation(customerDto, id);
+    public ResponseEntity<CustomerUpdate> updateCustomerInformation(@RequestBody @Valid CustomerUpdate customerUpdate, @PathVariable("id") long id){
+        CustomerUpdate customer = customerService.updateCustomerInformation(customerUpdate, id);
         return new ResponseEntity<>(customer, HttpStatus.OK);
     }
 }

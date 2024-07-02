@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Post;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
@@ -12,8 +13,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,6 +35,11 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO createPost(PostDTO postDto) {
+        if(postRepository.existsByTitle(postDto.getTitle())){
+            throw new APIException(HttpStatus.BAD_REQUEST,"Title already exist");
+        }
+        postDto.setCreationDate(new Date());
+        postDto.setPublishedDate(new Date());
         Post post = mapToEntity(postDto);
         Post newPost = postRepository.save(post);
         return mapToDto(newPost);

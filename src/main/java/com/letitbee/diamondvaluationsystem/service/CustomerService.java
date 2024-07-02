@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.service;
 
 import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
+import com.letitbee.diamondvaluationsystem.payload.CustomerUpdate;
 import com.letitbee.diamondvaluationsystem.payload.PaymentMethodDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 
@@ -14,7 +15,7 @@ public interface CustomerService {
 
     CustomerDTO createCustomerInformation(CustomerDTO customerDto);
 
-    CustomerDTO updateCustomerInformation(CustomerDTO customerDto, Long id);
+    CustomerUpdate updateCustomerInformation(CustomerUpdate customerUpdate, Long id);
 //    void deleteCustomerById(Long id);
 
     CustomerDTO  getCustomerByPhoneOrName(String phone,String name);

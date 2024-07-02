@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.entity.Record;
 import com.letitbee.diamondvaluationsystem.enums.*;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -246,6 +248,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             diamondValuationNoteDTO.setMaxPrice(diamondMarkets.get(diamondMarkets.size() - 1).getPrice());
             diamondValuationNoteDTO.setMinPrice(diamondMarkets.stream().findFirst().get().getPrice());
         }
+        else throw new APIException(HttpStatus.NOT_FOUND,"No diamond price list data found");
         diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
     }
 

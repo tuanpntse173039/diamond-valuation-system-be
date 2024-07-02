@@ -1,12 +1,15 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Service;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
 import com.letitbee.diamondvaluationsystem.repository.ServiceRepository;
 import com.letitbee.diamondvaluationsystem.service.ServiceService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,6 +39,9 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public ServiceDTO createService(ServiceDTO serviceDto) {
+        if(serviceRepository.existsByServiceName(serviceDto.getName())) {
+            throw new APIException(HttpStatus.BAD_REQUEST,"Service name is already taken");
+        }
         Service service = mapToEntity(serviceDto);
         Service newService = serviceRepository.save(service);
         return mapToDto(newService);
