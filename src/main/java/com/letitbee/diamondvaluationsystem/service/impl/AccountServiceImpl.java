@@ -88,30 +88,20 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepository.findByUsernameOrEmail(accountDTO.getUsernameOrEmail(), accountDTO.getUsernameOrEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsernameOrEmail()));
             LoginResponse loginResponse = new LoginResponse();
-
             if (account.getRole().equals(Role.CUSTOMER)) {
                 Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
                 if(customer == null){
                     throw new APIException(HttpStatus.BAD_REQUEST, "Customer not found");
+                }else {
+                    loginResponse.setUserInformation(mapper.map(customer, CustomerDTO.class));
                 }
-                loginResponse.setCustomerOrStaffId(customer.getId());
-                loginResponse.setFirstName(customer.getFirstName());
-                loginResponse.setLastName(customer.getLastName());
-                loginResponse.setUsername(account.getUsername());
-                loginResponse.setEmail(account.getEmail());
-                loginResponse.setRole(account.getRole());
-
             } else {
                 Staff staff = staffRepository.findStaffByAccount_Id(account.getId());
                 if(staff == null){
                     throw new APIException(HttpStatus.BAD_REQUEST, "Staff not found");
+                }else {
+                    loginResponse.setUserInformation(mapper.map(staff, StaffDTO.class));
                 }
-                loginResponse.setCustomerOrStaffId(staff.getId());
-                loginResponse.setFirstName(staff.getFirstName());
-                loginResponse.setLastName(staff.getLastName());
-                loginResponse.setUsername(account.getUsername());
-                loginResponse.setEmail(account.getEmail());
-                loginResponse.setRole(account.getRole());
             }
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
