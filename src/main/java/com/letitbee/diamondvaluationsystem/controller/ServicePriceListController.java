@@ -37,4 +37,16 @@ public class ServicePriceListController
         return new ResponseEntity<>(servicePriceListService.createServicePriceList(servicePriceListDto), HttpStatus.CREATED);
     }
 
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @PutMapping("{id}")
+    public ResponseEntity<ServicePriceListDTO> updateServicePriceList(@RequestBody @Valid ServicePriceListDTO servicePriceListDto, @PathVariable(name = "id") long id) {
+        return new ResponseEntity<>(servicePriceListService.updateServicePriceList(id, servicePriceListDto), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @DeleteMapping("{id}")
+    public ResponseEntity<Void> deleteServicePriceList(@PathVariable(name = "id") long id) {
+        servicePriceListService.deleteServicePriceList(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
 }

@@ -52,7 +52,8 @@ public class ServiceController {
 
     @PreAuthorize("hasAnyAuthority('MANAGER')")
     @DeleteMapping("/{id}")
-    public void deleteServiceById(@PathVariable(name = "id") long id) {
+    public ResponseEntity<Void> deleteServiceById(@PathVariable(name = "id") long id) {
         serviceService.deleteServiceById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

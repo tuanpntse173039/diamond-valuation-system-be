@@ -12,4 +12,5 @@ public class ServicePriceListDTO {
     private float maxSize;
     private double initPrice;
     private double unitPrice;
+    private long serviceId;
 }

@@ -74,13 +74,15 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public SupplierDTO updateSupplier(SupplierDTO supplierDto, long id) {
         Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Supplier", "id", id + ""));
-        supplier.setImage(supplierDto.getImage());
+        supplier.setName(supplierDto.getName());
+        supplier.setLink(supplierDto.getLink());
         return mapToDto(supplierRepository.save(supplier));
     }
 
     @Override
     public void deleteSupplierById(long id) {
-
+        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Supplier", "id", id + ""));
+        supplierRepository.delete(supplier);
     }
 
     @Override
@@ -111,7 +113,7 @@ public class SupplierServiceImpl implements SupplierService {
 
     private SupplierDTO mapToDto(Supplier supplier) {
         SupplierDTO supplierDTO =  mapper.map(supplier, SupplierDTO.class);
-        supplierDTO.setDiamondMarketID(supplierRepository.findAllDiamond(supplier));
+//        supplierDTO.setDiamondMarketID(supplierRepository.findAllDiamond(supplier));
         return supplierDTO;
     }
     private Supplier mapToEntity(SupplierDTO supplierDto) {

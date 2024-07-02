@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.DiamondMarket;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
+import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondMarketDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondMarketRepository;
@@ -113,6 +114,12 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
             return diamondPriceList;
         }
         else throw new APIException(HttpStatus.NOT_FOUND,"No diamond price list data found");
+    }
+
+    @Override
+    public void deleteDiamondMarket(long id) {
+        DiamondMarket diamondMarket = diamondMarketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("DiamondMarket", "id", id + ""));
+        diamondMarketRepository.delete(diamondMarket);
     }
 
     private DiamondMarketDTO mapToDTO(DiamondMarket diamondMarket) {

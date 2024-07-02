@@ -8,5 +8,7 @@ import java.util.Set;
 public class SupplierDTO {
     private long id;
     private String image;
-    private Set<Long> diamondMarketID;
+    private String name;
+    private String link;
+//    private Set<Long> diamondMarketID;
 }

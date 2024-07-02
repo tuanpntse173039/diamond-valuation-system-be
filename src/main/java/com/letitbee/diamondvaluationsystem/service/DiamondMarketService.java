@@ -32,4 +32,6 @@ public interface DiamondMarketService {
             Shape shape,
             Fluorescence fluorescence
     );
+
+    void deleteDiamondMarket(long id);
 }
