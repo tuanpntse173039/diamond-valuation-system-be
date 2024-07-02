@@ -7,6 +7,7 @@ import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
 import com.letitbee.diamondvaluationsystem.service.DiamondMarketService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -71,5 +72,12 @@ public class DiamondMarketController {
                 symmetry,
                 shape,
                 fluorescence), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDiamondMarket(@PathVariable(name = "id") long id) {
+        diamondMarketService.deleteDiamondMarket(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

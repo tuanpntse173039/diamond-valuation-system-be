@@ -48,6 +48,25 @@ public class ServicePriceListImpl implements ServicePriceListService {
         return mapToDto(servicePriceListRepository.save(servicePriceList));
     }
 
+    @Override
+    public ServicePriceListDTO updateServicePriceList(long id, ServicePriceListDTO servicePriceListDto) {
+        ServicePriceList servicePriceList = servicePriceListRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ServicePriceList", "id", id + ""));
+        if(servicePriceListDto.getMinSize() > servicePriceListDto.getMaxSize()) {
+            throw new APIException( HttpStatus.BAD_REQUEST, "Max size must be greater than min size");
+        }
+        servicePriceList.setMinSize(servicePriceListDto.getMinSize());
+        servicePriceList.setMaxSize(servicePriceListDto.getMaxSize());
+        servicePriceList.setInitPrice(servicePriceListDto.getInitPrice());
+        servicePriceList.setUnitPrice(servicePriceListDto.getUnitPrice());
+        return mapToDto(servicePriceListRepository.save(servicePriceList));
+    }
+
+    @Override
+    public void deleteServicePriceList(long id) {
+        ServicePriceList servicePriceList = servicePriceListRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ServicePriceList", "id", id + ""));
+        servicePriceListRepository.delete(servicePriceList);
+    }
+
     private ServicePriceListDTO mapToDto(ServicePriceList servicePriceList) {
         return mapper.map(servicePriceList, ServicePriceListDTO.class);
     }

@@ -21,7 +21,10 @@ public class Supplier {
     private Long id;
     @Column(columnDefinition = "nvarchar(50)")
     private String image;
-
+    @Column(columnDefinition = "nvarchar(50)")
+    private String name;
+    @Column(columnDefinition = "text")
+    private String link;
     @OneToMany(mappedBy = "supplier",
             cascade = CascadeType.ALL,
             orphanRemoval = true)

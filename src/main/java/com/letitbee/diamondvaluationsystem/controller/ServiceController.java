@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
+import com.letitbee.diamondvaluationsystem.payload.ServicePriceListDTO;
 import com.letitbee.diamondvaluationsystem.service.ServiceService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,11 @@ public class ServiceController {
         return new ResponseEntity<>(serviceService.getServiceById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/{serviceId}/service-price-lists")
+    public ResponseEntity<List<ServicePriceListDTO>> getAllServicePriceListByServiceId(@PathVariable(name = "serviceId") Long serviceId) {
+        return new ResponseEntity<>(serviceService.getAllServicePriceListByServiceId(serviceId), HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAnyAuthority('MANAGER')")
     @PostMapping
     public ResponseEntity<ServiceDTO> createService(@RequestBody @Valid ServiceDTO serviceDto) {
@@ -46,7 +52,8 @@ public class ServiceController {
 
     @PreAuthorize("hasAnyAuthority('MANAGER')")
     @DeleteMapping("/{id}")
-    public void deleteServiceById(@PathVariable(name = "id") long id) {
+    public ResponseEntity<Void> deleteServiceById(@PathVariable(name = "id") long id) {
         serviceService.deleteServiceById(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
