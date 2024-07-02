@@ -26,7 +26,7 @@ public class StaffController {
         this.valuationRequestService = valuationRequestService;
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'VALUATION_STAFF')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'VALUATION_STAFF', 'ADMIN')")
     @GetMapping
     public ResponseEntity<Response<StaffDTO>> getAllStaffs
             (@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
@@ -63,7 +63,7 @@ public class StaffController {
         staffService.deleteStaffById(id);
         return new ResponseEntity<>("Staff deleted successfully", HttpStatus.OK);
     }
-    @PreAuthorize("hasAnyAuthority('MANAGER' , 'CONSULTANT_STAFF')")
+    @PreAuthorize("hasAnyAuthority('MANAGER' , 'CONSULTANT_STAFF', 'ADMIN')")
     @GetMapping("/{id}/valuation-requests")
     public ResponseEntity<Response<ValuationRequestResponseV2>> getValuationRequestResponseByStaff(
             @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
@@ -80,7 +80,7 @@ public class StaffController {
     public ResponseEntity<StaffDTO> getStaffById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(staffService.getStaffById(id));
     }
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'VALUATION_STAFF', 'ADMIN')")
     @GetMapping("/{id}/diamond-assigns")
     public ResponseEntity<Response<DiamondValuationAssignResponse>> getValuationRequestDetailsByStaffId(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                                                                                                    @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE,required = false) int pageSize,
