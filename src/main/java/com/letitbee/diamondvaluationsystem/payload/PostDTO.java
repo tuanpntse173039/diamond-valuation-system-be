@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
+import com.letitbee.diamondvaluationsystem.enums.BlogType;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -13,10 +14,8 @@ public class PostDTO {
     private String title;
     @NotEmpty(message = "Content cannot be empty")
     private String content;
-    @NotEmpty(message = "Description cannot be empty")
-    private String description;
     private String thumbnail;
-    private Date publishedDate;
+    private Date lastModifiedDate;
     private Date creationDate;
     @NotEmpty(message = "Reference cannot be empty")
     @Pattern(regexp = "((http|https)://)(www.)?"
@@ -25,4 +24,7 @@ public class PostDTO {
             + "{2,6}\\b([-a-zA-Z0-9@:%"
             + "._\\+~#?&//=]*)", message = "Invalid reference URL")
     private String reference;
+    @NotEmpty(message = "Author cannot be empty")
+    private String author;
+    private BlogType status;
 }

@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
+import com.letitbee.diamondvaluationsystem.enums.BlogType;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.PostService;
@@ -30,9 +31,10 @@ public class PostController {
     public Response<PostDTO> getAllPosts(@RequestParam(value = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
                                          @RequestParam(value = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
                                          @RequestParam(value = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
-                                         @RequestParam(value = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir
+                                         @RequestParam(value = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+                                         @RequestParam(value = "status", required = false) BlogType status
     ){
-        return postService.getAllPost(pageNo, pageSize,sortBy,sortDir);
+        return postService.getAllPost(pageNo, pageSize,sortBy,sortDir,status);
     }
 
     @GetMapping("/{id}")

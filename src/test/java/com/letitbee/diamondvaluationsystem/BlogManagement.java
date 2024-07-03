@@ -40,8 +40,7 @@ public class BlogManagement {
         postDTO.setTitle("");
         postDTO.setContent("testContent");
         postDTO.setCreationDate(new Date());
-        postDTO.setDescription("testDescription");
-        postDTO.setPublishedDate(new Date());
+        postDTO.setLastModifiedDate(new Date());
         postDTO.setReference("https://www.test.com");
         postDTO.setThumbnail("testThumbnail");
         String postJson = objectMapper.writeValueAsString(postDTO);
@@ -60,8 +59,7 @@ public class BlogManagement {
         postDTO.setTitle("testTitle");
         postDTO.setContent("testContent");
         postDTO.setCreationDate(new Date());
-        postDTO.setDescription("testDescription");
-        postDTO.setPublishedDate(new Date());
+        postDTO.setLastModifiedDate(new Date());
         postDTO.setReference("https://www.test.com");
         postDTO.setThumbnail("testThumbnail");
         String postJson = objectMapper.writeValueAsString(postDTO);
@@ -87,8 +85,7 @@ public class BlogManagement {
         postDTO.setTitle("testTitle");
         postDTO.setContent("");
         postDTO.setCreationDate(new Date());
-        postDTO.setDescription("testDescription");
-        postDTO.setPublishedDate(new Date());
+        postDTO.setLastModifiedDate(new Date());
         postDTO.setReference("https://www.test.com");
         postDTO.setThumbnail("testThumbnail");
         String postJson = objectMapper.writeValueAsString(postDTO);
@@ -99,25 +96,6 @@ public class BlogManagement {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    @Transactional
-    @Rollback
-    public void testCreateDescriptionBlank() throws Exception {
-        PostDTO postDTO = new PostDTO();
-        postDTO.setTitle("t");
-        postDTO.setContent("testContent");
-        postDTO.setCreationDate(new Date());
-        postDTO.setDescription("");
-        postDTO.setPublishedDate(new Date());
-        postDTO.setReference("https://www.test.com");
-        postDTO.setThumbnail("testThumbnail");
-        String postJson = objectMapper.writeValueAsString(postDTO);
-
-        mockMvc.perform(post("/api/v1/posts")
-                        .contentType("application/json")
-                        .content(postJson))
-                .andExpect(status().isBadRequest());
-    }
 
     @Test
     @Transactional
@@ -127,8 +105,7 @@ public class BlogManagement {
         postDTO.setTitle("testTitle");
         postDTO.setContent("testContent");
         postDTO.setCreationDate(new Date());
-        postDTO.setDescription("testDescription");
-        postDTO.setPublishedDate(new Date());
+        postDTO.setLastModifiedDate(new Date());
         postDTO.setReference("");
         postDTO.setThumbnail("testThumbnail");
         String postJson = objectMapper.writeValueAsString(postDTO);
@@ -147,8 +124,7 @@ public class BlogManagement {
         postDTO.setTitle("testTitle");
         postDTO.setContent("testContent");
         postDTO.setCreationDate(new Date());
-        postDTO.setDescription("testDescription");
-        postDTO.setPublishedDate(new Date());
+        postDTO.setLastModifiedDate(new Date());
         postDTO.setReference("testReference");
         postDTO.setThumbnail("testThumbnail");
         String postJson = objectMapper.writeValueAsString(postDTO);
@@ -167,8 +143,7 @@ public class BlogManagement {
         postDTO.setTitle("testTitle");
         postDTO.setContent("null");
         postDTO.setCreationDate(new Date());
-        postDTO.setDescription("testDescription");
-        postDTO.setPublishedDate(new Date());
+        postDTO.setLastModifiedDate(new Date());
         postDTO.setReference("https://www.test.com");
         postDTO.setThumbnail("testThumbnail");
         String postJson = objectMapper.writeValueAsString(postDTO);

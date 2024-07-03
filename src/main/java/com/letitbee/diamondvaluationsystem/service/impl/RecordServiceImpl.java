@@ -12,6 +12,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -39,6 +40,9 @@ public class RecordServiceImpl implements RecordService {
         record.setType(recordDTO.getType());
         record.setCreationDate(new Date());
         record.setValuationRequest(valuationRequest);
+        if (record.getType() == RecordType.RECEIPT) {
+            valuationRequest.setReturnDate(getReturnDate(valuationRequest, record.getCreationDate()));
+        }
         return mapToDTO(recordRepository.save(record));
     }
 
@@ -84,5 +88,44 @@ public class RecordServiceImpl implements RecordService {
 
     private Record mapToEntity(RecordDTO recordDTO) {
         return mapper.map(recordDTO, Record.class);
+    }
+
+
+    private Date getReturnDate(ValuationRequest valuationRequest, Date creationDate) {
+        com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequest.getService();
+        int totalHourService = service.getPeriod();
+        Date receiptDate;
+        if(valuationRequest.getReturnDate() != null) {
+            receiptDate = valuationRequest.getReturnDate();
+        } else if(creationDate != null) {
+            receiptDate = creationDate;
+        } else {
+            throw new IllegalArgumentException("Both returnDate and receiptDate are null");
+        }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(receiptDate);
+        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
+        int minuteOfDay = calendar.get(Calendar.MINUTE);
+        int secondOfDay = calendar.get(Calendar.SECOND);
+
+        int remainHourInDay = 17 - hourOfDay - ((minuteOfDay > 0 || secondOfDay > 0) ? 1 : 0);
+        int remainHourService = totalHourService - remainHourInDay;
+
+        if (remainHourService <= 0) {
+            calendar.add(Calendar.HOUR_OF_DAY, totalHourService);
+            return calendar.getTime();
+        }
+
+        int count = 0;
+        while (remainHourService > 9) {
+            count++;
+            remainHourService -= 9;
+        }
+        int hourInLastDay = remainHourService;
+
+        calendar.add(Calendar.DAY_OF_MONTH, count);
+        calendar.set(Calendar.HOUR_OF_DAY, 8 + hourInLastDay);
+
+        return calendar.getTime();
     }
 }
