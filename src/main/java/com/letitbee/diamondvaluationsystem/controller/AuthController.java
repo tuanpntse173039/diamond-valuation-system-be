@@ -22,6 +22,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/auth")
@@ -59,5 +60,26 @@ public class AuthController {
     @PostMapping("/refresh-token")
     public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody RefreshToken refreshToken) {
         return ResponseEntity.ok(accountService.refreshToken(refreshToken));
+    }
+
+    @GetMapping("/forget-password")
+    public ResponseEntity<String> forgetPasswordPage() {
+        return ResponseEntity.ok("Forgot Page");
+    }
+    @PostMapping("/forget-password")
+    public ResponseEntity<String> forgetPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email").trim();
+        email = email.replaceAll("\"", "");
+        accountService.forgetPassword(email);
+        return ResponseEntity.ok("Email sent successfully");
+    }
+
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam(name = "token") String code,@RequestBody Map<String, String> request) {
+        String newPassword = request.get("newPassword").trim();
+        newPassword = newPassword.replaceAll("\"", "");
+        accountService.resetPassword(code, newPassword);
+        return ResponseEntity.ok("Password reset successfully");
     }
 }

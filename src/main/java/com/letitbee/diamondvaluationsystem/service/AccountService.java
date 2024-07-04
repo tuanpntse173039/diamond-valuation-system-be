@@ -15,5 +15,9 @@ public interface AccountService {
 
     AccountResponse changePassword(AccountUpdate accountUpdate, Long id);
 
+    void forgetPassword(String email);
+
+    void resetPassword(String code, String newPassword);
+
     JwtAuthResponse refreshToken(RefreshToken refreshToken);
 }

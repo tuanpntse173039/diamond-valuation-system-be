@@ -25,6 +25,7 @@ public class AccountDTO implements UserDetails {
     private Boolean is_active;
     private Role role;
     private String usernameOrEmail;
+    private String verificationCode;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

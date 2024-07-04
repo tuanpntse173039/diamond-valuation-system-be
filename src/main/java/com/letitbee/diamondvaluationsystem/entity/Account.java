@@ -36,6 +36,8 @@ public class Account  {
     private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(columnDefinition = "varchar(100)")
+    private String verificationCode;
 
     @OneToOne(mappedBy = "account")
     private Staff staff;

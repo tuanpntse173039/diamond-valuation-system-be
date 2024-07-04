@@ -33,7 +33,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.UUID;
 
@@ -47,6 +46,7 @@ public class AccountServiceImpl implements AccountService {
     private StaffRepository staffRepository;
     private RefreshTokenRepository refreshTokenRepository;
     private ModelMapper mapper;
+    private String siteURL = "http://localhost:8080/api/v1/";
 
     @Autowired
     private JavaMailSender javaMailSender;
@@ -90,18 +90,10 @@ public class AccountServiceImpl implements AccountService {
             LoginResponse loginResponse = new LoginResponse();
             if (account.getRole().equals(Role.CUSTOMER)) {
                 Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
-                if(customer == null){
-                    throw new APIException(HttpStatus.BAD_REQUEST, "Customer not found");
-                }else {
-                    loginResponse.setUserInformation(mapper.map(customer, CustomerDTO.class));
-                }
+                loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
             } else {
                 Staff staff = staffRepository.findStaffByAccount_Id(account.getId());
-                if(staff == null){
-                    throw new APIException(HttpStatus.BAD_REQUEST, "Staff not found");
-                }else {
-                    loginResponse.setUserInformation(mapper.map(staff, StaffDTO.class));
-                }
+                loginResponse.setUserInformation(staff == null ? null : mapper.map(staff, StaffDTO.class));
             }
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
@@ -167,7 +159,7 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setEmail(account.getEmail());
 
         try {
-            sendVerificationEmail(customerRegisterDTO, "https://www.hntdiamond.store/");
+            sendVerificationEmail(customerRegisterDTO, siteURL);
         } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -190,7 +182,6 @@ public class AccountServiceImpl implements AccountService {
         mailContent += "<h3 style=\"margin: 0 0 20px;\"><a href=\"" + siteURL + "\" style=\"color: #0066cc; text-decoration: none;\">Verify your account</a></h3>";
         mailContent += "<p style=\"margin: 0; color: #000000;\">Thank you,<br>The H&T Diamond Team</p>";
         mailContent += "</td></tr></table></td></tr></table></div>";
-
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -258,6 +249,55 @@ public class AccountServiceImpl implements AccountService {
         accountUpdateResponse.setRole(account.getRole());
         return accountUpdateResponse;
     }
+
+    @Override
+    public void forgetPassword(String email) {
+        Account account = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "email", email));
+        account.setVerificationCode(UUID.randomUUID().toString());
+        accountRepository.save(account);
+        try {
+            sendResetEmail(mapper.map(account, AccountDTO.class), siteURL + "reset-password?token="  + account.getVerificationCode());
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void resetPassword(String code, String newPassword) {
+        Account account = accountRepository.findByVerificationCode(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "code", code));
+        System.out.println(newPassword);
+        account.setPassword(passwordEncoder.encode(newPassword));
+        account.setVerificationCode(null);
+        accountRepository.save(account);
+    }
+
+    private void sendResetEmail(AccountDTO accountDTO, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+
+        helper.setFrom("hntdiamond@gmail.com", "H&T Diamond");
+        helper.setTo(accountDTO.getEmail());
+
+        String subject = "Here's the link to reset your password";
+
+        String content = "<p>Hello,</p>"
+                + "<p>You have requested to reset your password.</p>"
+                + "<p>Click the link below to change your password:</p>"
+                + "<p><a href=\"" + siteURL + "\">Change my password</a></p>"
+                + "<br>"
+                + "<p>Ignore this email if you do remember your password, "
+                + "or you have not made the request.</p>";
+
+        helper.setSubject(subject);
+
+        helper.setText(content, true);
+
+        javaMailSender.send(message);
+    }
+
+
 
     @Override
     public JwtAuthResponse refreshToken(RefreshToken refreshToken) {
