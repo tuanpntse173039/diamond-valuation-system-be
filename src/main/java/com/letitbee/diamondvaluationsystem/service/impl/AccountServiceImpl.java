@@ -46,7 +46,7 @@ public class AccountServiceImpl implements AccountService {
     private StaffRepository staffRepository;
     private RefreshTokenRepository refreshTokenRepository;
     private ModelMapper mapper;
-    private String siteURL = "http://localhost:5175/";
+    private String siteURL = "http://localhost:5173/";
 
     @Autowired
     private JavaMailSender javaMailSender;

@@ -116,6 +116,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
         //set data to valuation request detail
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
+        valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
 //        if(valuationRequestDetail.getSize() ==  0 && valuationRequestDetailDTO.getSize() != 0) {
 //            valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
 //            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
