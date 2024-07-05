@@ -23,6 +23,7 @@ public class StaffDTO {
     private int experience;
     private String certificateLink;
     private AccountResponse account;
+    private String avatar;
     private int countProject = 0;
     private int currentTotalProject;
 }

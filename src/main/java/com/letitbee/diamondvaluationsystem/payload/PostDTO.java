@@ -15,6 +15,7 @@ public class PostDTO {
     @NotEmpty(message = "Content cannot be empty")
     private String content;
     private String thumbnail;
+    private String description;
     private Date lastModifiedDate;
     private Date creationDate;
     @NotEmpty(message = "Reference cannot be empty")

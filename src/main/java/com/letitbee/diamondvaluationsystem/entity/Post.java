@@ -24,6 +24,8 @@ public class Post {
     private Long id;
     @Column(columnDefinition = "nvarchar(100)")
     private String title;
+    @Column(columnDefinition = "nvarchar(500)")
+    private String description;
     @Column(columnDefinition = "text")
     private String content;
     @Column(columnDefinition = "nvarchar(500)")

@@ -43,13 +43,6 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getStaffByName(name));
     }
 
-    @PreAuthorize("hasAnyAuthority('ADMIN')")
-    @PostMapping
-    public ResponseEntity<StaffDTO> createStaffInformation(@RequestBody @Valid StaffDTO staffDto){
-        StaffDTO response = staffService.createStaffInformation(staffDto);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
-    }
-
     @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'VALUATION_STAFF')")
     @PutMapping("/{id}")
     public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody @Valid StaffDTO staffDto, @PathVariable("id") long id){

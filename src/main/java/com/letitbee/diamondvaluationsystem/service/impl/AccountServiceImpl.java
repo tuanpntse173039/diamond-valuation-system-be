@@ -214,6 +214,7 @@ public class AccountServiceImpl implements AccountService {
         staff.setPhone(staffRegisterDTO.getPhone());
         staff.setExperience(staffRegisterDTO.getExperience());
         staff.setCertificateLink(staffRegisterDTO.getCertificateLink());
+        staff.setAvatar(staffRegisterDTO.getAvatar());
         staff.setAccount(account);
         staffRepository.save(staff);
 

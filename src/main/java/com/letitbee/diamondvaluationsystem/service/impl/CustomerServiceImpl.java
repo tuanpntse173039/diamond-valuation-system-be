@@ -89,25 +89,6 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public CustomerDTO createCustomerInformation(CustomerDTO customerDto) {
-        if (!customerDto.getAccount().getRole().toString().equalsIgnoreCase(Role.CUSTOMER.toString())) {
-            throw new APIException(HttpStatus.BAD_REQUEST, "Invalid Role");
-        }
-        Account account = mapper.map(customerDto.getAccount(), Account.class);
-        Customer customer = new Customer();
-
-        customer.setAccount(account);
-        customer.setFirstName(customerDto.getFirstName());
-        customer.setLastName(customerDto.getLastName());
-        customer.setPhone(customerDto.getPhone());
-        customer.setAddress(customerDto.getAddress());
-        customer.setAvatar(customerDto.getAvatar());
-        customer.setIdentityDocument(customerDto.getIdentityDocument());
-        customer = customerRepository.save(customer);
-        return mapToDTO(customer);
-    }
-
-    @Override
     public CustomerUpdate updateCustomerInformation(CustomerUpdate customerUpdate, Long id) {
         Customer customer = customerRepository.
                 findById(id).

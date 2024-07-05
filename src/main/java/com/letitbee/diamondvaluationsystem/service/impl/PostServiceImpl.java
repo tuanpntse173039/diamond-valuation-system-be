@@ -99,6 +99,9 @@ public class PostServiceImpl implements PostService {
         if (postDto.getAuthor() != null){
             post.setAuthor(postDto.getAuthor());
         }
+        if (postDto.getDescription() != null){
+            post.setDescription(postDto.getDescription());
+        }
         Post updatePost = postRepository.save(post);
         return mapToDto(updatePost);
     }

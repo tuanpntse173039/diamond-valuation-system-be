@@ -43,12 +43,6 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomerByPhoneOrName(phone,name));
     }
 
-    @PostMapping()
-    public ResponseEntity<CustomerDTO> createCustomerInformation(@RequestBody @Valid CustomerDTO customerDto){
-        CustomerDTO customer = customerService.createCustomerInformation(customerDto);
-        return new ResponseEntity<>(customer, HttpStatus.CREATED);
-    }
-
     @PreAuthorize("hasAnyAuthority('CUSTOMER')")
     @PutMapping("/{id}")
     public ResponseEntity<CustomerUpdate> updateCustomerInformation(@RequestBody @Valid CustomerUpdate customerUpdate, @PathVariable("id") long id){

@@ -17,6 +17,7 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +48,7 @@ public class AuthController {
     }
 
     //register Staff
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping(value = {"/register-staff", "/signup-staff"})
     public ResponseEntity<AccountResponse> registerStaff(@RequestBody @Valid StaffRegisterDTO staffRegisterDTO){
         AccountResponse response = accountService.registerStaff(staffRegisterDTO);

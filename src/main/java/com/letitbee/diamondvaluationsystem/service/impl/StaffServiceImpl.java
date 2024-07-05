@@ -99,26 +99,9 @@ public class StaffServiceImpl implements StaffService {
         staff.setPhone(staffDto.getPhone());
         staff.setExperience(staffDto.getExperience());
         staff.setCertificateLink(staffDto.getCertificateLink());
-
+        staff.setAvatar(staffDto.getAvatar());
         return mapToDto(staffRepository.save(staff));
     }
-
-    @Override
-    public StaffDTO createStaffInformation(StaffDTO staffDto) {
-        if (staffDto.getAccount().getRole().toString().equalsIgnoreCase(Role.CUSTOMER.toString()))
-            throw new APIException(HttpStatus.BAD_REQUEST, "Invalid Role");
-        Account account = mapper.map(staffDto.getAccount(), Account.class) ;
-        Staff staff = new Staff();
-        staff.setFirstName(staffDto.getFirstName());
-        staff.setLastName(staffDto.getLastName());
-        staff.setPhone(staffDto.getPhone());
-        staff.setExperience(staffDto.getExperience());
-        staff.setCertificateLink(staffDto.getCertificateLink());
-        staff.setAccount(account);
-
-        return mapToDto(staffRepository.save(staff));
-    }
-
 
     @Override
     public void deleteStaffById(Long id) {
