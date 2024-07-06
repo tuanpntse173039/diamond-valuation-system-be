@@ -22,9 +22,9 @@ public class Post {
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
     private Long id;
-    @Column(columnDefinition = "nvarchar(100)")
+    @Column(columnDefinition = "nvarchar(100)", nullable = false)
     private String title;
-    @Column(columnDefinition = "nvarchar(500)")
+    @Column(columnDefinition = "nvarchar(500)", nullable = false)
     private String description;
     @Column(columnDefinition = "text")
     private String content;
@@ -38,6 +38,8 @@ public class Post {
     private String reference;
     @Enumerated(EnumType.STRING)
     private BlogType status;
-    @Column(columnDefinition = "nvarchar(100)")
+    @Column(columnDefinition = "nvarchar(100)", nullable = false)
     private String author;
+    @Column(columnDefinition = "datetime")
+    private Date publishedDate;
  }

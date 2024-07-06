@@ -102,6 +102,9 @@ public class PostServiceImpl implements PostService {
         if (postDto.getDescription() != null){
             post.setDescription(postDto.getDescription());
         }
+        if (postDto.getPublishedDate() != null){
+            post.setPublishedDate(postDto.getPublishedDate());
+        }
         Post updatePost = postRepository.save(post);
         return mapToDto(updatePost);
     }

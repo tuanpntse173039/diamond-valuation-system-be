@@ -28,4 +28,5 @@ public class PostDTO {
     @NotEmpty(message = "Author cannot be empty")
     private String author;
     private BlogType status;
+    private Date publishedDate;
 }
