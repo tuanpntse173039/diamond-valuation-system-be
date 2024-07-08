@@ -3,13 +3,14 @@ package com.letitbee.diamondvaluationsystem.service;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.payload.DiamondMarketDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
+import com.letitbee.diamondvaluationsystem.payload.Response;
 
 import java.util.List;
 
 public interface DiamondMarketService {
     DiamondMarketDTO createDiamondMarket(DiamondMarketDTO diamondMarketDTO);
 
-    List<DiamondMarketDTO> getAllDiamondMarket(
+    List<DiamondMarketDTO> searchDiamonds(
             DiamondOrigin diamondOrigin,
             float caratWeight,
             Color color,
@@ -21,7 +22,8 @@ public interface DiamondMarketService {
             Fluorescence fluorescence
     );
 
-    DiamondPriceListDTO createDiamondPriceList(
+
+    DiamondPriceListDTO getDiamondPriceList(
             DiamondOrigin diamondOrigin,
             float caratWeight,
             Color color,
@@ -34,4 +36,6 @@ public interface DiamondMarketService {
     );
 
     void deleteDiamondMarket(long id);
+
+    Response<DiamondMarketDTO> getAllDiamondMarket(int pageNo, int pageSize, String sortBy, String sortDir);
 }

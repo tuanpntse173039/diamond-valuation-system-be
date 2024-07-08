@@ -43,7 +43,7 @@ public class StaffController {
         return ResponseEntity.ok(staffService.getStaffByName(name));
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'VALUATION_STAFF')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CONSULTANT_STAFF', 'VALUATION_STAFF', 'ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<StaffDTO> updateStaffInformation(@RequestBody @Valid StaffDTO staffDto, @PathVariable("id") long id){
         StaffDTO response = staffService.updateStaffInformation(staffDto, id);
