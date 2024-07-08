@@ -38,6 +38,8 @@ public class Account  {
     private Role role;
     @Column(columnDefinition = "varchar(100)")
     private String verificationCode;
+    @Column(columnDefinition = "datetime")
+    private Date creationDate;
 
     @OneToOne(mappedBy = "account")
     private Staff staff;

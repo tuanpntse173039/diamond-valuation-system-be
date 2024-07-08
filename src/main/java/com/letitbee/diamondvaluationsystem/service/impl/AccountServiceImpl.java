@@ -136,8 +136,10 @@ public class AccountServiceImpl implements AccountService {
         account.setUsername(customerRegisterDTO.getUsername());
         account.setPassword(passwordEncoder.encode(customerRegisterDTO.getPassword()));
         account.setRole(Role.CUSTOMER);
-        account.setIs_active(true);
+        account.setIs_active(false);
         account.setEmail(customerRegisterDTO.getEmail());
+        account.setCreationDate(new Date());
+        account.setVerificationCode(UUID.randomUUID().toString());
         account = accountRepository.save(account);
 
         //save customer to db
@@ -159,7 +161,7 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setEmail(account.getEmail());
 
         try {
-            sendVerificationEmail(customerRegisterDTO, siteURL);
+            sendVerificationEmail(customerRegisterDTO, siteURL + "verify-account?token=" + account.getVerificationCode());
         } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -318,5 +320,14 @@ public class AccountServiceImpl implements AccountService {
         token.setExpiryDate(expiryDate);
         refreshTokenRepository.save(token);
         return jwtAuthResponse;
+    }
+
+    @Override
+    public void verifyAccount(String code) {
+        Account account = accountRepository.findByVerificationCode(code)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "code", code));
+        account.setVerificationCode(null);
+        account.setIs_active(true);
+        accountRepository.save(account);
     }
 }
