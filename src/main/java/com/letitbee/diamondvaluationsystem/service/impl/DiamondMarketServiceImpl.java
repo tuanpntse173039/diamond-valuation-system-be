@@ -6,9 +6,14 @@ import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondMarketDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
+import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.repository.DiamondMarketRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondMarketService;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -30,7 +35,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
     }
 
     @Override
-    public List<DiamondMarketDTO> getAllDiamondMarket(DiamondOrigin diamondOrigin,
+    public List<DiamondMarketDTO> searchDiamonds(DiamondOrigin diamondOrigin,
                                                       float caratWeight,
                                                       Color color,
                                                       Clarity clarity,
@@ -56,7 +61,13 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
     }
 
     @Override
-    public DiamondPriceListDTO createDiamondPriceList(
+    public void deleteDiamondMarket(long id) {
+        DiamondMarket diamondMarket = diamondMarketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("DiamondMarket", "id", id + ""));
+        diamondMarketRepository.delete(diamondMarket);
+    }
+
+    @Override
+    public DiamondPriceListDTO getDiamondPriceList(
             DiamondOrigin diamondOrigin,
             float caratWeight,
             Color color,
@@ -89,7 +100,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                 fluorescence);
 
         if (diamondMarket != null && !diamondMarket.isEmpty()
-             && diamondMarkets1 != null && !diamondMarkets1.isEmpty()
+                && diamondMarkets1 != null && !diamondMarkets1.isEmpty()
         ) {
             DiamondPriceListDTO diamondPriceList = new DiamondPriceListDTO();
             diamondPriceList.setDiamondOrigin(diamondOrigin);
@@ -117,10 +128,24 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
     }
 
     @Override
-    public void deleteDiamondMarket(long id) {
-        DiamondMarket diamondMarket = diamondMarketRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("DiamondMarket", "id", id + ""));
-        diamondMarketRepository.delete(diamondMarket);
+    public Response<DiamondMarketDTO> getAllDiamondMarket(int pageNo, int pageSize, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
+        Page<DiamondMarket> page = diamondMarketRepository.findAll(pageable);
+        List<DiamondMarketDTO> content = page.getContent().stream().map(this::mapToDTO).toList();
+
+        Response<DiamondMarketDTO> response = new Response<>();
+        response.setContent(content);
+        response.setPageNumber(page.getNumber());
+        response.setPageSize(page.getSize());
+        response.setTotalElement(page.getTotalElements());
+        response.setTotalPage(page.getTotalPages());
+        response.setLast(page.isLast());
+
+        return response;
     }
+
 
     private DiamondMarketDTO mapToDTO(DiamondMarket diamondMarket) {
         return mapper.map(diamondMarket, DiamondMarketDTO.class);
