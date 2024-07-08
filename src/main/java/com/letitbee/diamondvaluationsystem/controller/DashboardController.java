@@ -40,7 +40,7 @@ public class DashboardController {
            return ResponseEntity.ok(dashboardService.getTopValuation());
      }
      @GetMapping("/overall")
-     public ResponseEntity<List<DashboardOverall>> getOverall() {
+     public ResponseEntity<DashboardOverall> getOverall() {
            return ResponseEntity.ok(dashboardService.getOverall());
      }
 
