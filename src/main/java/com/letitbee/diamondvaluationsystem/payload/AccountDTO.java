@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -26,6 +27,7 @@ public class AccountDTO implements UserDetails {
     private Role role;
     private String usernameOrEmail;
     private String verificationCode;
+    private Date creationDate;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

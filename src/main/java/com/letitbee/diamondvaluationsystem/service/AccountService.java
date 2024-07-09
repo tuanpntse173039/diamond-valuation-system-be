@@ -20,4 +20,6 @@ public interface AccountService {
     void resetPassword(String code, String newPassword);
 
     JwtAuthResponse refreshToken(RefreshToken refreshToken);
+
+    void verifyAccount(String code);
 }
