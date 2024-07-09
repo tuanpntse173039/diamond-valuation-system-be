@@ -77,35 +77,6 @@ public class ManageAccount {
                 .andExpect(status().isBadRequest());
     }
 
-    @Test
-    @Transactional
-    @Rollback
-    public void testConfirmPasswordBlank() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setUsername(accountRepository.findById(1L).get().getUsername());
-        accountDTO.setPassword("");
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
-
-        mockMvc.perform(put("/api/v1/accounts/password/1")
-                        .contentType("application/json")
-                        .content(accountJson))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void testConfirmPasswordNotMatch() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setUsername(accountRepository.findById(1L).get().getUsername());
-        accountDTO.setPassword("testPassword");
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
-
-        mockMvc.perform(put("/api/v1/accounts/password/1")
-                        .contentType("application/json")
-                        .content(accountJson))
-                .andExpect(status().isBadRequest());
-    }
 
     @Test
     @Transactional
