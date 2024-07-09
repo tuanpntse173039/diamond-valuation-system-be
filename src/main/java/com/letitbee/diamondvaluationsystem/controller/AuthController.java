@@ -2,6 +2,7 @@ package com.letitbee.diamondvaluationsystem.controller;
 
 import com.letitbee.diamondvaluationsystem.entity.Account;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
+import com.letitbee.diamondvaluationsystem.entity.RefreshToken;
 import com.letitbee.diamondvaluationsystem.entity.Staff;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.*;
@@ -16,41 +17,27 @@ import jakarta.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthController {
     private AccountService accountService;
-    private JwtTokenProvider jwtTokenProvider;
-    private AuthenticationManager authenticationManager;
-    private AccountRepository accountRepository;
-    private CustomerRepository customerRepository;
-    private StaffRepository staffRepository;
-    private ModelMapper mapper;
 
 
-    public AuthController(AccountService accountService,
-                          JwtTokenProvider jwtTokenProvider, AuthenticationManager authenticationManager
-                          , AccountRepository accountRepository,
-                          ModelMapper mapper
-                          , CustomerRepository customerRepository, StaffRepository staffRepository) {
+    public AuthController(AccountService accountService) {
         this.accountService = accountService;
-        this.jwtTokenProvider = jwtTokenProvider;
-        this.authenticationManager = authenticationManager;
-        this.accountRepository = accountRepository;
-        this.mapper = mapper;
-        this.customerRepository = customerRepository;
-        this.staffRepository = staffRepository;
     }
 
     @PostMapping(value = {"/login", "/signin"})
-    public ResponseEntity<LoginResponse> login(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountDTO accountDTO){
-        return ResponseEntity.ok(accountService.login(request,response, accountDTO));
+    public ResponseEntity<LoginResponse> login( @RequestBody AccountDTO accountDTO){
+        return ResponseEntity.ok(accountService.login(accountDTO));
     }
 
     //register Customer
@@ -61,6 +48,7 @@ public class AuthController {
     }
 
     //register Staff
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
     @PostMapping(value = {"/register-staff", "/signup-staff"})
     public ResponseEntity<AccountResponse> registerStaff(@RequestBody @Valid StaffRegisterDTO staffRegisterDTO){
         AccountResponse response = accountService.registerStaff(staffRegisterDTO);
@@ -68,12 +56,32 @@ public class AuthController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<String> updatePassword(@RequestBody String newPassword, @PathVariable(name = "id") long id){
-        String response = accountService.updatePassword(newPassword, id);
-        return new ResponseEntity<>(response, HttpStatus.OK);
+    public ResponseEntity<AccountResponse> changePassword(@RequestBody @Valid AccountUpdate accountUpdate, @PathVariable(name = "id") long id){
+        return new ResponseEntity<>(accountService.changePassword(accountUpdate,id), HttpStatus.OK);
     }
     @PostMapping("/refresh-token")
-    public ResponseEntity<LoginResponse> refreshToken(HttpServletRequest request) {
-        return ResponseEntity.ok(accountService.refreshToken(request));
+    public ResponseEntity<JwtAuthResponse> refreshToken(@RequestBody RefreshToken refreshToken) {
+        return ResponseEntity.ok(accountService.refreshToken(refreshToken));
+    }
+
+    @GetMapping("/forget-password")
+    public ResponseEntity<String> forgetPasswordPage() {
+        return ResponseEntity.ok("Forgot Page");
+    }
+    @PostMapping("/forget-password")
+    public ResponseEntity<String> forgetPassword(@RequestBody Map<String, String> request) {
+        String email = request.get("email").trim();
+        email = email.replaceAll("\"", "");
+        accountService.forgetPassword(email);
+        return ResponseEntity.ok("Email sent successfully");
+    }
+
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestParam(name = "token") String code,@RequestBody Map<String, String> request) {
+        String newPassword = request.get("newPassword").trim();
+        newPassword = newPassword.replaceAll("\"", "");
+        accountService.resetPassword(code, newPassword);
+        return ResponseEntity.ok("Password reset successfully");
     }
 }

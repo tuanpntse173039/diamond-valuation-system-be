@@ -68,7 +68,7 @@ public class GlobalExceptionHandler {
         errorDetail.setTimestamp(new Date().toString());
         errorDetail.setMessage(e.getMessage());
         errorDetail.setDetail(request.getDescription(false));
-        return new ResponseEntity<>(errorDetail, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorDetail, HttpStatus.FORBIDDEN);
     }
 
 }

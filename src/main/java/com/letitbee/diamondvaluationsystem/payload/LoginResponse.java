@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import lombok.*;
 
 @Setter

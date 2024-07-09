@@ -2,6 +2,8 @@ package com.letitbee.diamondvaluationsystem.repository;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondMarket;
 import com.letitbee.diamondvaluationsystem.enums.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,7 +14,7 @@ public interface DiamondMarketRepository extends JpaRepository<DiamondMarket, Lo
     @Query("SELECT d " +
             "FROM DiamondMarket d " +
             "WHERE d.diamondOrigin = :diamondOrigin " +
-            "AND d.caratWeight between :caratWeight - 0.15 and :caratWeight + 0.15 " +
+            "AND d.caratWeight between :caratWeight - (:caratWeight * 0.15) and :caratWeight + (:caratWeight * 0.15)" +
             "AND d.color = :color " +
             "AND d.clarity = :clarity " +
             "AND d.cut = :cut " +
@@ -55,5 +57,5 @@ public interface DiamondMarketRepository extends JpaRepository<DiamondMarket, Lo
             @Param("shape") Shape shape,
             @Param("fluorescence") Fluorescence fluorescence);
 
-
+    Page<DiamondMarket> findBySupplierId(Long id, Pageable pageable);
 }

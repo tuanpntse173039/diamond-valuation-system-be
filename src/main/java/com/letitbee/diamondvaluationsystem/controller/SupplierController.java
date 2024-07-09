@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
+import com.letitbee.diamondvaluationsystem.payload.DiamondMarketDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.SupplierDTO;
 import com.letitbee.diamondvaluationsystem.service.SupplierService;
@@ -27,6 +28,15 @@ public class SupplierController {
     @GetMapping("/{id}")
     public ResponseEntity<SupplierDTO> getSupplierById(@PathVariable("id") long id) {
         return ResponseEntity.ok(supplierService.getSupplierById(id));
+    }
+
+    @GetMapping("/{supplierId}/diamond-market")
+    public ResponseEntity<Response<DiamondMarketDTO>> getDiamondMarketBySupplierId(@RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+                                                                     @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
+                                                                     @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
+                                                                     @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+                                                                     @PathVariable(name = "supplierId") Long supplierId){
+        return ResponseEntity.ok(supplierService.getDiamondMarketBySupplierId(pageNo, pageSize, sortBy, sortDir, supplierId));
     }
 
     @PostMapping()

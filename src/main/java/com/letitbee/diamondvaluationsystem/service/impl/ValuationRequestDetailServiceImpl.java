@@ -1,7 +1,9 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.*;
+import com.letitbee.diamondvaluationsystem.entity.Record;
 import com.letitbee.diamondvaluationsystem.enums.*;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -33,6 +36,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private DiamondMarketRepository diamondMarketRepository;
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
     private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
+    private RecordRepository recordRepository;
 
     public ValuationRequestDetailServiceImpl(ModelMapper mapper,
                                              ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -41,7 +45,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                              ServicePriceListRepository servicePriceListRepository,
                                              DiamondValuationAssignRepository diamondValuationAssignRepository,
                                              DiamondMarketRepository diamondMarketRepository,
-                                             DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl
+                                             DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl,
+                                             RecordRepository recordRepository
     ) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
@@ -51,6 +56,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
         this.diamondMarketRepository = diamondMarketRepository;
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
+        this.recordRepository = recordRepository;
     }
 
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
@@ -110,11 +116,12 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
         //set data to valuation request detail
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
-        if(valuationRequestDetail.getSize() ==  0 && valuationRequestDetailDTO.getSize() != 0) {
-            valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
-            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
-            valuationRequestRepository.save(valuationRequest);
-        }
+        valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
+//        if(valuationRequestDetail.getSize() ==  0 && valuationRequestDetailDTO.getSize() != 0) {
+//            valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
+//            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
+//            valuationRequestRepository.save(valuationRequest);
+//        }
         valuationRequest = valuationRequestDetail.getValuationRequest();
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
@@ -242,6 +249,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             diamondValuationNoteDTO.setMaxPrice(diamondMarkets.get(diamondMarkets.size() - 1).getPrice());
             diamondValuationNoteDTO.setMinPrice(diamondMarkets.stream().findFirst().get().getPrice());
         }
+        else throw new APIException(HttpStatus.NOT_FOUND,"No diamond price list data found");
         diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
     }
 
@@ -272,42 +280,5 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         }
     }
 
-    private Date getReturnDate(ValuationRequest valuationRequest) {
-        com.letitbee.diamondvaluationsystem.entity.Service service = valuationRequest.getService();
-        int totalHourService = service.getPeriod();
-        Date receiptDate;
-        if(valuationRequest.getReturnDate() != null) {
-            receiptDate = valuationRequest.getReturnDate();
-        } else if(valuationRequest.getReceiptDate() != null) {
-            receiptDate = valuationRequest.getReceiptDate();
-        } else {
-            throw new IllegalArgumentException("Both returnDate and receiptDate are null");
-        }
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(receiptDate);
-        int hourOfDay = calendar.get(Calendar.HOUR_OF_DAY);
-        int minuteOfDay = calendar.get(Calendar.MINUTE);
-        int secondOfDay = calendar.get(Calendar.SECOND);
-
-        int remainHourInDay = 17 - hourOfDay - ((minuteOfDay > 0 || secondOfDay > 0) ? 1 : 0);
-        int remainHourService = totalHourService - remainHourInDay;
-
-        if (remainHourService <= 0) {
-            calendar.add(Calendar.HOUR_OF_DAY, totalHourService);
-            return calendar.getTime();
-        }
-
-        int count = 0;
-        while (remainHourService > 9) {
-            count++;
-            remainHourService -= 9;
-        }
-        int hourInLastDay = remainHourService;
-
-        calendar.add(Calendar.DAY_OF_MONTH, count);
-        calendar.set(Calendar.HOUR_OF_DAY, 8 + hourInLastDay);
-
-        return calendar.getTime();
-    }
 
 }

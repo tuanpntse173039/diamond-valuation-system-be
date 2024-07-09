@@ -1,6 +1,7 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.*;
+import com.letitbee.diamondvaluationsystem.enums.RecordType;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.enums.Role;
@@ -110,16 +111,9 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         //update valuation request
         valuationRequest.setFeedback(valuationRequestDTO.getFeedback());
         valuationRequest.setReturnDate(valuationRequestDTO.getReturnDate());
-        valuationRequest.setReceiptDate(valuationRequestDTO.getReceiptDate());
-        valuationRequest.setReturnLink(valuationRequestDTO.getReturnLink());
-        valuationRequest.setResultLink(valuationRequestDTO.getResultLink());
-        valuationRequest.setSealingRecordLink(valuationRequestDTO.getSealingRecordLink());
-        if (valuationRequest.getReceiptLink() == null && valuationRequestDTO.getReceiptLink() != null) {
-            valuationRequest.setReceiptDate(new Date());
-        }
-        valuationRequest.setReceiptLink(valuationRequestDTO.getReceiptLink());
         valuationRequest.setStatus(valuationRequestDTO.getStatus());
         valuationRequest.setCancelReason(valuationRequestDTO.getCancelReason());
+
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
         //map to dto
@@ -261,6 +255,5 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         }
         return valuationRequest;
     }
-
 
 }

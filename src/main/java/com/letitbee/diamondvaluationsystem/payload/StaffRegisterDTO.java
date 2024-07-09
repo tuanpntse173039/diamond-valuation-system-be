@@ -28,5 +28,6 @@ public class StaffRegisterDTO {
     @Min(value = 0, message = "Experience must be greater than or equal to 0")
     private int experience;
     private String certificateLink;
+    private String avatar;
     private Role role;
 }

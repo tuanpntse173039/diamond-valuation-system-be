@@ -1,6 +1,8 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Post;
+import com.letitbee.diamondvaluationsystem.enums.BlogType;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
@@ -12,8 +14,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,22 +36,24 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO createPost(PostDTO postDto) {
+        if(postRepository.existsByTitle(postDto.getTitle())){
+            throw new APIException(HttpStatus.BAD_REQUEST,"Title already exist");
+        }
+        postDto.setCreationDate(new Date());
+        postDto.setLastModifiedDate(new Date());
+        postDto.setStatus(BlogType.DRAFT);
         Post post = mapToEntity(postDto);
         Post newPost = postRepository.save(post);
         return mapToDto(newPost);
     }
 
     @Override
-    public Response<PostDTO> getAllPost(int pageNo, int pageSize, String sortBy, String sortDir) {
-
-        //create Pageable intance
+    public Response<PostDTO> getAllPost(int pageNo, int pageSize, String sortBy, String sortDir, BlogType status) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
 
-        Page<Post> posts = postRepository.findAll(pageable);
-        //get content for page obj
-
+        Page<Post> posts = postRepository.findAllByStatus(pageable, status);
         List<Post> listOfPosts = posts.getContent();
         List<PostDTO> content =  listOfPosts.stream().map(post -> mapToDto(post)).collect(Collectors.toList());
 
@@ -71,11 +77,34 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDTO updatePost(PostDTO postDto, long id) {
-        //get post by id from database
         Post post = postRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Post","id",id + ""));
-        post.setTitle(postDto.getTitle());
-        post.setDescription(postDto.getDescription());
-        post.setContent(postDto.getContent());
+        if(postDto.getTitle() != null && !postRepository.existsByTitleUpdate(postDto.getTitle(), id).isEmpty()){
+            throw new APIException(HttpStatus.BAD_REQUEST,"Title already exist");
+        }else if(postDto.getTitle() != null){
+            post.setTitle(postDto.getTitle());
+        }
+        if (postDto.getReference() != null){
+            post.setReference(postDto.getReference());
+        }
+        if (postDto.getStatus() != null){
+            post.setStatus(postDto.getStatus());
+        }
+        post.setLastModifiedDate(new Date());
+        if (postDto.getThumbnail() != null){
+            post.setThumbnail(postDto.getThumbnail());
+        }
+        if (postDto.getContent() != null){
+            post.setContent(postDto.getContent());
+        }
+        if (postDto.getAuthor() != null){
+            post.setAuthor(postDto.getAuthor());
+        }
+        if (postDto.getDescription() != null){
+            post.setDescription(postDto.getDescription());
+        }
+        if (postDto.getPublishedDate() != null){
+            post.setPublishedDate(postDto.getPublishedDate());
+        }
         Post updatePost = postRepository.save(post);
         return mapToDto(updatePost);
     }
@@ -86,14 +115,10 @@ public class PostServiceImpl implements PostService {
         postRepository.delete(post);
     }
 
-    //convert Entity to DTO
     private PostDTO mapToDto(Post post){
-        PostDTO postDto = mapper.map(post, PostDTO.class);
-        return  postDto;
+        return  mapper.map(post, PostDTO.class);
     }
-    //convert DTO to Entity
     private Post mapToEntity(PostDTO postDto){
-        Post post = mapper.map(postDto, Post.class);
-        return post;
+        return mapper.map(postDto, Post.class);
     }
 }

@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.entity;
 
+import com.letitbee.diamondvaluationsystem.enums.BlogType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,18 +22,24 @@ public class Post {
             strategy = jakarta.persistence.GenerationType.IDENTITY
     )
     private Long id;
-    @Column(columnDefinition = "nvarchar(100)")
+    @Column(columnDefinition = "nvarchar(100)", nullable = false)
     private String title;
+    @Column(columnDefinition = "nvarchar(500)", nullable = false)
+    private String description;
     @Column(columnDefinition = "text")
     private String content;
-    @Column(columnDefinition = "nvarchar(1000)")
-    private String description;
     @Column(columnDefinition = "nvarchar(500)")
     private String thumbnail;
     @Column(columnDefinition = "datetime")
-    private Date publishedDate;
+    private Date lastModifiedDate;
     @Column(columnDefinition = "datetime")
     private Date creationDate;
     @Column(columnDefinition = "nvarchar(100)")
     private String reference;
+    @Enumerated(EnumType.STRING)
+    private BlogType status;
+    @Column(columnDefinition = "nvarchar(100)", nullable = false)
+    private String author;
+    @Column(columnDefinition = "datetime")
+    private Date publishedDate;
  }

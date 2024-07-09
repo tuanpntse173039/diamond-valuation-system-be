@@ -36,12 +36,19 @@ public class Account  {
     private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
+    @Column(columnDefinition = "varchar(100)")
+    private String verificationCode;
+    @Column(columnDefinition = "datetime")
+    private Date creationDate;
 
     @OneToOne(mappedBy = "account")
     private Staff staff;
 
     @OneToOne(mappedBy = "account")
     private Customer customer;
+
+    @OneToOne(mappedBy = "account")
+    private RefreshToken refreshToken;
 
     @OneToMany(
             mappedBy = "account",

@@ -1,12 +1,18 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.Service;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
+import com.letitbee.diamondvaluationsystem.entity.ServicePriceList;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
+import com.letitbee.diamondvaluationsystem.payload.ServicePriceListDTO;
+import com.letitbee.diamondvaluationsystem.repository.ServicePriceListRepository;
 import com.letitbee.diamondvaluationsystem.repository.ServiceRepository;
 import com.letitbee.diamondvaluationsystem.service.ServiceService;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.HttpStatus;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,10 +21,12 @@ public class ServiceServiceImpl implements ServiceService {
 
     private ServiceRepository serviceRepository;
     private ModelMapper mapper;
+    private ServicePriceListRepository servicePriceListRepository;
 
-    public ServiceServiceImpl(ServiceRepository serviceRepository, ModelMapper mapper) {
+    public ServiceServiceImpl(ServiceRepository serviceRepository, ServicePriceListRepository servicePriceListRepository,ModelMapper mapper) {
         this.serviceRepository = serviceRepository;
         this.mapper = mapper;
+        this.servicePriceListRepository = servicePriceListRepository;
     }
 
     @Override
@@ -36,6 +44,9 @@ public class ServiceServiceImpl implements ServiceService {
 
     @Override
     public ServiceDTO createService(ServiceDTO serviceDto) {
+        if(serviceRepository.existsByServiceName(serviceDto.getName())) {
+            throw new APIException(HttpStatus.BAD_REQUEST,"Service name is already taken");
+        }
         Service service = mapToEntity(serviceDto);
         Service newService = serviceRepository.save(service);
         return mapToDto(newService);
@@ -56,6 +67,13 @@ public class ServiceServiceImpl implements ServiceService {
         Service service = serviceRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Service", "id", id + ""));
         serviceRepository.delete(service);
     }
+
+    @Override
+    public List<ServicePriceListDTO> getAllServicePriceListByServiceId(Long serviceId) {
+        List<ServicePriceList> servicePriceLists = servicePriceListRepository.findByServiceId(serviceId);
+        return servicePriceLists.stream().map(servicePriceList -> mapper.map(servicePriceList,ServicePriceListDTO.class)).collect(Collectors.toList());
+    }
+
     private ServiceDTO mapToDto(Service service) {
         return mapper.map(service, ServiceDTO.class);
     }

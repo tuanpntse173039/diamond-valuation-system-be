@@ -26,6 +26,8 @@ public class DiamondMarket {
     private String diamondImage;
     @Column(columnDefinition = "datetime")
     private Date creationDate;
+    @Column(columnDefinition = "varchar(100)")
+    private String certificateId;
     @Column(nullable = false)
     private float caratWeight;
     @Enumerated(EnumType.STRING)

@@ -11,4 +11,8 @@ public interface ServicePriceListService {
     ServicePriceListDTO getServicePriceListById(long id);
 
     ServicePriceListDTO createServicePriceList(ServicePriceListDTO servicePriceListDto);
+
+    ServicePriceListDTO updateServicePriceList(long id, ServicePriceListDTO servicePriceListDto);
+
+    void deleteServicePriceList(long id);
 }

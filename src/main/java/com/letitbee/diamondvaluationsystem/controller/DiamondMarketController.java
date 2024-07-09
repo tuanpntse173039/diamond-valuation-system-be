@@ -4,9 +4,12 @@ import com.letitbee.diamondvaluationsystem.entity.DiamondMarket;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import com.letitbee.diamondvaluationsystem.payload.DiamondMarketDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
+import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.service.DiamondMarketService;
+import com.letitbee.diamondvaluationsystem.utils.AppConstraint;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,7 +40,7 @@ public class DiamondMarketController {
             @RequestParam(value = "shape") Shape shape,
             @RequestParam(value = "fluorescence") Fluorescence fluorescence
     ){
-        return new ResponseEntity<>(diamondMarketService.getAllDiamondMarket(
+        return new ResponseEntity<>(diamondMarketService.searchDiamonds(
                 diamondOrigin,
                 caratWeight,
                 color,
@@ -49,8 +52,9 @@ public class DiamondMarketController {
                 fluorescence), HttpStatus.OK);
     }
 
+
     @GetMapping("/price-list")
-    public ResponseEntity<DiamondPriceListDTO> createDiamondPriceList(
+    public ResponseEntity<DiamondPriceListDTO> getDiamondPriceList(
             @RequestParam(value = "diamondOrigin") DiamondOrigin diamondOrigin,
             @RequestParam(value = "caratWeight") float caratWeight,
             @RequestParam(value = "color") Color color,
@@ -60,8 +64,8 @@ public class DiamondMarketController {
             @RequestParam(value = "symmetry") Symmetry symmetry,
             @RequestParam(value = "shape") Shape shape,
             @RequestParam(value = "fluorescence") Fluorescence fluorescence
-    ){
-        return new ResponseEntity<>(diamondMarketService.createDiamondPriceList(
+    ) {
+        return new ResponseEntity<>(diamondMarketService.getDiamondPriceList(
                 diamondOrigin,
                 caratWeight,
                 color,
@@ -71,5 +75,22 @@ public class DiamondMarketController {
                 symmetry,
                 shape,
                 fluorescence), HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<Response<DiamondMarketDTO>> getAllDiamondMarket(
+            @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir
+            ) {
+        return new ResponseEntity<>(diamondMarketService.getAllDiamondMarket(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
+    }
+
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteDiamondMarket(@PathVariable(name = "id") long id) {
+        diamondMarketService.deleteDiamondMarket(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

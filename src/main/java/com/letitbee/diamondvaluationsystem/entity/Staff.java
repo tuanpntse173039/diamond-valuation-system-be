@@ -33,6 +33,8 @@ public class Staff {
     private int experience;
     @Column(columnDefinition = "varchar(1000)")
     private String certificateLink;
+    @Column(columnDefinition = "text")
+    private String avatar;
 
     @OneToOne
     @JoinColumn(name = "account_id", nullable = false)

@@ -62,7 +62,7 @@ public class ValuationRequestController {
         return ResponseEntity.ok(valuationRequestService.updateValuationRequest(id, valuationRequestDT));
     }
 
-    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @PreAuthorize("hasAnyAuthority('MANAGER', 'CUSTOMER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<ValuationRequestDTO> deleteValuationRequest(
             @PathVariable("id") long id) {

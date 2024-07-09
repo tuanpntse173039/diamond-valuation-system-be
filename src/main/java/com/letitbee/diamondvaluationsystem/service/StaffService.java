@@ -15,8 +15,6 @@ public interface StaffService {
 
     StaffDTO updateStaffInformation(StaffDTO staffDto, Long id);
 
-    StaffDTO createStaffInformation(StaffDTO staffDto);
-
     void deleteStaffById(Long id);
 
     Response<DiamondValuationAssignResponse> getAllValuationRequestsByStaffId(Long staffId, int pageNo, int pageSize, String sortBy, String sortDir);
