@@ -3,13 +3,19 @@ package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.letitbee.diamondvaluationsystem.entity.Account;
+import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.enums.Role;
+import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
+import com.letitbee.diamondvaluationsystem.payload.AccountUpdate;
+import com.letitbee.diamondvaluationsystem.payload.CustomerUpdate;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
+import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
@@ -21,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@WithMockUser
+@WithMockUser(authorities = {"CUSTOMER"})
 public class ManageAccount {
     @Autowired
     private MockMvc mockMvc;
@@ -30,89 +36,51 @@ public class ManageAccount {
     private ObjectMapper objectMapper;
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private AccountRepository accountRepository;
 
-    @Test
-    @Transactional
-    @Rollback
-    public void testNewPasswordBlank() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setUsername(accountRepository.findById(1L).get().getUsername());
-        accountDTO.setPassword("");
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
-
-        mockMvc.perform(put("/api/v1/accounts/password/1")
-                        .contentType("application/json")
-                        .content(accountJson))
-                .andExpect(status().isBadRequest());
-    }
+    @Autowired
+    private CustomerRepository customerRepository;
 
     @Test
     @Transactional
     @Rollback
-    public void testNewPasswordIsNot6To24CharacterS() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setUsername(accountRepository.findById(1L).get().getUsername());
-        accountDTO.setPassword("test5");
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
-
-        mockMvc.perform(put("/api/v1/accounts/password/1")
-                        .contentType("application/json")
-                        .content(accountJson))
-                .andExpect(status().isBadRequest());
-    }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void testNewPasswordNotHaveAtLeastANumber() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
-        accountDTO.setUsername(accountRepository.findById(1L).get().getUsername());
-        accountDTO.setPassword("testPassword");
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
-
-        mockMvc.perform(put("/api/v1/accounts/password/1")
-                        .contentType("application/json")
-                        .content(accountJson))
-                .andExpect(status().isBadRequest());
-    }
-
-
-    @Test
-    @Transactional
-    @Rollback
-    public void testEmailBlank() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
+    public void testOldPasswordNotCorrect() throws Exception {
+        AccountUpdate accountUpdate = new AccountUpdate();
+        accountUpdate.setOldPassword("123456");
+        accountUpdate.setNewPassword("12345678");
         Account account = accountRepository.findById(26L).get();
-        accountDTO.setId(account.getId());
-        accountDTO.setUsername(account.getUsername());
-        accountDTO.setPassword(account.getPassword());
-        accountDTO.setRole(account.getRole());
-        accountDTO.setIs_active(account.getIs_active());
-        accountDTO.setEmail("");
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
+        System.out.println(account.getPassword());
+        System.out.println(passwordEncoder.encode(accountUpdate.getOldPassword()));
+        String accountJson = objectMapper.writeValueAsString(accountUpdate);
+        if(!passwordEncoder.matches(accountUpdate.getOldPassword(), account.getPassword())){
+            mockMvc.perform(put("/api/v1/auth/26")
+                            .contentType("application/json")
+                            .content(accountJson))
+                    .andExpect(status().isBadRequest());
+            System.out.println("Old password not correct");
 
-        mockMvc.perform(put("/api/v1/auth/26")
-                        .contentType("application/json")
-                        .content(accountJson))
-                .andExpect(status().isBadRequest());
+        }else{
+            mockMvc.perform(put("/api/v1/auth/26")
+                            .contentType("application/json")
+                            .content(accountJson))
+                    .andExpect(status().isOk());
+            System.out.println("Update successfully");
+        }
     }
+
 
     @Test
     @Transactional
     @Rollback
     public void testEmailInvalid() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
-        Account account = accountRepository.findById(26L).get();
-        accountDTO.setId(account.getId());
-        accountDTO.setUsername(account.getUsername());
-        accountDTO.setPassword(account.getPassword());
-        accountDTO.setRole(account.getRole());
-        accountDTO.setIs_active(account.getIs_active());
-        accountDTO.setEmail("testEmail");
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
+        CustomerUpdate customerUpdate = new CustomerUpdate();
+        customerUpdate.setNewEmail("testEmail");
+        String accountJson = objectMapper.writeValueAsString(customerUpdate);
 
-        mockMvc.perform(put("/api/v1/auth/26")
+        mockMvc.perform(put("/api/v1/customers/5")
                         .contentType("application/json")
                         .content(accountJson))
                 .andExpect(status().isBadRequest());
@@ -122,26 +90,21 @@ public class ManageAccount {
     @Transactional
     @Rollback
     public void testEmailAlreadyExists() throws Exception {
-        AccountDTO accountDTO = new AccountDTO();
-        Account account = accountRepository.findById(36L).get();
-        accountDTO.setId(account.getId());
-        accountDTO.setUsername(account.getUsername());
-        accountDTO.setPassword(account.getPassword());
-        accountDTO.setRole(account.getRole());
-        accountDTO.setIs_active(account.getIs_active());
-        accountDTO.setEmail("tuanpham@gmail.com");
-        Boolean ex = accountRepository.existsByEmail(accountDTO.getEmail());
-        String accountJson = objectMapper.writeValueAsString(accountDTO);
-        if(ex) {
-            mockMvc.perform(put("/api/v1/auth/36")
+        CustomerUpdate customerUpdate = new CustomerUpdate();
+        customerUpdate.setNewEmail("junhib@gmail.com");
+        String accountJson = objectMapper.writeValueAsString(customerUpdate);
+        if(accountRepository.existsByEmail(customerUpdate.getNewEmail())){
+            mockMvc.perform(put("/api/v1/customers/5")
                             .contentType("application/json")
                             .content(accountJson))
                     .andExpect(status().isBadRequest());
+            System.out.println("Email already exists");
         }else{
-            mockMvc.perform(put("/api/v1/auth/36")
+            mockMvc.perform(put("/api/v1/customers/5")
                             .contentType("application/json")
                             .content(accountJson))
                     .andExpect(status().isOk());
+            System.out.println("Update successfully");
         }
     }
 

@@ -23,4 +23,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             "FROM Post p " +
             "WHERE p.status = :status or :status IS NULL ")
     Page<Post> findAllByStatus(Pageable pageable, BlogType status);
+
+    Post findByTitle(String title);
 }

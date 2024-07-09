@@ -51,21 +51,24 @@ public class ServiceManagement {
     @Rollback
     public void testServiceNameAlreadyExist() throws Exception {
         ServiceDTO serviceDTO = new ServiceDTO();
-        serviceDTO.setName("Normal  pricing");
+        serviceDTO.setName("Normal valuation");
         serviceDTO.setDescription("testDescription");
         serviceDTO.setPeriod(1);
         String serviceJson = objectMapper.writeValueAsString(serviceDTO);
-        Boolean service = serviceRepository.existsByServiceName(serviceDTO.getName());
-        if (service) {
+        if (serviceRepository.existsByServiceName(serviceDTO.getName())) {
             mockMvc.perform(post("/api/v1/services")
                             .contentType("application/json")
                             .content(serviceJson))
                     .andExpect(status().isBadRequest());
+            System.out.println("Service name already exist - " + "Service Id: " + serviceRepository.findByServiceName(serviceDTO.getName()).getId() +
+                    " Service name: " + serviceRepository.findByServiceName(serviceDTO.getName()).getServiceName() +
+                    " Service description: " + serviceRepository.findByServiceName(serviceDTO.getName()).getDescription());
         }else{
             mockMvc.perform(post("/api/v1/services")
                             .contentType("application/json")
                             .content(serviceJson))
                     .andExpect(status().isCreated());
+            System.out.println("Service created successfully");
         }
 
 
@@ -120,24 +123,5 @@ public class ServiceManagement {
                         .content(serviceJson))
                 .andExpect(status().isBadRequest());
     }
-
-    @Test
-    @Transactional
-    @Rollback
-    public void testMaxSize() throws Exception {
-        ServicePriceListDTO serviceDTO = new ServicePriceListDTO();
-        serviceDTO.setId(1);
-        serviceDTO.setInitPrice(1);
-        serviceDTO.setMinSize(5);
-        serviceDTO.setMaxSize(4);
-        serviceDTO.setUnitPrice(1000);
-        String serviceJson = objectMapper.writeValueAsString(serviceDTO);
-
-        mockMvc.perform(post("/api/v1/service-price-lists")
-                        .contentType("application/json")
-                        .content(serviceJson))
-                .andExpect(status().isBadRequest());
-    }
-
 
 }

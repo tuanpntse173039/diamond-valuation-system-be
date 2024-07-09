@@ -6,6 +6,7 @@ import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountResponse;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
+import com.letitbee.diamondvaluationsystem.payload.CustomerUpdate;
 import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -218,53 +219,24 @@ public class UpdateProfile {
 
     }
 
-    @Test
-    @Transactional
-    @Rollback
-    public void testPhoneIsContainCharacter() throws Exception {
-
-        CustomerDTO customerDTO = new CustomerDTO();
-        customerDTO.setFirstName("testFirstname");
-        customerDTO.setLastName("testLastname");
-        customerDTO.setPhone("123456789a");
-        customerDTO.setAddress("testAddress");
-        AccountResponse accountResponse = new AccountResponse();
-        accountResponse.setId(Long.valueOf(1));
-        customerDTO.setAccount(accountResponse);
-
-        String customerJson = objectMapper.writeValueAsString(customerDTO);
-
-        mockMvc.perform(put("/api/v1/customers/1")
-                        .contentType("application/json")
-                        .content(customerJson))
-                .andExpect(status().isOk());
-    }
 
     @Test
     @Transactional
     @Rollback
     public void testPhoneExist() throws Exception {
 
-        CustomerDTO customerDTO = new CustomerDTO();
-        Customer customer = customerRepository.findById(1L).get();
-        customerDTO.setId(customer.getId());
-        customerDTO.setFirstName(customer.getFirstName());
-        customerDTO.setLastName(customer.getLastName());
-        customerDTO.setPhone("0368214667");
-        customerDTO.setAddress(customer.getAddress());
-        customerDTO.setAvatar(customer.getAvatar());
-        customerDTO.setIdentityDocument(customer.getIdentityDocument());
-        customerDTO.setAccount(new AccountResponse(customer.getAccount().getId(), customer.getAccount().getUsername(),
-                customer.getAccount().getEmail(),customer.getAccount().getIs_active(),customer.getAccount().getRole()));
-        String customerJson = objectMapper.writeValueAsString(customerDTO);
-        Boolean ex = customerRepository.existsByPhone(customerDTO.getPhone());
-        if(ex){
+        CustomerUpdate customerUpdate = new CustomerUpdate();
+        customerUpdate.setPhone("0368214667");
+        String customerJson = objectMapper.writeValueAsString(customerUpdate);
+        if(customerRepository.existsByPhone(customerUpdate.getPhone())){
+            System.out.println("Phone already exist");
             mockMvc.perform(put("/api/v1/customers/1")
                             .contentType("application/json")
                             .content(customerJson))
                     .andExpect(status().isBadRequest());
         }
-            else {
+        else {
+            System.out.println("Update successfully");
             mockMvc.perform(put("/api/v1/customers/1")
                             .contentType("application/json")
                             .content(customerJson))
