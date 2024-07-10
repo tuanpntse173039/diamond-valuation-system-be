@@ -10,5 +10,5 @@ public interface DashboardService {
     List<DashboardTopCus> getTopCustomer();
     List<DashboardTopStaff> getTopConsultant();
     List<DashboardTopStaff> getTopValuation();
-    List<DashboardOverall> getOverall();
+    DashboardOverall getOverall();
 }

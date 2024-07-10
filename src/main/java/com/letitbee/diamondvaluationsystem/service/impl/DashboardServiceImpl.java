@@ -147,7 +147,7 @@ public class DashboardServiceImpl implements DashboardService {
     }
 
     @Override
-    public List<DashboardOverall> getOverall() {
+    public DashboardOverall getOverall() {
         int currentMonth = LocalDate.now().getMonth().getValue();
         List<Object[]> resultPriceService = valuationRequestRepository.findTotalServicePriceCurrentAndPreviousMonth();
         List<Object[]> resultAppointment = valuationRequestRepository.findTotalAppointmentCurrentAndPreviousMonth();
@@ -203,7 +203,7 @@ public class DashboardServiceImpl implements DashboardService {
         }
 
 
-        return Collections.singletonList(dashboardOverall);
+        return dashboardOverall;
     }
 
 }
