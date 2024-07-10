@@ -8,10 +8,7 @@ import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignResponse;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
-import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
-import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
+import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,17 +29,21 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private StaffRepository staffRepository;
-    private ValuationRequestRepository valuationRequestRepository;
+    private NotificationRepository notificationRepository;
 
+    private ValuationRequestRepository valuationRequestRepository;
 
     public DiamondValuationAssignImpl(ModelMapper mapper,
                                       DiamondValuationAssignRepository diamondValuationAssignRepository,
                                       ValuationRequestDetailRepository valuationRequestDetailRepository,
-                                      StaffRepository staffRepository, ValuationRequestRepository valuationRequestRepository) {
+                                      StaffRepository staffRepository,
+                                      NotificationRepository notificationRepository,
+                                      ValuationRequestRepository valuationRequestRepository) {
         this.mapper = mapper;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
+        this.notificationRepository = notificationRepository;
         this.valuationRequestRepository = valuationRequestRepository;
     }
     @Override
@@ -53,6 +54,14 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
                 .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + ""));
+
+        Notification notification = new Notification();
+        notification.setMessage("You are assigned to valuate a new diamond. Please check.");
+        notification.setIsRead(false);
+        notification.setCreationDate(new Date());
+        notification.setAccount(staff.getAccount());
+        notificationRepository.save(notification);
+
 
         diamondValuationAssign.setStaff(staff);
         diamondValuationAssign.setValuationRequestDetail(valuationRequestDetail);
@@ -66,6 +75,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
         return mapToDTO(diamondValuationAssign);
     }
+
 
     @Override
     public DiamondValuationAssignDTO updateDiamondValuationAssign(long id, DiamondValuationAssignDTO diamondValuationAssignDTO) {
