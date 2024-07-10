@@ -45,6 +45,14 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
 
     @Query("SELECT v " +
             "FROM ValuationRequest v " +
+            "WHERE v.id = :requestId OR " +
+            "LOWER(v.customer.firstName) LIKE LOWER(CONCAT('%', :customerName, '%')) OR " +
+            "LOWER(v.customer.lastName) LIKE LOWER(CONCAT('%', :customerName, '%')) OR " +
+            "v.customer.phone LIKE CONCAT('%', :phone, '%')")
+    Page<ValuationRequest> searchValuationRequestByValuationRequestIdOrCustomerNameOrPhone(Long requestId, String customerName, String phone, Pageable pageable);
+
+    @Query("SELECT v " +
+            "FROM ValuationRequest v " +
             "WHERE v.customer.id = :customerId ")
     Page<ValuationRequest> findValuationRequestByCustomer_Id(Long customerId, Pageable pageable);
 

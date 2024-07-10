@@ -95,4 +95,16 @@ public class ValuationRequestController {
         return new ResponseEntity<>(valuationRequestService.getValuationRequestByCustomerId(pageNo, pageSize, sortBy, sortDir, customerId), HttpStatus.OK);
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<Response<ValuationRequestResponseV2>> searchValuationRequestByCustomerIdOrCustomerNameOrPhone(
+            @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
+            @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
+            @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
+            @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+            @RequestParam(name = "requestId", required = false) Long requestId,
+            @RequestParam(name = "customerName", required = false) String customerName,
+            @RequestParam(name = "phone", required = false) String phone){
+        return new ResponseEntity<>(valuationRequestService.searchValuationRequestByCustomerIdOrCustomerNameOrPhone(pageNo, pageSize, sortBy, sortDir, requestId, customerName, phone), HttpStatus.OK);
+    }
+
 }

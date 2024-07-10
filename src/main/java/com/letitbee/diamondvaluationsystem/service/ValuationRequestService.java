@@ -28,4 +28,6 @@ public interface ValuationRequestService {
             int pageNo, int pageSize, String sortBy, String sortDir, Long staffId);
 
     Response<ValuationRequestResponseV2> getValuationRequestByCustomerId(int pageNo, int pageSize, String sortBy, String sortDir, Long customerId);
+
+    Response<ValuationRequestResponseV2> searchValuationRequestByCustomerIdOrCustomerNameOrPhone(int pageNo, int pageSize, String sortBy, String sortDir, Long requestId, String customerName, String phone);
 }
