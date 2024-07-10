@@ -9,6 +9,7 @@ import org.modelmapper.ModelMapper;
 
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,7 +37,15 @@ public class NotificationServiceImpl implements NotificationService {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: ", "id", id + ""));
         notification.setMessage(notificationDTO.getMessage());
-        notification.setIsRead(notificationDTO.getIsRead());
+        notification.setIsRead(true);
+        return mapToDto(notificationRepository.save(notification));
+    }
+
+    @Override
+    public NotificationDTO createNotification(NotificationDTO notificationDTO) {
+        notificationDTO.setIsRead(false);
+        notificationDTO.setCreationDate(new Date());
+        Notification notification = mapToEntity(notificationDTO);
         return mapToDto(notificationRepository.save(notification));
     }
 

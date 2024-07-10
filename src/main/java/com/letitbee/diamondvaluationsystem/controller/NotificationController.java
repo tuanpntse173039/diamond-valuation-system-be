@@ -32,4 +32,9 @@ public class NotificationController {
         return new ResponseEntity<>(notificationService.updateNotification(notificationDTO, id), HttpStatus.OK);
     }
 
+    @PostMapping
+    public ResponseEntity<NotificationDTO> createNotification(
+            @RequestBody NotificationDTO notificationDTO) {
+        return new ResponseEntity<>(notificationService.createNotification(notificationDTO), HttpStatus.CREATED);
+    }
 }
