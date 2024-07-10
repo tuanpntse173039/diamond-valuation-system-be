@@ -76,9 +76,11 @@ public class ValuationRequestController {
             @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
             @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
-            @RequestParam(name = "status", required = false) RequestStatus status){
+            @RequestParam(name = "status", required = false) RequestStatus status,
+            @RequestParam(name = "startDate", defaultValue = AppConstraint.START_DATE, required = false) String startDate,
+            @RequestParam(name = "endDate", defaultValue = AppConstraint.END_DATE, required = false) String endDate){
         return new ResponseEntity<>(valuationRequestService.
-                getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir,status), HttpStatus.OK);
+                getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir,status, new Date(startDate), new Date(endDate)), HttpStatus.OK);
     }
 
 

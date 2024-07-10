@@ -136,13 +136,13 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
     @Override
     public Response<ValuationRequestResponseV2> getValuationRequestResponse(
-            int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status) {
+            int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status, Date startDate, Date endDate) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<ValuationRequest> page;
         if (status != null) {
-            page = valuationRequestRepository.findAllByStatus(status, pageable);
+            page = valuationRequestRepository.findAllByStatusAndCreationDateBetween(status,startDate,endDate, pageable);
         } else {
             page = valuationRequestRepository.findAll(pageable);
         }

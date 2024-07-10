@@ -41,7 +41,7 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
     int countValuationRequestsIsProcessedByStaff(Staff staff);
 
 
-    Page<ValuationRequest> findAllByStatus(RequestStatus status, Pageable pageable);
+    Page<ValuationRequest> findAllByStatusAndCreationDateBetween(RequestStatus status,Date startDate, Date endDate, Pageable pageable);
 
     @Query("SELECT v " +
             "FROM ValuationRequest v " +

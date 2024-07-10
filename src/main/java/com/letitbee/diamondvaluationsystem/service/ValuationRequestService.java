@@ -22,7 +22,7 @@ public interface ValuationRequestService {
     ValuationRequestDTO deleteValuationRequestById(Long id);
 
     Response<ValuationRequestResponseV2> getValuationRequestResponse(
-            int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status);
+            int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status, Date startDate, Date endDate);
 
     Response<ValuationRequestResponseV2> getValuationRequestResponseByStaff(
             int pageNo, int pageSize, String sortBy, String sortDir, Long staffId);
