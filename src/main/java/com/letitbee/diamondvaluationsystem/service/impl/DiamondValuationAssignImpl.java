@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignResponse;
@@ -30,13 +31,14 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private StaffRepository staffRepository;
     private NotificationRepository notificationRepository;
-
     private ValuationRequestRepository valuationRequestRepository;
+    private AccountRepository accountRepository;
 
     public DiamondValuationAssignImpl(ModelMapper mapper,
                                       DiamondValuationAssignRepository diamondValuationAssignRepository,
                                       ValuationRequestDetailRepository valuationRequestDetailRepository,
                                       StaffRepository staffRepository,
+                                      AccountRepository accountRepository,
                                       NotificationRepository notificationRepository,
                                       ValuationRequestRepository valuationRequestRepository) {
         this.mapper = mapper;
@@ -44,6 +46,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
         this.notificationRepository = notificationRepository;
+        this.accountRepository = accountRepository;
         this.valuationRequestRepository = valuationRequestRepository;
     }
     @Override
@@ -56,7 +59,8 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + ""));
 
         Notification notification = new Notification();
-        notification.setMessage("You are assigned to valuate a new diamond. Please check.");
+        notification.setMessage("You are assigned to valuate a diamond in request #" + valuationRequestDetail.getValuationRequest().getId()
+                + " with request detail $" + valuationRequestDetail.getId() + ". Please check.");
         notification.setIsRead(false);
         notification.setCreationDate(new Date());
         notification.setAccount(staff.getAccount());
@@ -102,6 +106,13 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
             }
             if (flag == 0) {
                 valuationRequestDetail.setStatus(RequestDetailStatus.VALUATED);
+                Notification notification = new Notification();
+                notification.setMessage("Diamond valuation request detail $" + valuationRequestDetail.getId()
+                        +  " in request #" + valuationRequestDetail.getValuationRequest().getId() + " is completed. Please check.");
+                notification.setIsRead(false);
+                notification.setCreationDate(new Date());
+                notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+                notificationRepository.save(notification);
                 valuationRequestDetailRepository.save(valuationRequestDetail);
             }
         }

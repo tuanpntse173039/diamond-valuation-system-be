@@ -31,7 +31,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     private StaffRepository staffRepository;
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
     private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
-    private NotificationServiceImpl notificationService;
+    private NotificationRepository notificationRepository;
     private ModelMapper mapper;
 
     public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository,
@@ -40,14 +40,14 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                                        DiamondValuationNoteRepository diamondValuationNoteRepository,
                                        ModelMapper mapper,
                                        DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl,
-                                       NotificationServiceImpl notificationService) {
+                                       NotificationRepository notificationRepository) {
         this.valuationRequestRepository = valuationRequestRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.mapper = mapper;
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
-        this.notificationService = notificationService;
+        this.notificationRepository = notificationRepository;
     }
 
     @Override
@@ -112,17 +112,21 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         Staff staff = staffRepository.findById(valuationRequestDTO.getStaffID()).orElse(null);
         if(valuationRequest.getStaff() == null) {
             if (valuationRequestDTO.getStaffID() != null) {
-                NotificationDTO notificationDTO = new NotificationDTO();
-                notificationDTO.setAccountId(staff.getAccount().getId());
-                notificationDTO.setMessage("You have been assigned to valuation request number " + valuationRequest.getId());
-                notificationService.createNotification(notificationDTO);
+                Notification notificationDTO = new Notification();
+                notificationDTO.setAccount(staff.getAccount());
+                notificationDTO.setMessage("You have been assigned to valuation request number #" + valuationRequest.getId());
+                notificationDTO.setIsRead(false);
+                notificationDTO.setCreationDate(new Date());
+                notificationRepository.save(notificationDTO);
             }
         }else{
             if (!Objects.equals(valuationRequest.getStaff().getId(), valuationRequestDTO.getStaffID())) {
-                NotificationDTO notificationDTO = new NotificationDTO();
-                notificationDTO.setAccountId(staff.getAccount().getId());
-                notificationDTO.setMessage("You have been assigned to valuation request number " + valuationRequest.getId());
-                notificationService.createNotification(notificationDTO);
+                Notification notificationDTO = new Notification();
+                notificationDTO.setAccount(staff.getAccount());
+                notificationDTO.setMessage("You have been assigned to valuation request number #" + valuationRequest.getId());
+                notificationDTO.setIsRead(false);
+                notificationDTO.setCreationDate(new Date());
+                notificationRepository.save(notificationDTO);
             }
         }
         valuationRequest.setStaff(staff);

@@ -136,7 +136,7 @@ public class AccountServiceImpl implements AccountService {
         account.setUsername(customerRegisterDTO.getUsername());
         account.setPassword(passwordEncoder.encode(customerRegisterDTO.getPassword()));
         account.setRole(Role.CUSTOMER);
-        account.setIs_active(false);
+        account.setIs_active(true);
         account.setEmail(customerRegisterDTO.getEmail());
         account.setCreationDate(new Date());
         account.setVerificationCode(UUID.randomUUID().toString());
@@ -207,6 +207,7 @@ public class AccountServiceImpl implements AccountService {
         account.setRole(staffRegisterDTO.getRole());
         account.setIs_active(true);
         account.setEmail(staffRegisterDTO.getEmail());
+        account.setCreationDate(new Date());
         account = accountRepository.save(account);
 
         //save customer to db

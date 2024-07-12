@@ -37,6 +37,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
     private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
     private RecordRepository recordRepository;
+    private NotificationRepository notificationRepository;
+    private AccountRepository accountRepository;
 
     public ValuationRequestDetailServiceImpl(ModelMapper mapper,
                                              ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -46,7 +48,9 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                              DiamondValuationAssignRepository diamondValuationAssignRepository,
                                              DiamondMarketRepository diamondMarketRepository,
                                              DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl,
-                                             RecordRepository recordRepository
+                                             RecordRepository recordRepository,
+                                                NotificationRepository notificationRepository,
+                                                AccountRepository accountRepository
     ) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
@@ -57,6 +61,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         this.diamondMarketRepository = diamondMarketRepository;
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
         this.recordRepository = recordRepository;
+        this.notificationRepository = notificationRepository;
+        this.accountRepository = accountRepository;
     }
 
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
@@ -122,7 +128,6 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 //            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
 //            valuationRequestRepository.save(valuationRequest);
 //        }
-        valuationRequest = valuationRequestDetail.getValuationRequest();
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
         valuationRequestDetail.setCancelReason(valuationRequestDetailDTO.getCancelReason());
@@ -149,6 +154,12 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())) {
             updateDiamondValuationNote(valuationRequestDetail);//update diamond valuation note price when status id assessed
             generateCertificate(valuationRequestDetail); // generate certificate id and certificate date;
+            Notification notification = new Notification();
+            notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+            notification.setMessage("Valuation request detail $" + valuationRequestDetail.getId() + " in request #" + valuationRequest.getId() + " has been assessed");
+            notification.setIsRead(false);
+            notification.setCreationDate(new Date());
+            notificationRepository.save(notification);
         }
         // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
