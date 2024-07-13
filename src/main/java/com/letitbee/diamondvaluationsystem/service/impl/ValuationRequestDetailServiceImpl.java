@@ -197,6 +197,12 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         if (checkStatusDetail) {
             RequestStatus requestStatus = RequestStatus.COMPLETED;
             updateValuationRequestStatus(valuationRequest, requestStatus);
+            Notification notification = new Notification();
+            notification.setAccount(valuationRequest.getCustomer().getAccount());
+            notification.setMessage("Valuation request #" + valuationRequest.getId() + " has been completed");
+            notification.setIsRead(false);
+            notification.setCreationDate(new Date());
+            notificationRepository.save(notification);
         } // update valuation request if its all detail status is cancel or approve
 
     }

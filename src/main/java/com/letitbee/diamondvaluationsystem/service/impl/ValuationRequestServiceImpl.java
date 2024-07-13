@@ -110,6 +110,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", id + ""));
         //get staff
         Staff staff = staffRepository.findById(valuationRequestDTO.getStaffID()).orElse(null);
+        int flag = 0;
         if(valuationRequest.getStaff() == null) {
             if (valuationRequestDTO.getStaffID() != null) {
                 Notification notificationDTO = new Notification();
@@ -118,6 +119,15 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                 notificationDTO.setIsRead(false);
                 notificationDTO.setCreationDate(new Date());
                 notificationRepository.save(notificationDTO);
+                if(flag == 0) {
+                    notificationDTO = new Notification();
+                    notificationDTO.setAccount(valuationRequest.getCustomer().getAccount());
+                    notificationDTO.setMessage("Your valuation request number #" + valuationRequest.getId() + " has been approved");
+                    notificationDTO.setIsRead(false);
+                    notificationDTO.setCreationDate(new Date());
+                    notificationRepository.save(notificationDTO);
+                    flag = 1;
+                }
             }
         }else{
             if (!Objects.equals(valuationRequest.getStaff().getId(), valuationRequestDTO.getStaffID())) {
@@ -127,6 +137,15 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                 notificationDTO.setIsRead(false);
                 notificationDTO.setCreationDate(new Date());
                 notificationRepository.save(notificationDTO);
+                if(flag == 0) {
+                    notificationDTO = new Notification();
+                    notificationDTO.setAccount(valuationRequest.getCustomer().getAccount());
+                    notificationDTO.setMessage("Your valuation request number #" + valuationRequest.getId() + " has been approved");
+                    notificationDTO.setIsRead(false);
+                    notificationDTO.setCreationDate(new Date());
+                    notificationRepository.save(notificationDTO);
+                    flag = 1;
+                }
             }
         }
         valuationRequest.setStaff(staff);
