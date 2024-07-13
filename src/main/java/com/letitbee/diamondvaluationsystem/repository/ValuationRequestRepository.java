@@ -92,9 +92,7 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
             "        THEN v.total_service_price " +
             "        ELSE 0 " +
             "    END) AS totalServicePricePreviousMonth " +
-            "FROM valuation_request v " +
-            "WHERE (MONTH(v.creation_date) = MONTH(GETDATE()) AND YEAR(v.creation_date) = YEAR(GETDATE())) OR " +
-            "(MONTH(v.creation_date) = MONTH(DATEADD(MONTH, -1, GETDATE())) AND YEAR(v.creation_date) = YEAR(DATEADD(MONTH, -1, GETDATE())))",
+            "FROM valuation_request v ",
             nativeQuery = true)
     List<Object[]> findTotalServicePriceCurrentAndPreviousMonth();
 
@@ -109,9 +107,7 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
             "        THEN v.id " +
             "        ELSE NULL " +
             "    END) AS totalAppointmentPreviousMonth " +
-            "FROM valuation_request v " +
-            "WHERE (MONTH(v.creation_date) = MONTH(GETDATE()) AND YEAR(v.creation_date) = YEAR(GETDATE())) OR " +
-            "(MONTH(v.creation_date) = MONTH(DATEADD(MONTH, -1, GETDATE())) AND YEAR(v.creation_date) = YEAR(DATEADD(MONTH, -1, GETDATE())))",
+            "FROM valuation_request v ",
             nativeQuery = true)
     List<Object[]> findTotalAppointmentCurrentAndPreviousMonth();
 
