@@ -4,7 +4,9 @@ public enum Cut {
     FAIR("Fair", 7),
     GOOD("Good", 8),
     VERY_GOOD("Very Good", 8.5),
-    EXCELLENT("Excellent", 9.6);
+    EXCELLENT("Excellent", 9.6),
+    IDEAL("Ideal", 10.0);
+
 
     private final String displayName;
     private final double score;
