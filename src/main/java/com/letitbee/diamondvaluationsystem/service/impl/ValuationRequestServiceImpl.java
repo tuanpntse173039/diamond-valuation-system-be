@@ -190,7 +190,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         List<ValuationRequestResponseV2> listDTO = valuationRequests.
                 stream().
-                map(valuationRequest -> this.mapToResponse(valuationRequest, ValuationRequestResponseV2.class)).collect(Collectors.toList());
+                map(this::mapToResponse).collect(Collectors.toList());
 
         Response<ValuationRequestResponseV2> response = new Response<>();
 
@@ -274,7 +274,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         List<ValuationRequestResponseV2> listDTO = valuationRequests.
                 stream().
-                map(valuationRequest -> this.mapToResponse(valuationRequest, ValuationRequestResponseV2.class)).collect(Collectors.toList());
+                map(this::mapToResponse).collect(Collectors.toList());
 
         Response<ValuationRequestResponseV2> response = new Response<>();
 
@@ -306,6 +306,13 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         return valuationRequestDTO;
     }
 
+    private ValuationRequestResponseV2 mapToResponse(ValuationRequest valuationRequest) {
+        ValuationRequestResponseV2 valuationRequestResponseV2 = mapper.map(valuationRequest, ValuationRequestResponseV2.class);
+        valuationRequestResponseV2.setServiceName(valuationRequest.getService().getServiceName());
+        valuationRequestResponseV2.setCustomerFirstName(valuationRequest.getCustomer().getFirstName());
+        valuationRequestResponseV2.setCustomerLastName(valuationRequest.getCustomer().getLastName());
+        return valuationRequestResponseV2;
+    }
     private <T> T mapToResponse(ValuationRequest valuationRequest, Class<T> responseType) {
         return mapper.map(valuationRequest, responseType);
     }
