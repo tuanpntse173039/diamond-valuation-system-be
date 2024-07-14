@@ -54,7 +54,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                                 AccountRepository accountRepository
     ) {
         this.mapper = mapper;
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+//        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.valuationRequestRepository = valuationRequestRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;

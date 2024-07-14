@@ -29,7 +29,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
 
     public DiamondValuationNoteServiceImpl(ModelMapper mapper, DiamondValuationNoteRepository diamondValuationNoteRepository) {
         this.mapper = mapper;
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
     }
 

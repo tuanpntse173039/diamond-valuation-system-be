@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Notification;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.NotificationDTO;
+import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.NotificationRepository;
 import com.letitbee.diamondvaluationsystem.service.NotificationService;
 import org.modelmapper.ModelMapper;
@@ -17,10 +18,12 @@ import java.util.stream.Collectors;
 public class NotificationServiceImpl implements NotificationService {
     private NotificationRepository notificationRepository;
     private ModelMapper mapper;
+    private AccountRepository accountRepository;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository, ModelMapper mapper) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository,AccountRepository accountRepository , ModelMapper mapper) {
         this.notificationRepository = notificationRepository;
         this.mapper = mapper;
+        this.accountRepository = accountRepository;
     }
 
 
@@ -34,10 +37,16 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public NotificationDTO updateNotification(NotificationDTO notificationDTO, Long id) {
+        if (id == null) {
+            throw new IllegalArgumentException("ID cannot be null");
+        }
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: ", "id", id + ""));
         notification.setMessage(notificationDTO.getMessage());
         notification.setIsRead(notificationDTO.getIsRead());
+        notification.setCreationDate(notificationDTO.getCreationDate());
+        notification.setAccount(accountRepository.findById(notificationDTO.getAccountId())
+                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: ", "id", notificationDTO.getAccountId() + "")));
         return mapToDto(notificationRepository.save(notification));
     }
 
