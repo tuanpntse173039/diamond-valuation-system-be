@@ -12,6 +12,7 @@ import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService;
 import com.letitbee.diamondvaluationsystem.utils.Tools;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -53,6 +54,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                                 AccountRepository accountRepository
     ) {
         this.mapper = mapper;
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.valuationRequestRepository = valuationRequestRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;

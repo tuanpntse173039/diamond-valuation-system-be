@@ -9,7 +9,7 @@ import java.util.Set;
 @Data
 public class ValuationRequestDetailDTO {
     private long id;
-    private double valuationPrice;
+    private Double valuationPrice;
     private boolean isMode;
     private Float size;
     private RequestDetailStatus status;

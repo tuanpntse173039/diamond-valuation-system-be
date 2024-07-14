@@ -1,19 +1,15 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.*;
-import com.letitbee.diamondvaluationsystem.enums.RecordType;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
-import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +28,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
     private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
     private NotificationRepository notificationRepository;
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
 
     public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository,
                                        ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -46,6 +42,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         this.staffRepository = staffRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.mapper = mapper;
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
         this.notificationRepository = notificationRepository;
     }
