@@ -158,7 +158,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             generateCertificate(valuationRequestDetail); // generate certificate id and certificate date;
             Notification notification = new Notification();
             notification.setAccount(accountRepository.findByRole(Role.MANAGER));
-            notification.setMessage("Valuation request detail $" + valuationRequestDetail.getId() + " in request #" + valuationRequest.getId() + " has been assessed");
+            notification.setMessage("Request detail $" + valuationRequestDetail.getId() + " in request #" + valuationRequest.getId() + " has been assessed");
             notification.setIsRead(false);
             notification.setCreationDate(new Date());
             notificationRepository.save(notification);
