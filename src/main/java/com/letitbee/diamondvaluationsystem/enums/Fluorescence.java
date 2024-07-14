@@ -21,4 +21,13 @@ public enum Fluorescence {
     public String toString() {
         return displayName;
     }
+
+    public static Fluorescence fromString(String displayName) {
+        for (Fluorescence shape : Fluorescence.values()) {
+            if (shape.getDisplayName().equalsIgnoreCase(displayName)) {
+                return shape;
+            }
+        }
+        return null;
+    }
 }

@@ -8,7 +8,13 @@ import com.letitbee.diamondvaluationsystem.payload.DiamondMarketDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondPriceListDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
 import com.letitbee.diamondvaluationsystem.repository.DiamondMarketRepository;
+import com.letitbee.diamondvaluationsystem.repository.SupplierRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondMarketService;
+import com.letitbee.diamondvaluationsystem.utils.Tools;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,17 +23,22 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
+
+import static com.letitbee.diamondvaluationsystem.utils.Tools.extractNumber;
 
 @Service
 public class DiamondMarketServiceImpl implements DiamondMarketService {
     private DiamondMarketRepository diamondMarketRepository;
     private ModelMapper mapper;
+    private SupplierRepository supplierRepository;
 
-    public DiamondMarketServiceImpl(DiamondMarketRepository diamondMarketRepository, ModelMapper mapper) {
+    public DiamondMarketServiceImpl(DiamondMarketRepository diamondMarketRepository, ModelMapper mapper, SupplierRepository supplierRepository) {
         this.diamondMarketRepository = diamondMarketRepository;
         this.mapper = mapper;
+        this.supplierRepository = supplierRepository;
     }
     @Override
     public DiamondMarketDTO createDiamondMarket(DiamondMarketDTO diamondMarketDTO) {
@@ -147,6 +158,91 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
         response.setLast(page.isLast());
 
         return response;
+    }
+    private void crawlDiamondMarketBaseOnOrigin(String urlRaw, DiamondOrigin diamondOrigin) {
+        int limit = 100;
+        int total = 50000;
+        int i = 0;
+        for (int offset = 0; offset < total; offset += limit) {
+            String url = String.format(urlRaw + "&limit=%d&offset=%d", limit, offset);
+            try {
+                Document document = Jsoup.connect(url).timeout(50000).get();
+                Elements links = document.select("li.t-search-result-block.t-search-block.diamond-item > a");
+
+                System.out.println(links.stream().count());
+                for (Element link : links) {
+                    i++;
+                    String linkHref = "https://dreamstone.com" + link.attr("href");
+                    Document detailDocument = Jsoup.connect(linkHref).timeout(10000).get();
+
+                    Element caratElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div:nth-child(3) > table:nth-child(2) > tbody > tr:nth-child(2) > td:nth-child(2)");
+                    Element shapeElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div:nth-child(3) > table:nth-child(2) > tbody > tr:nth-child(1) > td:nth-child(2)");
+                    Element cutElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div:nth-child(3) > table:nth-child(2) > tbody > tr:nth-child(3) > td:nth-child(2)");
+                    Element clarityElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div:nth-child(3) > table:nth-child(2) > tbody > tr:nth-child(5) > td:nth-child(2)");
+                    Element symmetryElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div.o-col-lg-5.o-col-md-6.o-col-sm-12.u-fr > table > tbody > tr:nth-child(3) > td:nth-child(2)");
+                    Element fulorenceElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div.o-col-lg-5.o-col-md-6.o-col-sm-12.u-fr > table > tbody > tr:nth-child(5) > td:nth-child(2)");
+                    Element polishElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div.o-col-lg-5.o-col-md-6.o-col-sm-12.u-fr > table > tbody > tr:nth-child(4) > td:nth-child(2)");
+                    Element certificateElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div.o-col-lg-5.o-col-md-6.o-col-sm-12.u-fr > table > tbody > tr:nth-child(8) > td:nth-child(2)");
+                    Element priceElement = detailDocument.selectFirst("body > div.main > div.content > div.o-col-lg-5.o-col-sm-12.u-color-dark-gray.detail-diamond-info > div:nth-child(7) > p > span");
+                    Element colorElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div:nth-child(3) > table:nth-child(2) > tbody > tr:nth-child(4) > td:nth-child(2)");
+
+
+                    if (certificateElement == null || certificateElement.text().trim().contains(".")) {
+                        continue;
+                    }
+
+                    if (certificateElement.text().contains("IGI")) {
+                        certificateElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div.o-col-lg-5.o-col-md-6.o-col-sm-12.u-fr > table > tbody > tr:nth-child(7) > td:nth-child(2)");
+                    }
+
+                    // Check if the element was found and print the result
+                    String caratValue = caratElement.text().trim();
+                    String shapeValue = shapeElement.text().trim();
+                    String cutValue = cutElement.text().trim();
+                    String clarityValue = clarityElement.text().trim();
+                    String symmetryValue = symmetryElement.text().trim();
+                    String fulorenceValue = fulorenceElement.text().trim();
+                    String polishValue = polishElement.text().trim();
+                    String certificateValue = certificateElement.text().trim();
+                    String priceValue = priceElement.text().trim();
+                    String colorValue = colorElement.text().trim();
+                    DiamondMarket diamond = new DiamondMarket();
+
+                    if(diamondMarketRepository.findDiamondMarketByCertificateId(certificateValue) != null) {
+                        diamond = diamondMarketRepository.findDiamondMarketByCertificateId(certificateValue);
+                    }
+                    diamond.setCreationDate(new Date());
+                    diamond.setDiamondOrigin(diamondOrigin);
+                    diamond.setDiamondImage("/a");
+                    diamond.setCutScore(Cut.cutScore(cutValue.toUpperCase()));
+                    diamond.setCaratWeight(Float.parseFloat(extractNumber(caratValue)));
+                    diamond.setShape(Shape.valueOf(shapeValue.toUpperCase()));
+                    diamond.setCut(Cut.fromString(cutValue.toUpperCase()));
+                    diamond.setClarity(Clarity.valueOf(clarityValue.toUpperCase()));
+                    diamond.setSymmetry(Symmetry.fromString(symmetryValue.toUpperCase()));
+                    diamond.setFluorescence(Fluorescence.fromString(fulorenceValue.toUpperCase()));
+                    diamond.setPolish(Polish.fromString(polishValue.toUpperCase()));
+                    diamond.setCertificateId(certificateValue);
+                    diamond.setPrice(Double.parseDouble(extractNumber(priceValue)));
+                    diamond.setColor(Color.valueOf(colorValue.toUpperCase()));
+                    diamond.setSupplier(supplierRepository.findSupplierByName("Dream Stone"));
+                    diamondMarketRepository.save(diamond);
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    @Override
+    public void crawlDiamondMarket(String name) {
+        switch (name) {
+            case "dreamstone" : {
+                crawlDiamondMarketBaseOnOrigin("https://dreamstone.com/loose-diamonds/search?v=g", DiamondOrigin.NATURAL);
+                crawlDiamondMarketBaseOnOrigin("https://dreamstone.com/loose-diamonds/search?v=g&natural=lab", DiamondOrigin.LAB_GROWN);
+                break;
+            }
+        }
     }
 
 
