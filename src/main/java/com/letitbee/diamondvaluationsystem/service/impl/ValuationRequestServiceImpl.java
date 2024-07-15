@@ -116,14 +116,14 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                 Notification notificationDTO = new Notification();
                 notificationDTO.setAccount(staff.getAccount());
                 notificationDTO.setMessage("You have been assigned to valuation request number #" + valuationRequest.getId());
-                notificationDTO.setIsRead(false);
+                notificationDTO.setRead(false);
                 notificationDTO.setCreationDate(new Date());
                 notificationRepository.save(notificationDTO);
                 if(flag == 0) {
                     notificationDTO = new Notification();
                     notificationDTO.setAccount(valuationRequest.getCustomer().getAccount());
                     notificationDTO.setMessage("Your valuation request number #" + valuationRequest.getId() + " has been approved");
-                    notificationDTO.setIsRead(false);
+                    notificationDTO.setRead(false);
                     notificationDTO.setCreationDate(new Date());
                     notificationRepository.save(notificationDTO);
                     flag = 1;
@@ -134,14 +134,14 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                 Notification notificationDTO = new Notification();
                 notificationDTO.setAccount(staff.getAccount());
                 notificationDTO.setMessage("You have been assigned to valuation request number #" + valuationRequest.getId());
-                notificationDTO.setIsRead(false);
+                notificationDTO.setRead(false);
                 notificationDTO.setCreationDate(new Date());
                 notificationRepository.save(notificationDTO);
                 if(flag == 0) {
                     notificationDTO = new Notification();
                     notificationDTO.setAccount(valuationRequest.getCustomer().getAccount());
                     notificationDTO.setMessage("Your valuation request number #" + valuationRequest.getId() + " has been approved");
-                    notificationDTO.setIsRead(false);
+                    notificationDTO.setRead(false);
                     notificationDTO.setCreationDate(new Date());
                     notificationRepository.save(notificationDTO);
                     flag = 1;

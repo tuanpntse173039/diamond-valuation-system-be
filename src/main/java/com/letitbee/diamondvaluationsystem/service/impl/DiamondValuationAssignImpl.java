@@ -61,7 +61,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         Notification notification = new Notification();
         notification.setMessage("You are assigned to valuate a diamond in request #" + valuationRequestDetail.getValuationRequest().getId()
                 + " with request detail @" + valuationRequestDetail.getId());
-        notification.setIsRead(false);
+        notification.setRead(false);
         notification.setCreationDate(new Date());
         notification.setAccount(staff.getAccount());
         notificationRepository.save(notification);
@@ -109,7 +109,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 Notification notification = new Notification();
                 notification.setMessage("Diamond valuation detail @" + valuationRequestDetail.getId()
                         +  " in request #" + valuationRequestDetail.getValuationRequest().getId() + " is completed");
-                notification.setIsRead(false);
+                notification.setRead(false);
                 notification.setCreationDate(new Date());
                 notification.setAccount(accountRepository.findByRole(Role.MANAGER));
                 notificationRepository.save(notification);

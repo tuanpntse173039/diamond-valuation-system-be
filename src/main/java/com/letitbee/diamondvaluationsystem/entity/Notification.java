@@ -27,7 +27,7 @@ public class Notification {
     private String message;
 
     @Column(columnDefinition = "bit default 0")
-    private Boolean isRead;
+    private Boolean read;
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)
