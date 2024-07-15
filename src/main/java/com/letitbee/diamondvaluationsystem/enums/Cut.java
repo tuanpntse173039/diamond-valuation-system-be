@@ -1,19 +1,17 @@
 package com.letitbee.diamondvaluationsystem.enums;
 
 public enum Cut {
-    FAIR("Fair", 7),
-    GOOD("Good", 8),
-    VERY_GOOD("Very Good", 8.5),
-    EXCELLENT("Excellent", 9.6),
-    IDEAL("Ideal", 10.0);
+    FAIR("Fair"),
+    GOOD("Good"),
+    VERY_GOOD("Very Good"),
+    EXCELLENT("Excellent"),
+    IDEAL("Ideal");
 
 
     private final String displayName;
-    private final double score;
 
-    Cut(String displayName, double score) {
+    Cut(String displayName) {
         this.displayName = displayName;
-        this.score = score;
     }
 
     public String getDisplayName() {
@@ -21,9 +19,21 @@ public enum Cut {
     }
 
     public double getScore() {
-        return score;
+        switch (this) {
+            case FAIR:
+                return 7.0;
+            case GOOD:
+                return 8.0;
+            case VERY_GOOD:
+                return 8.5;
+            case EXCELLENT:
+                return 9.0;
+            case IDEAL:
+                return 9.6;
+            default:
+                return 0.0;
+        }
     }
-
     @Override
     public String toString() {
         return displayName;
