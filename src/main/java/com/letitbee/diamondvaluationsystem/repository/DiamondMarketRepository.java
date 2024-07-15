@@ -58,4 +58,6 @@ public interface DiamondMarketRepository extends JpaRepository<DiamondMarket, Lo
             @Param("fluorescence") Fluorescence fluorescence);
 
     Page<DiamondMarket> findBySupplierId(Long id, Pageable pageable);
+
+    DiamondMarket findDiamondMarketByCertificateId(String certificateValue);
 }
