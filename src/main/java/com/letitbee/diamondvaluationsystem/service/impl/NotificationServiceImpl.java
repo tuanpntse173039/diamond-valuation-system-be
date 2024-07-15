@@ -36,10 +36,7 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDTO updateNotification(NotificationDTO notificationDTO, Long id) {
-        if (id == null) {
-            throw new IllegalArgumentException("ID cannot be null");
-        }
+    public NotificationDTO updateNotification(NotificationDTO notificationDTO, long id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: ", "id", id + ""));
         notification.setMessage(notificationDTO.getMessage());
