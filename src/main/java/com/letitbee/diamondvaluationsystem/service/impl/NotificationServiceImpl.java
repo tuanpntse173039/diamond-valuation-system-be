@@ -33,11 +33,10 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public NotificationDTO updateNotification(NotificationDTO notificationDTO, Long id) {
+    public NotificationDTO updateNotification(Long id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: ", "id", id + ""));
-        System.out.println(notificationDTO.getRead());
-        notification.setRead(notificationDTO.getRead());
+        notification.setRead(true);
         return mapToDto(notificationRepository.save(notification));
     }
 
