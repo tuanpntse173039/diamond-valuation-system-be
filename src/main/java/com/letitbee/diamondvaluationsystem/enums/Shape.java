@@ -26,4 +26,14 @@ public enum Shape {
     public String toString() {
         return displayName;
     }
+
+    public static Shape fromString(String displayName) {
+        for (Shape shape : Shape.values()) {
+            if (shape.getDisplayName().equalsIgnoreCase(displayName)) {
+                return shape;
+            }
+        }
+        return null;
+    }
+
 }

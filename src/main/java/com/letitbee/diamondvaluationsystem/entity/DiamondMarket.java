@@ -50,7 +50,8 @@ public class DiamondMarket {
     private Double cutScore;
     @Column(columnDefinition = "money", nullable = false)
     private Double price;
-
+    @Column
+    private String link;
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;

@@ -1,19 +1,15 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.*;
-import com.letitbee.diamondvaluationsystem.enums.RecordType;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
-import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestService;
 import org.modelmapper.ModelMapper;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -32,7 +28,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
     private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
     private NotificationRepository notificationRepository;
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
 
     public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository,
                                        ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -46,6 +42,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         this.staffRepository = staffRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.mapper = mapper;
+        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
         this.notificationRepository = notificationRepository;
     }
@@ -193,7 +190,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         List<ValuationRequestResponseV2> listDTO = valuationRequests.
                 stream().
-                map(valuationRequest -> this.mapToResponse(valuationRequest, ValuationRequestResponseV2.class)).collect(Collectors.toList());
+                map(this::mapToResponse).collect(Collectors.toList());
 
         Response<ValuationRequestResponseV2> response = new Response<>();
 
@@ -277,7 +274,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         List<ValuationRequestResponseV2> listDTO = valuationRequests.
                 stream().
-                map(valuationRequest -> this.mapToResponse(valuationRequest, ValuationRequestResponseV2.class)).collect(Collectors.toList());
+                map(this::mapToResponse).collect(Collectors.toList());
 
         Response<ValuationRequestResponseV2> response = new Response<>();
 
@@ -309,6 +306,13 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         return valuationRequestDTO;
     }
 
+    private ValuationRequestResponseV2 mapToResponse(ValuationRequest valuationRequest) {
+        ValuationRequestResponseV2 valuationRequestResponseV2 = mapper.map(valuationRequest, ValuationRequestResponseV2.class);
+        valuationRequestResponseV2.setServiceName(valuationRequest.getService().getServiceName());
+        valuationRequestResponseV2.setCustomerFirstName(valuationRequest.getCustomer().getFirstName());
+        valuationRequestResponseV2.setCustomerLastName(valuationRequest.getCustomer().getLastName());
+        return valuationRequestResponseV2;
+    }
     private <T> T mapToResponse(ValuationRequest valuationRequest, Class<T> responseType) {
         return mapper.map(valuationRequest, responseType);
     }
