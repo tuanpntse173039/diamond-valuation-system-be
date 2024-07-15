@@ -76,6 +76,7 @@ public class SupplierServiceImpl implements SupplierService {
         Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Supplier", "id", id + ""));
         supplier.setName(supplierDto.getName());
         supplier.setLink(supplierDto.getLink());
+        supplier.setImage(supplierDto.getImage());
         return mapToDto(supplierRepository.save(supplier));
     }
 

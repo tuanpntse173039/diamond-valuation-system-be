@@ -9,6 +9,8 @@ import java.util.List;
 public interface ServicePriceListRepository extends JpaRepository<ServicePriceList, Long> {
     List<ServicePriceList> findByServiceId(Long serviceId);
 
+    boolean existsByMinSizeAndMaxSizeAndServiceId(float minSize, float maxSize, Long serviceId);
+
     ServicePriceList findByMinSizeLessThanEqualAndMaxSizeGreaterThanEqualAndService
             (float sizeMinInput, float sizeMaxInput, Service service);
 }
