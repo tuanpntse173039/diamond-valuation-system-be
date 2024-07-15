@@ -42,7 +42,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         this.staffRepository = staffRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.mapper = mapper;
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
         this.notificationRepository = notificationRepository;
     }

@@ -9,11 +9,7 @@ import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationNoteRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationNoteService;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.convention.MatchingStrategies;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
+
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,7 +25,6 @@ public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteServ
 
     public DiamondValuationNoteServiceImpl(ModelMapper mapper, DiamondValuationNoteRepository diamondValuationNoteRepository) {
         this.mapper = mapper;
-        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
     }
 
