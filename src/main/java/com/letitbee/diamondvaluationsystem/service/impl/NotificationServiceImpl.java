@@ -7,6 +7,7 @@ import com.letitbee.diamondvaluationsystem.repository.NotificationRepository;
 import com.letitbee.diamondvaluationsystem.service.NotificationService;
 import org.modelmapper.ModelMapper;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -26,23 +27,23 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Override
     public List<NotificationDTO> getAllNotificationByAccount(Long id) {
-        List<Notification> notification = notificationRepository.findByAccountId(id);
+        List<Notification> notification = notificationRepository.findByAccountId(id, Sort.by(Sort.Direction.DESC, "creationDate"));
         if(!notification.isEmpty())
             return notification.stream().map(this::mapToDto).collect(Collectors.toList());
         return null;
     }
 
     @Override
-    public NotificationDTO updateNotification(NotificationDTO notificationDTO, Long id) {
+    public NotificationDTO updateNotification(Long id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: ", "id", id + ""));
-        notification.setMessage(notificationDTO.getMessage());
+        notification.setRead(true);
         return mapToDto(notificationRepository.save(notification));
     }
 
     @Override
     public NotificationDTO createNotification(NotificationDTO notificationDTO) {
-        notificationDTO.setIsRead(false);
+        notificationDTO.setRead(false);
         notificationDTO.setCreationDate(new Date());
         Notification notification = mapToEntity(notificationDTO);
         return mapToDto(notificationRepository.save(notification));

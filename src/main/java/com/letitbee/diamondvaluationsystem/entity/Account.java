@@ -28,7 +28,7 @@ public class Account  {
 
     @Column(nullable = false, columnDefinition = "nvarchar(50)",unique = true)
     private String username;
-    @Column(nullable = false, columnDefinition = "nvarchar(50)")
+    @Column(nullable = false, columnDefinition = "text")
     private String password;
     @Column(columnDefinition = "bit default 1")
     private Boolean is_active;
