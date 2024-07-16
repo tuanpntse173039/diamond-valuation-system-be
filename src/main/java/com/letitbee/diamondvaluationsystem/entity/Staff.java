@@ -27,7 +27,7 @@ public class Staff {
     private String firstName;
     @Column(columnDefinition = "nvarchar(50)", nullable = false)
     private String lastName;
-    @Column(columnDefinition = "char(20)", nullable = false)
+    @Column(columnDefinition = "char(10)", nullable = false, unique = true)
     private String phone;
     @Column(columnDefinition = "int", nullable = false)
     private int experience;
