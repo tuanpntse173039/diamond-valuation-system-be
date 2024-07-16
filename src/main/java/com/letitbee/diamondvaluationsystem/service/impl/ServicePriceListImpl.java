@@ -43,7 +43,7 @@ public class ServicePriceListImpl implements ServicePriceListService {
     public ServicePriceListDTO createServicePriceList(ServicePriceListDTO servicePriceListDto) {
         if(servicePriceListDto.getMinSize() > servicePriceListDto.getMaxSize()) {
             throw new APIException( HttpStatus.BAD_REQUEST, "Max size must be greater than min size");
-        } else if (servicePriceListRepository.existsByMinSizeAndMaxSizeAndServiceId(servicePriceListDto.getMinSize(), servicePriceListDto.getMaxSize(), servicePriceListDto.getServiceId())) {
+        }else if (servicePriceListRepository.existsByMinSizeAndMaxSizeAndServiceId(servicePriceListDto.getMinSize(), servicePriceListDto.getMaxSize(), servicePriceListDto.getServiceId())) {
             throw new APIException( HttpStatus.BAD_REQUEST, "Service price list already exists");
         }
         ServicePriceList servicePriceList = mapToEntity(servicePriceListDto);
@@ -55,8 +55,7 @@ public class ServicePriceListImpl implements ServicePriceListService {
         ServicePriceList servicePriceList = servicePriceListRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ServicePriceList", "id", id + ""));
         if(servicePriceListDto.getMinSize() > servicePriceListDto.getMaxSize()) {
             throw new APIException( HttpStatus.BAD_REQUEST, "Max size must be greater than min size");
-        }
-        else if (servicePriceListRepository.existsByMinSizeAndMaxSizeAndServiceId(servicePriceListDto.getMinSize(), servicePriceListDto.getMaxSize(), servicePriceListDto.getServiceId())) {
+        }else if (servicePriceListRepository.existsByMinSizeAndMaxSizeAndServiceId(servicePriceListDto.getMinSize(), servicePriceListDto.getMaxSize(), servicePriceListDto.getServiceId())) {
             throw new APIException( HttpStatus.BAD_REQUEST, "Service price list already exists");
         }
         servicePriceList.setMinSize(servicePriceListDto.getMinSize());

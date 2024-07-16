@@ -3,11 +3,11 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Notification;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.NotificationDTO;
-import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
 import com.letitbee.diamondvaluationsystem.repository.NotificationRepository;
 import com.letitbee.diamondvaluationsystem.service.NotificationService;
 import org.modelmapper.ModelMapper;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -18,38 +18,32 @@ import java.util.stream.Collectors;
 public class NotificationServiceImpl implements NotificationService {
     private NotificationRepository notificationRepository;
     private ModelMapper mapper;
-    private AccountRepository accountRepository;
 
-    public NotificationServiceImpl(NotificationRepository notificationRepository,AccountRepository accountRepository , ModelMapper mapper) {
+    public NotificationServiceImpl(NotificationRepository notificationRepository, ModelMapper mapper) {
         this.notificationRepository = notificationRepository;
         this.mapper = mapper;
-        this.accountRepository = accountRepository;
     }
 
 
     @Override
     public List<NotificationDTO> getAllNotificationByAccount(Long id) {
-        List<Notification> notification = notificationRepository.findByAccountId(id);
+        List<Notification> notification = notificationRepository.findByAccountId(id, Sort.by(Sort.Direction.DESC, "creationDate"));
         if(!notification.isEmpty())
             return notification.stream().map(this::mapToDto).collect(Collectors.toList());
         return null;
     }
 
     @Override
-    public NotificationDTO updateNotification(NotificationDTO notificationDTO, long id) {
+    public NotificationDTO updateNotification(Long id) {
         Notification notification = notificationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Notification not found with id: ", "id", id + ""));
-        notification.setMessage(notificationDTO.getMessage());
-        notification.setIsRead(notificationDTO.getIsRead());
-        notification.setCreationDate(notificationDTO.getCreationDate());
-        notification.setAccount(accountRepository.findById(notificationDTO.getAccountId())
-                .orElseThrow(() -> new ResourceNotFoundException("Account not found with id: ", "id", notificationDTO.getAccountId() + "")));
+        notification.setRead(true);
         return mapToDto(notificationRepository.save(notification));
     }
 
     @Override
     public NotificationDTO createNotification(NotificationDTO notificationDTO) {
-        notificationDTO.setIsRead(false);
+        notificationDTO.setRead(false);
         notificationDTO.setCreationDate(new Date());
         Notification notification = mapToEntity(notificationDTO);
         return mapToDto(notificationRepository.save(notification));

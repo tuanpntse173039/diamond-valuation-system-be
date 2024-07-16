@@ -5,8 +5,8 @@ public enum Cut {
     GOOD("Good"),
     VERY_GOOD("Very Good"),
     EXCELLENT("Excellent"),
-    IDEAL("Ideal");
-
+    IDEAL("Ideal"),
+    ;
 
     private final String displayName;
 
@@ -18,22 +18,6 @@ public enum Cut {
         return displayName;
     }
 
-    public double getScore() {
-        switch (this) {
-            case FAIR:
-                return 7.0;
-            case GOOD:
-                return 8.0;
-            case VERY_GOOD:
-                return 8.5;
-            case EXCELLENT:
-                return 9.0;
-            case IDEAL:
-                return 9.6;
-            default:
-                return 0.0;
-        }
-    }
     @Override
     public String toString() {
         return displayName;
@@ -41,7 +25,7 @@ public enum Cut {
 
     public static Cut fromString(String displayName) {
         for (Cut cut : Cut.values()) {
-            if (cut.getDisplayName().equalsIgnoreCase(displayName)) {
+            if (displayName.toUpperCase().contains(cut.getDisplayName().toUpperCase())) {
                 return cut;
             }
         }
@@ -50,6 +34,18 @@ public enum Cut {
 
     public static double cutScore(String displayName) {
         Cut cut = fromString(displayName);
-        return (cut != null) ? cut.getScore() : 0.0;  // Return 0.0 if the cut is not found
+        if(cut == null) {
+            return 0.0;
+        }
+
+        return switch (cut) {
+            case FAIR -> 7.0;
+            case GOOD -> 8.0;
+            case VERY_GOOD -> 8.5;
+            case EXCELLENT -> 9.0;
+            case IDEAL -> 9.6;
+            default -> 0.0;
+        };
     }
+
 }

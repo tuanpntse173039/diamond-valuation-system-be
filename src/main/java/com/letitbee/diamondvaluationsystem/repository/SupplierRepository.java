@@ -15,5 +15,6 @@ public interface SupplierRepository extends JpaRepository<Supplier, Long> {
             "FROM DiamondMarket d " +
             "WHERE d.supplier = ?1")
     Set<Long> findAllDiamond(Supplier supplier);
+
     Supplier findSupplierByName(String name);
 }

@@ -26,8 +26,8 @@ public class Notification {
     @Column(columnDefinition = "varchar(1000)", nullable = false)
     private String message;
 
-    @Column(columnDefinition = "bit default 0")
-    private Boolean isRead;
+    @Column(name = "is_read",columnDefinition = "bit default 0")
+    private boolean isRead;
 
     @ManyToOne
     @JoinColumn(name = "account_id", nullable = false)

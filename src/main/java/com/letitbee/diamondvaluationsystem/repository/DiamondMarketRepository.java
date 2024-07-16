@@ -59,5 +59,5 @@ public interface DiamondMarketRepository extends JpaRepository<DiamondMarket, Lo
 
     Page<DiamondMarket> findBySupplierId(Long id, Pageable pageable);
 
-    DiamondMarket findDiamondMarketByCertificateId(String certificateId);
+    DiamondMarket findDiamondMarketByCertificateId(String certificateValue);
 }

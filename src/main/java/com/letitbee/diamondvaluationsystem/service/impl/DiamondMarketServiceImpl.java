@@ -161,7 +161,6 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
 
     private void crawlDiamondMarketBaseOnOrigin(String urlRaw, DiamondOrigin diamondOrigin) {
         int limit = 100;
-        int i = 0;
         double startCarat = 0.1;
         double endCarat = 50;
         try {
@@ -181,14 +180,11 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                 int total = Integer.parseInt(extractNumber(caratCount));
 
                 //insert diamond based on offset
-                for (int offset = 0; offset <= total; offset += limit) {
-                    String url = String.format(urlRaw + "&limit=%d&offset=%d", limit, offset);
+                for (int offset = 0; offset < total; offset += limit) {
+                    String url = String.format(urlRaw + "&limit=%d&offset=%d&carat_min=%.2f&carat_max=%.2f", limit, offset, caratMin, caratMax);
                     Document document = Jsoup.connect(url).timeout(50000).get();
                     Elements links = document.select("li.t-search-result-block.t-search-block.diamond-item > a");
-
-                    System.out.println(links.stream().count());
                     for (Element link : links) {
-                        i++;
                         String linkHref = "https://dreamstone.com" + link.attr("href");
                         Document detailDocument = Jsoup.connect(linkHref).timeout(10000).get();
 
@@ -200,7 +196,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                         Element fulorenceElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div.o-col-lg-5.o-col-md-6.o-col-sm-12.u-fr > table > tbody > tr:nth-child(5) > td:nth-child(2)");
                         Element polishElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div.o-col-lg-5.o-col-md-6.o-col-sm-12.u-fr > table > tbody > tr:nth-child(4) > td:nth-child(2)");
                         Element certificateElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div.o-col-lg-5.o-col-md-6.o-col-sm-12.u-fr > table > tbody > tr:nth-child(8) > td:nth-child(2)");
-                        Element priceElement = detailDocument.selectFirst("body > div.main > div.content > div.o-col-lg-5.o-col-sm-12.u-color-dark-gray.detail-diamond-info > div:nth-child(7) > p > span");
+                        Element priceElement = detailDocument.selectFirst("body > div.main > div.content > div.o-col-lg-5.o-col-sm-12.u-color-dark-gray.detail-diamond-info > div:nth-child(8) > span");
                         Element colorElement = detailDocument.selectFirst("#discover_more_block > div.content-md > div:nth-child(3) > table:nth-child(2) > tbody > tr:nth-child(4) > td:nth-child(2)");
                         Element imageElement = detailDocument.selectFirst(".mobile-diamond-slider-nav > .diamond-slide-nav > .item-d-slid > img");
 
@@ -255,11 +251,13 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
 
 
                 }
+                if (carat >= 2) {
+                    carat = carat + 48;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     @Override
