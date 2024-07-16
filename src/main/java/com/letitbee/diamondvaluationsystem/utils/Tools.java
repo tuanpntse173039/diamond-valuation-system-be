@@ -15,12 +15,13 @@ public class Tools {
     }
 
     public static String extractNumber(String input) {
-        Pattern pattern = Pattern.compile("-?\\$?(\\d{1,3}(,\\d{3})*(\\.\\d+)?|\\d+(\\.\\d+)?)");
+        Pattern pattern = Pattern.compile("-?\\$?\\d+(,\\d{3})*(\\.\\d+)?");
         Matcher matcher = pattern.matcher(input);
 
         if (matcher.find()) {
-            return matcher.group().replaceAll("[^\\d.-]", "");
+            return matcher.group().replaceAll("[^\\d.]", "");
         }
+
         return null;
     }
 
