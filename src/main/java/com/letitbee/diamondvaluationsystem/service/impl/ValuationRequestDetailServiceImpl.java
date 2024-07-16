@@ -123,17 +123,14 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         //set data to valuation request detail
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
         valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
-//        if(valuationRequestDetail.getSize() ==  0 && valuationRequestDetailDTO.getSize() != 0) {
-//            valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
-//            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
-//            valuationRequestRepository.save(valuationRequest);
-//        }
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
         valuationRequestDetail.setCancelReason(valuationRequestDetailDTO.getCancelReason());
+        valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
+
         //delete diamond note when know diamond is fake
         deleteDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
-        valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
+
 
         //update Service Price
         if (valuationRequestDetailDTO.isDiamond()) {
@@ -149,11 +146,13 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
         if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                 || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
+            //change status of valuation request to valuating when status of detail is cancel or assessing
             changeValuationRequestStatusToValuating(valuationRequest);
         } else if (
                 valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())) {
             updateDiamondValuationNote(valuationRequestDetail);//update diamond valuation note price when status id assessed
             generateCertificate(valuationRequestDetail); // generate certificate id and certificate date;
+            //send notification to manager
             Notification notification = new Notification();
             notification.setAccount(accountRepository.findByRole(Role.MANAGER));
             notification.setMessage("Request detail $" + valuationRequestDetail.getId() + " in request #" + valuationRequest.getId() + " has been assessed");
