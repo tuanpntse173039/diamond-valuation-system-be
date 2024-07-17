@@ -40,16 +40,14 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
             "group by s.id")
     int countValuationRequestsIsProcessedByStaff(Staff staff);
 
-
-    Page<ValuationRequest> findAllByStatusAndCreationDateBetween(RequestStatus status,Date startDate, Date endDate, Pageable pageable);
-
     @Query("SELECT v " +
             "FROM ValuationRequest v " +
-            "WHERE v.id = :requestId OR " +
+            "WHERE (v.status = :status OR :status IS NULL) AND v.creationDate BETWEEN :startDate AND :endDate AND " +
+            " ( v.id = :requestId OR " +
             "LOWER(v.customer.firstName) LIKE LOWER(CONCAT('%', :customerName, '%')) OR " +
             "LOWER(v.customer.lastName) LIKE LOWER(CONCAT('%', :customerName, '%')) OR " +
-            "v.customer.phone LIKE CONCAT('%', :phone, '%')")
-    Page<ValuationRequest> searchValuationRequestByValuationRequestIdOrCustomerNameOrPhone(Long requestId, String customerName, String phone, Pageable pageable);
+            "v.customer.phone LIKE :phone  OR :search IS NULL)")
+    Page<ValuationRequest> findAllByStatusAndCreationDateBetweenAndSearch(RequestStatus status, Date startDate, Date endDate, Integer requestId, String customerName, String phone,String search, Pageable pageable);
 
     @Query("SELECT v " +
             "FROM ValuationRequest v " +

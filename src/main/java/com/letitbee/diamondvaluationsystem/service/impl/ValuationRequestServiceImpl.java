@@ -175,16 +175,24 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
     @Override
     public Response<ValuationRequestResponseV2> getValuationRequestResponse(
-            int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status, Date startDate, Date endDate) {
+            int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status, Date startDate, Date endDate, String searchValue) {
+        Integer requestId = null;
+        String customerName = "";
+        String phone = "";
+
+        if (searchValue != null && !searchValue.trim().isEmpty()) {
+            try {
+                requestId = Integer.parseInt(searchValue);
+            } catch (NumberFormatException e) {
+            }
+            customerName = searchValue;
+            phone = searchValue;
+        }
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
         Page<ValuationRequest> page;
-        if (status != null) {
-            page = valuationRequestRepository.findAllByStatusAndCreationDateBetween(status,startDate,endDate, pageable);
-        } else {
-            page = valuationRequestRepository.findAll(pageable);
-        }
+        page = valuationRequestRepository.findAllByStatusAndCreationDateBetweenAndSearch(status, startDate, endDate, requestId, customerName, phone, searchValue,pageable);
 
         List<ValuationRequest> valuationRequests = page.getContent();
 
@@ -262,31 +270,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         return response;
     }
-
-    @Override
-    public Response<ValuationRequestResponseV2> searchValuationRequestByCustomerIdOrCustomerNameOrPhone(
-            int pageNo, int pageSize, String sortBy, String sortDir, Long requestId, String customerName, String phone) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
-        //Set size page and pageNo
-        Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
-        Page<ValuationRequest> page = valuationRequestRepository.searchValuationRequestByValuationRequestIdOrCustomerNameOrPhone(requestId, customerName, phone, pageable);
-        List<ValuationRequest> valuationRequests = page.getContent();
-
-        List<ValuationRequestResponseV2> listDTO = valuationRequests.
-                stream().
-                map(this::mapToResponse).collect(Collectors.toList());
-
-        Response<ValuationRequestResponseV2> response = new Response<>();
-
-        response.setContent(listDTO);
-        response.setPageNumber(page.getNumber());
-        response.setPageSize(page.getSize());
-        response.setTotalPage(page.getTotalPages());
-        response.setTotalElement(page.getTotalElements());
-        response.setLast(page.isLast());
-        return response;
-    }
-
 
     private ValuationRequestDTO mapToDTO(ValuationRequest valuationRequest) {
         ValuationRequestDTO valuationRequestDTO = mapper.map(valuationRequest, ValuationRequestDTO.class);

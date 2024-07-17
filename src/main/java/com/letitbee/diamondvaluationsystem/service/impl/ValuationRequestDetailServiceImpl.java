@@ -265,7 +265,6 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             diamondValuationNoteDTO.setMaxPrice(diamondMarkets.get(diamondMarkets.size() - 1).getPrice());
             diamondValuationNoteDTO.setMinPrice(diamondMarkets.stream().findFirst().get().getPrice());
         }
-        else throw new APIException(HttpStatus.NOT_FOUND,"No diamond price list data found");
         diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
     }
 

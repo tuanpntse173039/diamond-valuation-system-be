@@ -16,6 +16,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Controller
@@ -78,9 +81,19 @@ public class ValuationRequestController {
             @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
             @RequestParam(name = "status", required = false) RequestStatus status,
             @RequestParam(name = "startDate", defaultValue = AppConstraint.START_DATE, required = false) String startDate,
-            @RequestParam(name = "endDate", defaultValue = AppConstraint.END_DATE, required = false) String endDate){
+            @RequestParam(name = "endDate", defaultValue = AppConstraint.END_DATE, required = false) String endDate,
+            @RequestParam(name = "search", required = false) String searchValue){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDate startDateLD = LocalDate.parse(startDate, formatter);
+        LocalDate endDateLD = LocalDate.parse(endDate, formatter);
+
+        LocalDateTime startOfDay = startDateLD.atStartOfDay();
+        LocalDateTime endOfDay = endDateLD.atTime(23, 59, 59);
+
+        Date start = java.sql.Timestamp.valueOf(startOfDay);
+        Date end = java.sql.Timestamp.valueOf(endOfDay);
         return new ResponseEntity<>(valuationRequestService.
-                getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir,status, new Date(startDate), new Date(endDate)), HttpStatus.OK);
+                getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir,status, start, end, searchValue), HttpStatus.OK);
     }
 
 
@@ -93,18 +106,6 @@ public class ValuationRequestController {
             @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
             @PathVariable("customerId") Long customerId){
         return new ResponseEntity<>(valuationRequestService.getValuationRequestByCustomerId(pageNo, pageSize, sortBy, sortDir, customerId), HttpStatus.OK);
-    }
-
-    @GetMapping("/search")
-    public ResponseEntity<Response<ValuationRequestResponseV2>> searchValuationRequestByCustomerIdOrCustomerNameOrPhone(
-            @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
-            @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
-            @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
-            @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
-            @RequestParam(name = "requestId", required = false) Long requestId,
-            @RequestParam(name = "customerName", required = false) String customerName,
-            @RequestParam(name = "phone", required = false) String phone){
-        return new ResponseEntity<>(valuationRequestService.searchValuationRequestByCustomerIdOrCustomerNameOrPhone(pageNo, pageSize, sortBy, sortDir, requestId, customerName, phone), HttpStatus.OK);
     }
 
 }
