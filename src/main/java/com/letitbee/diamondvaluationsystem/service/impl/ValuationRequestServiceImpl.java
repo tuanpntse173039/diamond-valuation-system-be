@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.letitbee.diamondvaluationsystem.enums.RequestStatus.*;
+
 @Service
 public class ValuationRequestServiceImpl implements ValuationRequestService {
     private ValuationRequestRepository valuationRequestRepository;
@@ -100,6 +102,12 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
             diamondValuationNote.setValuationRequestDetail(valuationRequestDetail);
             diamondValuationNoteRepository.save(diamondValuationNote);
         }
+        Notification notificationDTO = new Notification();
+        notificationDTO.setAccount(accountRepository.findByRole(Role.MANAGER));
+        notificationDTO.setRead(false);
+        notificationDTO.setCreationDate(new Date());
+        notificationDTO.setMessage("New valuation request number #" + valuationRequest.getId() + " has been created");
+        notificationRepository.save(notificationDTO);
         return mapToDTO(valuationRequest);
     }
 
@@ -165,10 +173,13 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
 
-        if (valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())
-                || valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.SEALED.toString())
-                || valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.FINISHED.toString())) {
-            updateNotification(valuationRequest);
+        if (valuationRequest.getStatus().toString().equalsIgnoreCase(SEALED.toString())) {
+                Notification notificationDTO = new Notification();
+                notificationDTO.setAccount(accountRepository.findByRole(Role.MANAGER));
+                notificationDTO.setRead(false);
+                notificationDTO.setCreationDate(new Date());
+                notificationDTO.setMessage("Request number #" + valuationRequest.getId() + " has been sealed");
+                notificationRepository.save(notificationDTO);
         }
         //map to dto
         valuationRequestDTO = mapToDTO(valuationRequest);
@@ -328,26 +339,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
             valuationRequest.setStaff(null);
         }
         return valuationRequest;
-    }
-
-    private void updateNotification(ValuationRequest valuationRequest) {
-        Notification notificationDTO = new Notification();
-        notificationDTO.setAccount(accountRepository.findByRole(Role.MANAGER));
-        notificationDTO.setRead(false);
-        notificationDTO.setCreationDate(new Date());
-        switch (valuationRequest.getStatus()){
-            case RECEIVED:
-                notificationDTO.setMessage("Request number #" + valuationRequest.getId() + " has been received");
-                break;
-            case SEALED:
-                notificationDTO.setMessage("Request number #" + valuationRequest.getId() + " has been sealed");
-                break;
-            case FINISHED:
-                notificationDTO.setMessage("Request number #" + valuationRequest.getId() + " has been finished");
-                break;
-        }
-
-        notificationRepository.save(notificationDTO);
     }
 
 }

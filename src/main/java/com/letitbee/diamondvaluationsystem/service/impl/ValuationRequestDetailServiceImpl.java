@@ -217,6 +217,12 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             notification.setRead(false);
             notification.setCreationDate(new Date());
             notificationRepository.save(notification);
+            Notification notificationConsultant = new Notification();
+            notificationConsultant.setAccount(valuationRequest.getStaff().getAccount());
+            notificationConsultant.setMessage("Valuation request #" + valuationRequest.getId() + " has been completed");
+            notificationConsultant.setRead(false);
+            notificationConsultant.setCreationDate(new Date());
+            notificationRepository.save(notificationConsultant);
         } // update valuation request if its all detail status is cancel or approve
 
     }
