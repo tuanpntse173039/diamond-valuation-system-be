@@ -105,14 +105,16 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 }
             }
             if (flag == 0) {
+                for (DiamondValuationAssign dva : valuationRequestDetail.getDiamondValuationAssigns()) {
+                    Notification notification = new Notification();
+                    notification.setMessage("Diamond valuation detail @" + dva.getId()
+                            +  " in request #" + valuationRequestDetail.getValuationRequest().getId() + " is valuated");
+                    notification.setRead(false);
+                    notification.setCreationDate(new Date());
+                    notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+                    notificationRepository.save(notification);
+                }
                 valuationRequestDetail.setStatus(RequestDetailStatus.VALUATED);
-                Notification notification = new Notification();
-                notification.setMessage("Diamond valuation detail @" + valuationRequestDetail.getId()
-                        +  " in request #" + valuationRequestDetail.getValuationRequest().getId() + " is completed");
-                notification.setRead(false);
-                notification.setCreationDate(new Date());
-                notification.setAccount(accountRepository.findByRole(Role.MANAGER));
-                notificationRepository.save(notification);
                 valuationRequestDetailRepository.save(valuationRequestDetail);
             }
         }

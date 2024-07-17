@@ -144,6 +144,16 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
+        if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())){
+            //send notification to manager
+            Notification notification = new Notification();
+            notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+            notification.setMessage("Request detail $" + valuationRequestDetail.getId() + " in request #" + valuationRequest.getId() + " has been canceled");
+            notification.setRead(false);
+            notification.setCreationDate(new Date());
+            notificationRepository.save(notification);
+        }
+
         if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                 || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
             //change status of valuation request to valuating when status of detail is cancel or assessing
