@@ -165,7 +165,11 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
 
-        updateNotification(valuationRequest);
+        if (valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())
+                || valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.SEALED.toString())
+                || valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.FINISHED.toString())) {
+            updateNotification(valuationRequest);
+        }
         //map to dto
         valuationRequestDTO = mapToDTO(valuationRequest);
         return valuationRequestDTO;

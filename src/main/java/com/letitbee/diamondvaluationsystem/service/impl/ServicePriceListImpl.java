@@ -44,8 +44,7 @@ public class ServicePriceListImpl implements ServicePriceListService {
         Service service = serviceRepository.findById(servicePriceListDto.getServiceId()).orElseThrow(() -> new ResourceNotFoundException("Service", "id", servicePriceListDto.getServiceId() + ""));
         if(servicePriceListDto.getMinSize() > servicePriceListDto.getMaxSize()) {
             throw new APIException( HttpStatus.BAD_REQUEST, "Max size must be greater than min size");
-        }else if (!servicePriceListRepository.existsByMinSizeInRange(service , servicePriceListDto.getMinSize())
-                || !servicePriceListRepository.existsByMaxSizeInRange(service ,servicePriceListDto.getMaxSize())){
+        }else if (servicePriceListRepository.existsSizeExist(service, servicePriceListDto.getMinSize(), servicePriceListDto.getMaxSize())){
             throw new APIException( HttpStatus.BAD_REQUEST, "Min size or max size is already existed in other range");
         }
         ServicePriceList servicePriceList = mapToEntity(servicePriceListDto);
