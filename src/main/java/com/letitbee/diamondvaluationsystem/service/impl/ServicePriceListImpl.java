@@ -53,9 +53,11 @@ public class ServicePriceListImpl implements ServicePriceListService {
     @Override
     public ServicePriceListDTO updateServicePriceList(long id, ServicePriceListDTO servicePriceListDto) {
         ServicePriceList servicePriceList = servicePriceListRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ServicePriceList", "id", id + ""));
+        Service service = serviceRepository.findById(servicePriceListDto.getServiceId()).orElseThrow(() -> new ResourceNotFoundException("Service", "id", servicePriceListDto.getServiceId() + ""));
         if(servicePriceListDto.getMinSize() > servicePriceListDto.getMaxSize()) {
             throw new APIException( HttpStatus.BAD_REQUEST, "Max size must be greater than min size");
-        }else if (servicePriceListRepository.existsByMinSizeAndMaxSizeAndServiceId(servicePriceListDto.getMinSize(), servicePriceListDto.getMaxSize(), servicePriceListDto.getServiceId())) {
+        }else if (!servicePriceListRepository.existsByMinSizeInRange(id,service , servicePriceListDto.getMinSize())
+                || !servicePriceListRepository.existsByMaxSizeInRange(id,service ,servicePriceListDto.getMaxSize())){
             throw new APIException( HttpStatus.BAD_REQUEST, "Service price list already exists");
         }
         servicePriceList.setMinSize(servicePriceListDto.getMinSize());

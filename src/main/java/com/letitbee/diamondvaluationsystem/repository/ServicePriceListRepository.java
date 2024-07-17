@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.repository;
 import com.letitbee.diamondvaluationsystem.entity.Service;
 import com.letitbee.diamondvaluationsystem.entity.ServicePriceList;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,4 +15,10 @@ public interface ServicePriceListRepository extends JpaRepository<ServicePriceLi
 
     ServicePriceList findByMinSizeLessThanEqualAndMaxSizeGreaterThanEqualAndService
             (float sizeMinInput, float sizeMaxInput, Service service);
+
+    @Query("SELECT COUNT(s) > 0 FROM ServicePriceList s WHERE s.service = :serviceId AND s.id = :id AND (:minSize BETWEEN s.minSize AND s.maxSize)")
+    boolean existsByMinSizeInRange(long id, Service serviceId, float minSize);
+
+    @Query("SELECT COUNT(s) > 0 FROM ServicePriceList s WHERE s.service = :serviceId AND s.id = :id AND (:maxSize BETWEEN s.minSize AND s.maxSize)")
+    boolean existsByMaxSizeInRange(long id, Service serviceId, float maxSize);
 }

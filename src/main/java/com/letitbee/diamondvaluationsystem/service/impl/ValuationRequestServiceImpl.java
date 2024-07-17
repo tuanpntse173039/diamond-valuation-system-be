@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.*;
@@ -29,6 +30,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
     private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
     private NotificationRepository notificationRepository;
     private final ModelMapper mapper;
+    private AccountRepository accountRepository;
 
     public ValuationRequestServiceImpl(ValuationRequestRepository valuationRequestRepository,
                                        ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -36,13 +38,14 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                                        DiamondValuationNoteRepository diamondValuationNoteRepository,
                                        ModelMapper mapper,
                                        DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl,
-                                       NotificationRepository notificationRepository) {
+                                       NotificationRepository notificationRepository,
+                                       AccountRepository accountRepository) {
         this.valuationRequestRepository = valuationRequestRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
         this.diamondValuationNoteRepository = diamondValuationNoteRepository;
         this.mapper = mapper;
-//        this.mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+        this.accountRepository = accountRepository;
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
         this.notificationRepository = notificationRepository;
     }
@@ -155,6 +158,8 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         //save to database
         valuationRequest = valuationRequestRepository.save(valuationRequest);
+
+        updateNotification(valuationRequest);
         //map to dto
         valuationRequestDTO = mapToDTO(valuationRequest);
         return valuationRequestDTO;
@@ -170,6 +175,12 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         }
         valuationRequest.setStatus(RequestStatus.CANCEL);
         valuationRequest = valuationRequestRepository.save(valuationRequest);
+        Notification notificationDTO = new Notification();
+        notificationDTO.setAccount(accountRepository.findByRole(Role.MANAGER));
+        notificationDTO.setRead(false);
+        notificationDTO.setCreationDate(new Date());
+        notificationDTO.setMessage("Request number #" + valuationRequest.getId() + " has been canceled");
+        notificationRepository.save(notificationDTO);
         return mapToDTO(valuationRequest);
     }
 
@@ -307,6 +318,26 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
             valuationRequest.setStaff(null);
         }
         return valuationRequest;
+    }
+
+    private void updateNotification(ValuationRequest valuationRequest) {
+        Notification notificationDTO = new Notification();
+        notificationDTO.setAccount(accountRepository.findByRole(Role.MANAGER));
+        notificationDTO.setRead(false);
+        notificationDTO.setCreationDate(new Date());
+        switch (valuationRequest.getStatus()){
+            case RECEIVED:
+                notificationDTO.setMessage("Request number #" + valuationRequest.getId() + " has been received");
+                break;
+            case SEALED:
+                notificationDTO.setMessage("Request number #" + valuationRequest.getId() + " has been sealed");
+                break;
+            case FINISHED:
+                notificationDTO.setMessage("Request number #" + valuationRequest.getId() + " has been finished");
+                break;
+        }
+
+        notificationRepository.save(notificationDTO);
     }
 
 }
