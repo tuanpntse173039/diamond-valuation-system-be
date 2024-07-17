@@ -120,8 +120,13 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
+
         //set data to valuation request detail
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
+        if(valuationRequest.getStaff() == null) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Staff must be assigned to valuation request first");
+        }
+
         valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
