@@ -94,9 +94,9 @@ public class DiamondMarketController {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
-    @GetMapping("/crawl")
-    public ResponseEntity<String> crawl(@RequestParam(value = "name", required = false) String name) {
-        diamondMarketService.crawlDiamondMarket(name);
+    @GetMapping("/crawl/supplier/{id}")
+    public ResponseEntity<String> crawl(@PathVariable(name = "id") long id) {
+        diamondMarketService.crawlDiamondMarket(id);
         return new ResponseEntity<>("Craw success", HttpStatus.OK);
     }
 }
