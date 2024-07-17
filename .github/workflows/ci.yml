@@ -1,0 +1,68 @@
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "test" ]
+  pull_request:
+    branches: [ "test" ]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+        
+    - name: Extract Jira Issue Key, Test Class, and Test Method
+      id: extract_jira_key_and_test
+      run: |
+        commit_message=$(git log -1 --pretty=%B)
+        echo "Commit message: $commit_message"
+        if [[ "$commit_message" =~ ([A-Z0-9]+-[0-9]+) ]]; then
+          echo "Found Jira issue key: ${BASH_REMATCH[1]}"
+          echo "JIRA_ISSUE_KEY=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+        else
+          echo "No Jira issue key found in commit message"
+          exit 1
+        fi
+        if [[ "$commit_message" =~ ([a-zA-Z0-9_]+#[a-zA-Z0-9_]+) ]]; then
+          echo "Found test class and method: ${BASH_REMATCH[1]}"
+          echo "TEST_CLASS_AND_METHOD=${BASH_REMATCH[1]}" >> $GITHUB_ENV
+        else
+          echo "No test class and method found in commit message"
+          exit 1
+        fi
+
+    - name: Build with Maven
+      id: build
+      run: mvn clean test -Dtest=${TEST_CLASS_AND_METHOD}
+      continue-on-error: true
+
+    - name: Set Jira update data based on build result
+      id: set_jira_data
+      run: |
+        if [ "${{ steps.build.outcome }}" == 'success' ]; then
+          echo '{"transition": {"id": 31}}' > data.json
+        else
+          echo '{
+            "fields": {
+              "issuetype": {
+                "name": "Bug"
+              }
+            }
+          }' > data.json
+        fi
+
+    - name: Update Jira
+      if: env.JIRA_ISSUE_KEY
+      run: |
+        curl -D- -u ${{ secrets.JIRA_USERNAME }}:${{ secrets.JIRA_API_TOKEN }} \
+        -X POST --data @data.json -H "Content-Type: application/json" \
+        https://nguyen-quoc-dat-k17-hcm.atlassian.net/rest/api/2/issue/${{ env.JIRA_ISSUE_KEY }}/transitions?expand=transitions.fields
