@@ -102,20 +102,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                 shape,
                 fluorescence);
 
-        List<DiamondMarket> diamondMarkets1 = diamondMarketRepository.findSelectedFieldByDiamondProperties(
-                diamondOrigin,
-                caratWeight,
-                color,
-                clarity,
-                cut,
-                polish,
-                symmetry,
-                shape,
-                fluorescence);
-
-        if (diamondMarket != null && !diamondMarket.isEmpty()
-                && diamondMarkets1 != null && !diamondMarkets1.isEmpty()
-        ) {
+        if (diamondMarket != null && !diamondMarket.isEmpty()) {
             DiamondPriceListDTO diamondPriceList = new DiamondPriceListDTO();
             diamondPriceList.setDiamondOrigin(diamondOrigin);
             diamondPriceList.setCaratWeight(caratWeight);
@@ -129,13 +116,15 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
             diamondPriceList.setMinPrice(diamondMarket.stream().findFirst().get().getPrice());
             diamondPriceList.setMaxPrice(diamondMarket.get(diamondMarket.size() - 1).getPrice());
             double fairPrice = 0;
+            double cutStScore = 0;
             for (DiamondMarket diamondMarkets : diamondMarket) {
                 fairPrice += diamondMarkets.getPrice();
+                cutStScore += diamondMarkets.getCutScore();
             }
             fairPrice = fairPrice / diamondMarket.size();
             diamondPriceList.setFairPrice(fairPrice);
             diamondPriceList.setPricePerCarat(fairPrice / caratWeight);
-            diamondPriceList.setCutScore(diamondMarkets1.stream().findFirst().get().getCutScore());
+            diamondPriceList.setCutScore(cutStScore / diamondMarket.size());
             return diamondPriceList;
         } else throw new APIException(HttpStatus.NOT_FOUND, "No diamond price list data found");
     }
