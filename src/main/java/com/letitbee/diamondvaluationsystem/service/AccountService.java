@@ -22,4 +22,6 @@ public interface AccountService {
     JwtAuthResponse refreshToken(RefreshToken refreshToken);
 
     void verifyAccount(String code);
+
+    LoginResponse findAccountByEmail(String email);
 }

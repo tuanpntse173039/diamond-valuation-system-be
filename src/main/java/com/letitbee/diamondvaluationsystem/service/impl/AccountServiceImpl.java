@@ -87,6 +87,9 @@ public class AccountServiceImpl implements AccountService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Account account = accountRepository.findByUsernameOrEmail(accountDTO.getUsernameOrEmail(), accountDTO.getUsernameOrEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsernameOrEmail()));
+            if(!account.getIs_active()){
+                throw new CredentialsException(HttpStatus.FORBIDDEN, "Account is not activated");
+            }
             LoginResponse loginResponse = new LoginResponse();
             if (account.getRole().equals(Role.CUSTOMER)) {
                 Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
@@ -118,7 +121,7 @@ public class AccountServiceImpl implements AccountService {
 
             return loginResponse;
         }catch (BadCredentialsException ex) {
-            throw new CredentialsException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+            throw new CredentialsException(HttpStatus.FORBIDDEN, "Invalid username or password");
         }
     }
 
@@ -138,7 +141,7 @@ public class AccountServiceImpl implements AccountService {
         account.setUsername(customerRegisterDTO.getUsername());
         account.setPassword(passwordEncoder.encode(customerRegisterDTO.getPassword()));
         account.setRole(Role.CUSTOMER);
-        account.setIs_active(true);
+        account.setIs_active(false);
         account.setEmail(customerRegisterDTO.getEmail());
         account.setCreationDate(new Date());
         account.setVerificationCode(UUID.randomUUID().toString());
@@ -163,6 +166,7 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setEmail(account.getEmail());
 
         try {
+            System.out.println(account.getVerificationCode());
             sendVerificationEmail(customerRegisterDTO, siteURL + "verify-account?token=" + account.getVerificationCode());
         } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -335,4 +339,49 @@ public class AccountServiceImpl implements AccountService {
         account.setIs_active(true);
         accountRepository.save(account);
     }
+
+    @Override
+    public LoginResponse findAccountByEmail(String email) {
+        try {
+            Account account = accountRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+
+            // Create Authentication object without checking the password because Google has already authenticated the user
+            Authentication authentication = new UsernamePasswordAuthenticationToken(account.getUsername(), null, account.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            LoginResponse loginResponse = new LoginResponse();
+            if (account.getRole().equals(Role.CUSTOMER)) {
+                Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
+                loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
+            }
+            JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+            jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
+
+            // Handle refresh token
+            String refreshToken = null;
+            RefreshToken token = refreshTokenRepository.findByAccount(account)
+                    .orElse(new RefreshToken());
+            if (token.getToken() != null) {
+                refreshToken = token.getToken();
+                jwtAuthResponse.setRefreshToken(refreshToken);
+            } else {
+                refreshToken = UUID.randomUUID().toString();
+                token.setToken(refreshToken);
+                long currentTimeMillis = System.currentTimeMillis();
+                long expirationTimeMillis = currentTimeMillis + jwtExpirationRefreshDate;
+                Date expiryDate = new Date(expirationTimeMillis);
+                token.setExpiryDate(expiryDate);
+                token.setAccount(account);
+                refreshTokenRepository.save(token);
+                jwtAuthResponse.setRefreshToken(refreshToken);
+            }
+            loginResponse.setUserToken(jwtAuthResponse);
+
+            return loginResponse;
+        } catch (UsernameNotFoundException ex) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+    }
+
 }
