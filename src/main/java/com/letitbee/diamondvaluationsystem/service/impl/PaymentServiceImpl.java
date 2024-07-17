@@ -3,7 +3,9 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Customer;
 import com.letitbee.diamondvaluationsystem.entity.Payment;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.entity.ValuationRequestDetail;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import com.letitbee.diamondvaluationsystem.payload.PaymentDTO;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -43,6 +46,16 @@ public class PaymentServiceImpl implements PaymentService {
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation Request", "id", paymentDTO.getValuationRequestID() + ""));
         if(valuationRequest.getCreationDate() == null) {
             throw new ResourceNotFoundException("Valuation Request", "id", valuationRequest.getId() + "");
+        }
+
+        if (valuationRequest.getPayment().size() >= 2) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Can't create more than 2 payments");
+        }
+
+        for (ValuationRequestDetail valuationRequestDetail : valuationRequest.getValuationRequestDetails()) {
+            if(valuationRequestDetail.getSize() == 0) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Size can't be 0");
+            }
         }
 
         Payment payment = mapToEntity(paymentDTO);
