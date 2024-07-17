@@ -16,9 +16,15 @@ public interface ServicePriceListRepository extends JpaRepository<ServicePriceLi
     ServicePriceList findByMinSizeLessThanEqualAndMaxSizeGreaterThanEqualAndService
             (float sizeMinInput, float sizeMaxInput, Service service);
 
-    @Query("SELECT COUNT(s) > 0 FROM ServicePriceList s WHERE s.service = :serviceId AND s.id = :id AND (:minSize BETWEEN s.minSize AND s.maxSize)")
-    boolean existsByMinSizeInRange(long id, Service serviceId, float minSize);
+    @Query("SELECT COUNT(s) > 0 FROM ServicePriceList s WHERE s.service = :service AND s.id = :id AND (:minSize BETWEEN s.minSize AND s.maxSize)")
+    boolean existsByMinSizeInRangeExcludingId(Long id, Service service, float minSize);
 
-    @Query("SELECT COUNT(s) > 0 FROM ServicePriceList s WHERE s.service = :serviceId AND s.id = :id AND (:maxSize BETWEEN s.minSize AND s.maxSize)")
-    boolean existsByMaxSizeInRange(long id, Service serviceId, float maxSize);
+    @Query("SELECT COUNT(s) > 0 FROM ServicePriceList s WHERE s.service = :service AND s.id = :id AND (:maxSize BETWEEN s.minSize AND s.maxSize)")
+    boolean existsByMaxSizeInRangeExcludingId(Long id, Service service, float maxSize);
+
+    @Query("SELECT COUNT(s) > 0 FROM ServicePriceList s WHERE s.service = :service AND (:minSize BETWEEN s.minSize AND s.maxSize)")
+    boolean existsByMinSizeInRange(Service service, float minSize);
+
+    @Query("SELECT COUNT(s) > 0 FROM ServicePriceList s WHERE s.service = :service AND (:maxSize BETWEEN s.minSize AND s.maxSize)")
+    boolean existsByMaxSizeInRange(Service service, float maxSize);
 }

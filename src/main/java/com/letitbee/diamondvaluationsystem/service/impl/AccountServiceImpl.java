@@ -88,7 +88,7 @@ public class AccountServiceImpl implements AccountService {
             Account account = accountRepository.findByUsernameOrEmail(accountDTO.getUsernameOrEmail(), accountDTO.getUsernameOrEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsernameOrEmail()));
             if(!account.getIs_active()){
-                throw new CredentialsException(HttpStatus.FORBIDDEN, "Account is not activated");
+                throw new CredentialsException(HttpStatus.FORBIDDEN, "Account has been banned");
             }
             LoginResponse loginResponse = new LoginResponse();
             if (account.getRole().equals(Role.CUSTOMER)) {
