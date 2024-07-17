@@ -174,7 +174,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                     caratMax = carat + 0.2;
                 }
                 String urlC = String.format(urlRaw + "&carat_min=%.2f&carat_max=%.2f", caratMin, caratMax);
-                Document documentCarat = Jsoup.connect(urlC).timeout(50000).get();
+                Document documentCarat = Jsoup.connect(urlC).timeout(500000).get();
                 Element caratDocElement = documentCarat.selectFirst("#search-results-count");
                 String caratCount = caratDocElement.text();
                 int total = Integer.parseInt(extractNumber(caratCount));
@@ -182,7 +182,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                 //insert diamond based on offset
                 for (int offset = 0; offset < total; offset += limit) {
                     String url = String.format(urlRaw + "&limit=%d&offset=%d&carat_min=%.2f&carat_max=%.2f&sort_by=-price", limit, offset, caratMin, caratMax);
-                    Document document = Jsoup.connect(url).timeout(50000).get();
+                    Document document = Jsoup.connect(url).timeout(500000).get();
                     Elements links = document.select("li.t-search-result-block.t-search-block.diamond-item > a");
                     for (Element link : links) {
                         String linkHref = "https://dreamstone.com" + link.attr("href");
@@ -266,7 +266,8 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
             crawlDiamondMarketBaseOnOrigin("https://dreamstone.com/loose-diamonds/search?v=g", DiamondOrigin.NATURAL);
             crawlDiamondMarketBaseOnOrigin("https://dreamstone.com/loose-diamonds/search?v=g&natural=lab", DiamondOrigin.LAB_GROWN);
         } else if (id == 2) {
-            
+            //update later
+
         }
     }
 
