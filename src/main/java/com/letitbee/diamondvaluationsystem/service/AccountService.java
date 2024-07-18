@@ -11,6 +11,8 @@ public interface AccountService {
 
     AccountResponse register(CustomerRegisterDTO customerRegisterDTO);
 
+    AccountResponse registerGoogle(CustomerGGRegisterDTO customerGGRegisterDTO);
+
     AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO);
 
     AccountResponse changePassword(AccountUpdate accountUpdate, Long id);
@@ -24,4 +26,7 @@ public interface AccountService {
     void verifyAccount(String code);
 
     LoginResponse findAccountByEmail(String email);
+
+    void logout(Long id);
+
 }

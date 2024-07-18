@@ -28,9 +28,9 @@ public class Account  {
     )
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "nvarchar(50)",unique = true)
+    @Column(columnDefinition = "nvarchar(50)")
     private String username;
-    @Column(nullable = false, columnDefinition = "text")
+    @Column(columnDefinition = "text")
     private String password;
     @Column(columnDefinition = "bit default 1")
     private Boolean is_active;

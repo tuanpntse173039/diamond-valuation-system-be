@@ -90,9 +90,6 @@ public class AuthController {
         String token = request.get("token");
         System.out.println(clientId);
         try {
-            // Log the received token for debugging
-            System.out.println("Received ID token: " + token);
-
             GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance())
                     .setAudience(Collections.singletonList(clientId))
                     .build();
@@ -101,10 +98,6 @@ public class AuthController {
             if (idToken != null) {
                 GoogleIdToken.Payload payload = idToken.getPayload();
                 String email = payload.getEmail();
-
-                // Log the verified email for debugging
-                System.out.println("Verified email: " + email);
-
                 LoginResponse loginResponse = accountService.findAccountByEmail(email);
                 return ResponseEntity.ok(loginResponse);
             } else {
@@ -113,5 +106,11 @@ public class AuthController {
         }  catch (GeneralSecurityException | IOException e) {
             throw new RuntimeException("Error verifying token", e);
         }
+    }
+
+    @PostMapping("/google-register")
+    public ResponseEntity<AccountResponse> googleRegister(@RequestBody @Valid CustomerGGRegisterDTO customerRegisterDTO){
+        AccountResponse response = accountService.registerGoogle(customerRegisterDTO);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 }

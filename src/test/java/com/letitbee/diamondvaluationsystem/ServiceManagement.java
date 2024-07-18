@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.letitbee.diamondvaluationsystem.entity.Service;
 import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
 import com.letitbee.diamondvaluationsystem.payload.ServicePriceListDTO;
+import com.letitbee.diamondvaluationsystem.repository.ServicePriceListRepository;
 import com.letitbee.diamondvaluationsystem.repository.ServiceRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
@@ -29,6 +31,9 @@ public class ServiceManagement {
 
     @Autowired
     private ServiceRepository serviceRepository;
+
+    @Autowired
+    private ServicePriceListRepository servicePriceListRepository;
 
     @Test
     @Transactional
@@ -119,6 +124,24 @@ public class ServiceManagement {
         String serviceJson = objectMapper.writeValueAsString(serviceDTO);
 
         mockMvc.perform(post("/api/v1/service-price-lists")
+                        .contentType("application/json")
+                        .content(serviceJson))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @Transactional
+    @Rollback
+    public void testServicePriceListExist() throws Exception {
+        ServicePriceListDTO serviceDTO = new ServicePriceListDTO();
+        serviceDTO.setMinSize(5.5F);
+        serviceDTO.setMaxSize(5.99F);
+        serviceDTO.setInitPrice(50);
+        serviceDTO.setUnitPrice(0);
+        serviceDTO.setServiceId(1);
+        String serviceJson = objectMapper.writeValueAsString(serviceDTO);
+
+        mockMvc.perform(put("/api/v1/service-price-lists/8")
                         .contentType("application/json")
                         .content(serviceJson))
                 .andExpect(status().isBadRequest());
