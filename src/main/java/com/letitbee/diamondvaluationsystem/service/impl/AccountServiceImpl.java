@@ -17,6 +17,7 @@ import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.persistence.GenerationType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -184,8 +185,8 @@ public class AccountServiceImpl implements AccountService {
 
         //save account to db
         Account account = new Account();
-        account.setUsername(null);
-        account.setPassword(null);
+        account.setUsername(customerGGRegisterDTO.getEmail());
+        account.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
         account.setRole(Role.CUSTOMER);
         account.setIs_active(false);
         account.setEmail(customerGGRegisterDTO.getEmail());

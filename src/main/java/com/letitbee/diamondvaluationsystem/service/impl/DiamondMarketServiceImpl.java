@@ -150,8 +150,8 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
 
     private void crawlDiamondMarketBaseOnOrigin(String urlRaw, DiamondOrigin diamondOrigin) {
         int limit = 100;
-        double startCarat = 0.1;
-        double endCarat = 50;
+        double startCarat = 0.7;
+        double endCarat = 2;
         try {
             //Search diamond based on carat weight
             for (double carat = startCarat; carat <= endCarat; carat += 0.2) {
@@ -163,7 +163,7 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
                     caratMax = carat + 0.2;
                 }
                 String urlC = String.format(urlRaw + "&carat_min=%.2f&carat_max=%.2f", caratMin, caratMax);
-                Document documentCarat = Jsoup.connect(urlC).timeout(500000).get();
+                Document documentCarat = Jsoup.connect(urlC).timeout(5000000).get();
                 Element caratDocElement = documentCarat.selectFirst("#search-results-count");
                 String caratCount = caratDocElement.text();
                 int total = Integer.parseInt(extractNumber(caratCount));
