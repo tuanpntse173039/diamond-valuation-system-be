@@ -58,15 +58,6 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 .findById(diamondValuationAssignDTO.getValuationRequestDetailId())
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", diamondValuationAssignDTO.getValuationRequestDetailId() + ""));
 
-        Notification notification = new Notification();
-        notification.setMessage("You are assigned to valuate a diamond in request #" + valuationRequestDetail.getValuationRequest().getId()
-                + " with request detail @" + diamondValuationAssign.getId());
-        notification.setRead(false);
-        notification.setCreationDate(new Date());
-        notification.setAccount(staff.getAccount());
-        notificationRepository.save(notification);
-
-
         diamondValuationAssign.setStaff(staff);
         diamondValuationAssign.setValuationRequestDetail(valuationRequestDetail);
         diamondValuationAssign.setValuationPrice(diamondValuationAssignDTO.getValuationPrice());
@@ -77,6 +68,13 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         }
         //save to database
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
+        Notification notification = new Notification();
+        notification.setMessage("You are assigned to valuate a diamond in request #" + valuationRequestDetail.getValuationRequest().getId()
+                + " with request detail @" + diamondValuationAssign.getId());
+        notification.setRead(false);
+        notification.setCreationDate(new Date());
+        notification.setAccount(staff.getAccount());
+        notificationRepository.save(notification);
         return mapToDTO(diamondValuationAssign);
     }
 
@@ -106,7 +104,7 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
             }
             if (flag == 0) {
                 Notification notification = new Notification();
-                notification.setMessage("Diamond valuation detail @" + valuationRequestDetail.getId()
+                notification.setMessage("Diamond valuation detail $" + valuationRequestDetail.getId()
                         +  " in request #" + valuationRequestDetail.getValuationRequest().getId() + " is valuated");
                 notification.setRead(false);
                 notification.setCreationDate(new Date());
