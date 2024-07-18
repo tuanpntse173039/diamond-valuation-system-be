@@ -113,4 +113,11 @@ public class AuthController {
         AccountResponse response = accountService.registerGoogle(customerRegisterDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody Map<String, String> request) {
+        Long id = Long.parseLong(request.get("accountId"));
+        accountService.logout(id);
+        return ResponseEntity.ok("Logout successfully");
+    }
 }

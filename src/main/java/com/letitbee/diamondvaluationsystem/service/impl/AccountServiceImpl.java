@@ -406,10 +406,8 @@ public class AccountServiceImpl implements AccountService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
 
             LoginResponse loginResponse = new LoginResponse();
-            if (account.getRole().equals(Role.CUSTOMER)) {
-                Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
-                loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
-            }
+            Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
+            loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
             JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
             jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
             System.out.println(jwtAuthResponse.getAccessToken());
