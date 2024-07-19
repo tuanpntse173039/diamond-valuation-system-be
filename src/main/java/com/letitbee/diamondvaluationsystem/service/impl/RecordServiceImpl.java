@@ -75,7 +75,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public RecordDTO getRecord(Long id) {
-        return null;
+        return mapToDTO(recordRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Record", "id", id.toString())));
     }
 
     @Override

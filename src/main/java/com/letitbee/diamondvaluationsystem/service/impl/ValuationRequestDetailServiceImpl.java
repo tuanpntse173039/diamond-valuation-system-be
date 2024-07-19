@@ -126,8 +126,14 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         if(valuationRequest.getStaff() == null) {
             throw new APIException(HttpStatus.BAD_REQUEST, "Staff must be assigned to valuation request first");
         }
+        if(valuationRequestDetail.getSize() != 0) {
+            if(recordRepository.findByValuationRequestIdAndType(valuationRequest.getId(), RecordType.RECEIPT) != null) {
+                valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
+            } else {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Receipt must be created first");
+            }
+        }
 
-        valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
         valuationRequestDetail.setCancelReason(valuationRequestDetailDTO.getCancelReason());
