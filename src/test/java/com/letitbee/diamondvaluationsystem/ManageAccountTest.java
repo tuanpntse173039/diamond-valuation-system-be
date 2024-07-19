@@ -3,10 +3,6 @@ package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.letitbee.diamondvaluationsystem.entity.Account;
-import com.letitbee.diamondvaluationsystem.entity.Customer;
-import com.letitbee.diamondvaluationsystem.enums.Role;
-import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
-import com.letitbee.diamondvaluationsystem.payload.AccountDTO;
 import com.letitbee.diamondvaluationsystem.payload.AccountUpdate;
 import com.letitbee.diamondvaluationsystem.payload.CustomerUpdate;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
@@ -28,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(authorities = {"CUSTOMER"})
-public class ManageAccount {
+public class ManageAccountTest {
     @Autowired
     private MockMvc mockMvc;
 

@@ -2,7 +2,6 @@ package com.letitbee.diamondvaluationsystem;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.letitbee.diamondvaluationsystem.entity.Post;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.repository.PostRepository;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(authorities = {"ADMIN"})
-public class BlogManagement {
+public class BlogManagementTest {
     @Autowired
     private MockMvc mockMvc;
 

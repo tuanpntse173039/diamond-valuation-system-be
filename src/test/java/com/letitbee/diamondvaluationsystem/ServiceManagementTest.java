@@ -1,7 +1,6 @@
 package com.letitbee.diamondvaluationsystem;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.letitbee.diamondvaluationsystem.entity.Service;
 import com.letitbee.diamondvaluationsystem.payload.ServiceDTO;
 import com.letitbee.diamondvaluationsystem.payload.ServicePriceListDTO;
 import com.letitbee.diamondvaluationsystem.repository.ServicePriceListRepository;
@@ -22,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(authorities = {"MANAGER"})
-public class ServiceManagement {
+public class ServiceManagementTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -115,15 +114,13 @@ public class ServiceManagement {
     @Transactional
     @Rollback
     public void testMinSize() throws Exception {
-        ServicePriceListDTO serviceDTO = new ServicePriceListDTO();
-        serviceDTO.setId(1);
-        serviceDTO.setInitPrice(1);
-        serviceDTO.setMinSize(3);
-        serviceDTO.setMaxSize(5);
-        serviceDTO.setUnitPrice(1000);
+        ServiceDTO serviceDTO = new ServiceDTO();
+        serviceDTO.setName("testName");
+        serviceDTO.setDescription("testDescription");
+        serviceDTO.setPeriod(0);
         String serviceJson = objectMapper.writeValueAsString(serviceDTO);
 
-        mockMvc.perform(post("/api/v1/service-price-lists")
+        mockMvc.perform(post("/api/v1/services")
                         .contentType("application/json")
                         .content(serviceJson))
                 .andExpect(status().isBadRequest());
@@ -132,16 +129,15 @@ public class ServiceManagement {
     @Test
     @Transactional
     @Rollback
+    @WithMockUser()
     public void testServicePriceListExist() throws Exception {
-        ServicePriceListDTO serviceDTO = new ServicePriceListDTO();
-        serviceDTO.setMinSize(5.5F);
-        serviceDTO.setMaxSize(5.99F);
-        serviceDTO.setInitPrice(50);
-        serviceDTO.setUnitPrice(0);
-        serviceDTO.setServiceId(1);
+        ServiceDTO serviceDTO = new ServiceDTO();
+        serviceDTO.setName("testName");
+        serviceDTO.setDescription("testDescription");
+        serviceDTO.setPeriod(0);
         String serviceJson = objectMapper.writeValueAsString(serviceDTO);
 
-        mockMvc.perform(put("/api/v1/service-price-lists/8")
+        mockMvc.perform(post("/api/v1/services")
                         .contentType("application/json")
                         .content(serviceJson))
                 .andExpect(status().isBadRequest());

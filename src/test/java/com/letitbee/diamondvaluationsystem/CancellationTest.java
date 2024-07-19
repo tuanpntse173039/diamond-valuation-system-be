@@ -39,7 +39,7 @@ public class CancellationTest {
     @Transactional
     @Rollback
     public void cancelReasonMustNotBlank() throws Exception {
-        ValuationRequest valuationRequest = valuationRequestRepository.findById(201L).orElse(null);
+        ValuationRequest valuationRequest = valuationRequestRepository.findById(20L).orElse(null);
         ValuationRequestDTO valuationRequestDTO = mapToDTO(valuationRequest);
         valuationRequestDTO.setStatus(RequestStatus.CANCEL);
         valuationRequestDTO.setCancelReason("");
