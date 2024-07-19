@@ -40,6 +40,6 @@ public interface DiamondMarketService {
     Response<DiamondMarketDTO> getAllDiamondMarket(int pageNo, int pageSize, String sortBy, String sortDir);
 
 
-    void crawlDiamondMarket(long id);
+    String crawlDiamondMarket(long id);
 
 }

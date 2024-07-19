@@ -96,7 +96,6 @@ public class DiamondMarketController {
 
     @GetMapping("/crawl/supplier/{id}")
     public ResponseEntity<String> crawl(@PathVariable(name = "id") long id) {
-        diamondMarketService.crawlDiamondMarket(id);
-        return new ResponseEntity<>("Craw success", HttpStatus.OK);
+        return new ResponseEntity<>(diamondMarketService.crawlDiamondMarket(id), HttpStatus.OK);
     }
 }

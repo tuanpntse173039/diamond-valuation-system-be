@@ -250,13 +250,14 @@ public class DiamondMarketServiceImpl implements DiamondMarketService {
     }
 
     @Override
-    public void crawlDiamondMarket(long id) {
+    public String crawlDiamondMarket(long id) {
         if (id == 1) {
             crawlDiamondMarketBaseOnOrigin("https://dreamstone.com/loose-diamonds/search?v=g", DiamondOrigin.NATURAL);
             crawlDiamondMarketBaseOnOrigin("https://dreamstone.com/loose-diamonds/search?v=g&natural=lab", DiamondOrigin.LAB_GROWN);
-        } else if (id == 2) {
+            return "Done";
+        } else {
             //update later
-
+            return "Crawl for this website is not supported!";
         }
     }
 
