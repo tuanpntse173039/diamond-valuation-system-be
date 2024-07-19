@@ -14,11 +14,9 @@ public class CustomerDTO {
       private Long id;
       @NotEmpty(message = "First name cannot be empty")
       @Size(min = 2, max = 24, message = "First name must be between 2 and 24 characters")
-      @Pattern(regexp = "^[a-zA-Z]+$", message = "First name must contain only letters")
       private String firstName;
       @NotEmpty(message = "Last name cannot be empty")
       @Size(min = 2, max = 24, message = "Last name must be between 2 and 24 characters")
-      @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name must contain only letters")
       private String lastName;
       @Email(message = "Invalid email address")
       @NotEmpty(message = "Phone number cannot be empty")
