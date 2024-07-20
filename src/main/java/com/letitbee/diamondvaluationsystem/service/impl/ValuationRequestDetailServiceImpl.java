@@ -180,6 +180,13 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             notification.setRead(false);
             notification.setCreationDate(new Date());
             notificationRepository.save(notification);
+            DiamondValuationNote diamondValuationNote = valuationRequestDetail.getDiamondValuationNote();
+            if(diamondValuationNote.getCaratWeight() < 0 || diamondValuationNote.getClarity() == null || diamondValuationNote.getColor() == null
+                    || diamondValuationNote.getCut() == null || diamondValuationNote.getFluorescence() == null || diamondValuationNote.getPolish() == null
+                    || diamondValuationNote.getSymmetry() == null || diamondValuationNote.getShape() == null || diamondValuationNote.getDiamondOrigin() == null
+                    || diamondValuationNote.getCutScore() <0) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Diamond valuation note must be filled");
+            }
         }
         // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
