@@ -246,8 +246,19 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
     @Override
     public Response<ValuationRequestResponseV2> getValuationRequestResponseByStaff(
-            int pageNo, int pageSize, String sortBy, String sortDir, Long staffId) {
+            int pageNo, int pageSize, String sortBy, String sortDir, Long staffId, RequestStatus status, Date startDate, Date endDate,String searchValue) {
+        Integer requestId = null;
+        String customerName = "";
+        String phone = "";
 
+        if (searchValue != null && !searchValue.trim().isEmpty()) {
+            try {
+                requestId = Integer.parseInt(searchValue);
+            } catch (NumberFormatException e) {
+            }
+            customerName = searchValue;
+            phone = searchValue;
+        }
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy) : Sort.by(sortBy).descending();
         //Set size page and pageNo
         Pageable pageable = PageRequest.of(pageNo, pageSize, sort);
@@ -255,7 +266,7 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
 
         Staff staff = staffRepository.findById(staffId)
                 .orElseThrow(() -> new ResourceNotFoundException("Staff", "id", staffId + ""));
-        page = valuationRequestRepository.findValuationRequestByStaff_Id(staff, pageable);
+        page = valuationRequestRepository.findValuationRequestByStaff_Id(staff, status, startDate, endDate, requestId, customerName, phone, searchValue, pageable);
 
         List<ValuationRequest> valuationRequests = page.getContent();
 

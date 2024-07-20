@@ -25,7 +25,7 @@ public interface ValuationRequestService {
             int pageNo, int pageSize, String sortBy, String sortDir, RequestStatus status, Date startDate, Date endDate,String searchValue);
 
     Response<ValuationRequestResponseV2> getValuationRequestResponseByStaff(
-            int pageNo, int pageSize, String sortBy, String sortDir, Long staffId);
+            int pageNo, int pageSize, String sortBy, String sortDir, Long staffId, RequestStatus status, Date startDate, Date endDate,String searchValue);
 
     Response<ValuationRequestResponseV2> getValuationRequestByCustomerId(int pageNo, int pageSize, String sortBy, String sortDir, Long customerId);
 
