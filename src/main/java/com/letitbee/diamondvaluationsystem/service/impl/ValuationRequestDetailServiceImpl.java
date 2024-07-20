@@ -135,10 +135,13 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         }
         if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())){
             DiamondValuationNote diamondValuationNote = valuationRequestDetail.getDiamondValuationNote();
+            String[] items = diamondValuationNote.getClarityCharacteristic().split(",");
+            ArrayList<String> list = new ArrayList<>(Arrays.asList(items));
             if(diamondValuationNote.getCaratWeight() < 0 || diamondValuationNote.getClarity() == null || diamondValuationNote.getColor() == null
                     || diamondValuationNote.getCut() == null || diamondValuationNote.getFluorescence() == null || diamondValuationNote.getPolish() == null
                     || diamondValuationNote.getSymmetry() == null || diamondValuationNote.getShape() == null || diamondValuationNote.getDiamondOrigin() == null
-                    || diamondValuationNote.getCutScore() <0) {
+                    || diamondValuationNote.getCutScore() <0 || diamondValuationNote.getClarityCharacteristicLink() == null || diamondValuationNote.getProportions() == null
+                    || list.isEmpty()) {
                 throw new APIException(HttpStatus.BAD_REQUEST, "Diamond valuation note must be filled");
             }
         }
