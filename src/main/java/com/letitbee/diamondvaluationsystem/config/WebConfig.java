@@ -15,6 +15,8 @@ public class WebConfig implements WebMvcConfigurer {
                     "https://localhost:8080",
                     "https://www.hntdiamond.store",
                     "https://console.hntdiamond.store",
+                    "https://diamond-valuation-system-console.vercel.app/",
+                    "https://diamond-valuation-system.vercel.app/",
                     "http://localhost:5173",
                     "http://localhost:5174",
                     "http://localhost:5175")
