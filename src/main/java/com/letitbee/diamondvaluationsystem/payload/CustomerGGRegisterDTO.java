@@ -13,11 +13,9 @@ public class CustomerGGRegisterDTO {
     private String email;
     @NotEmpty(message = "First name cannot be empty")
     @Size(min = 2, max = 24, message = "First name must be between 2 and 24 characters")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "First name must contain only letters")
     private String firstName;
     @NotEmpty(message = "Last name cannot be empty")
     @Size(min = 2, max = 24, message = "Last name must be between 2 and 24 characters")
-    @Pattern(regexp = "^[a-zA-Z]+$", message = "Last name must contain only letters")
     private String lastName;
     @Size(min = 10, max = 10, message = "Phone number must be exactly 10 digits")
     @Pattern(regexp = "^[0-9]{10}$", message = "Phone number must contain only digits")

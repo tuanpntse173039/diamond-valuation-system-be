@@ -9,9 +9,7 @@ import lombok.Data;
 @Data
 public class AccountUpdate {
     @Size(min = 6, max = 24, message = "Password must be between 6 and 24 characters")
-    @Pattern(regexp = ".*\\d.*", message = "Password must contain at least one digit")
     private String oldPassword;
     @Size(min = 6, max = 24, message = "Password must be between 6 and 24 characters")
-    @Pattern(regexp = ".*\\d.*", message = "Password must contain at least one digit")
     private String newPassword;
 }
