@@ -131,10 +131,12 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public AccountResponse register(CustomerRegisterDTO customerRegisterDTO) {
         //add check for username exists in database
-        if (accountRepository.existsByUsernameOrEmail(customerRegisterDTO.getUsername(), customerRegisterDTO.getEmail())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Username or email is already taken");
+        if (accountRepository.existsByEmail(customerRegisterDTO.getEmail())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Email is already taken");
         }else if(customerRepository.existsByPhone(customerRegisterDTO.getPhone())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Phone number is already taken");
+        }else if(accountRepository.existsByUsername(customerRegisterDTO.getUsername())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Username is already taken");
         }
 
         //save account to db
@@ -228,7 +230,7 @@ public class AccountServiceImpl implements AccountService {
         String subject = "Please verify your registration";
         String senderName = "H&T Diamond";
         String mailContent = "<div style=\"font-family: Arial, sans-serif; background-color: #f0f0f0;\">";
-        mailContent += "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background: url('https://media.istockphoto.com/photos/diamond-on-the-water-picture-id639777488?k=6&m=639777488&s=612x612&w=0&h=JWUtKTN4CUTJ4dp0tPb2yXJq6Vh6s7smkZ-ZX4sgPbM=') no-repeat center center / cover; filter: blur(8px);\">";
+        mailContent += "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background: url('https://foreverflawlessnews.com/wp-content/uploads/2018/02/diamond.jpeg') no-repeat center center / cover; filter: blur(8px);\">";
         mailContent += "<tr>";
         mailContent += "<td align=\"center\" valign=\"top\" style=\"padding: 50px;\">";
         mailContent += "<table width=\"50%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: left;\">";
@@ -238,7 +240,6 @@ public class AccountServiceImpl implements AccountService {
         mailContent += "<h3 style=\"margin: 0 0 20px;\"><a href=\"" + siteURL + "\" style=\"color: #0066cc; text-decoration: none;\">Verify your account</a></h3>";
         mailContent += "<p style=\"margin: 0; color: #000000;\">Thank you,<br>The H&T Diamond Team</p>";
         mailContent += "</td></tr></table></td></tr></table></div>";
-
 
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
@@ -256,10 +257,12 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO) {
-        if (accountRepository.existsByUsernameOrEmail(staffRegisterDTO.getUsername(), staffRegisterDTO.getEmail())){
-            throw new APIException(HttpStatus.BAD_REQUEST, "Username or email is already taken");
-        }else if(staffRepository.existsByPhone(staffRegisterDTO.getPhone())){
+        if (accountRepository.existsByEmail(staffRegisterDTO.getEmail())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Email is already taken");
+        }else if(customerRepository.existsByPhone(staffRegisterDTO.getPhone())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Phone number is already taken");
+        }else if(accountRepository.existsByUsername(staffRegisterDTO.getUsername())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Username is already taken");
         }
 
         //save account to db

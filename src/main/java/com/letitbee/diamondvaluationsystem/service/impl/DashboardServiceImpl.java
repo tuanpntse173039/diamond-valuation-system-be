@@ -1,7 +1,9 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
+import com.letitbee.diamondvaluationsystem.entity.DiamondValuationAssign;
 import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
+import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.DashboardService;
@@ -17,13 +19,15 @@ public class DashboardServiceImpl implements DashboardService {
     private ValuationRequestRepository valuationRequestRepository;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private AccountRepository accountRepository;
+    private DiamondValuationAssignRepository diamondValuationAssignRepository;
 
     public DashboardServiceImpl(ValuationRequestRepository valuationRequestRepository,
                                  ValuationRequestDetailRepository valuationRequestDetailRepository,
-                                 AccountRepository accountRepository) {
+                                 AccountRepository accountRepository, DiamondValuationAssignRepository diamondValuationAssignRepository) {
         this.valuationRequestRepository = valuationRequestRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.accountRepository = accountRepository;
+        this.diamondValuationAssignRepository = diamondValuationAssignRepository;
     }
 
     @Override
@@ -150,7 +154,7 @@ public class DashboardServiceImpl implements DashboardService {
         int currentMonth = LocalDate.now().getMonth().getValue();
         List<Object[]> resultPriceService = valuationRequestRepository.findTotalServicePriceCurrentAndPreviousMonth();
         List<Object[]> resultAppointment = valuationRequestRepository.findTotalAppointmentCurrentAndPreviousMonth();
-        List<Object[]> resultTopValuation = valuationRequestDetailRepository.findTotalDiamondValuationCurrentAndPreviousMonth();
+        List<Object[]> resultTopValuation = diamondValuationAssignRepository.findTotalDiamondValuationCurrentAndPreviousMonth();
         List<Object[]> resultNewCustomer = accountRepository.findNewCustomerAccountCurrentAndPreviousWeek();
         DashboardOverall dashboardOverall = new DashboardOverall();
 

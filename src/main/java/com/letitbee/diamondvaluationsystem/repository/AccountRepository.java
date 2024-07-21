@@ -17,6 +17,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Boolean existsByEmail(String email);
 
+    Boolean existsByUsername(String username);
+
     Optional<Account> findByEmail(String email);
 
     Optional<Account> findByVerificationCode(String code);
@@ -25,20 +27,27 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Account findByRole(Role role);
 
-    @Query(value = "SELECT " +
-            "SUM(CASE " +
-            "        WHEN DATEPART(WEEK, a.creation_date) = DATEPART(WEEK, GETDATE()) AND DATEPART(YEAR, a.creation_date) = DATEPART(YEAR, GETDATE()) " +
-            "        THEN 1 " +
-            "        ELSE 0 " +
-            "    END) AS currentWeekCount, " +
-            "SUM(CASE " +
-            "        WHEN DATEPART(WEEK, a.creation_date) = DATEPART(WEEK, DATEADD(WEEK, -1, GETDATE())) AND DATEPART(YEAR, a.creation_date) = DATEPART(YEAR, DATEADD(WEEK, -1, GETDATE())) " +
-            "        THEN 1 " +
-            "        ELSE 0 " +
-            "    END) AS previousWeekCount " +
-            "FROM account a " +
+    @Query(value = "WITH CurrentWeek AS (" +
+            "    SELECT DATEADD(DAY, -((DATEPART(WEEKDAY, GETDATE()) + @@DATEFIRST - 2) % 7), GETDATE()) AS StartOfWeek" +
+            "), PreviousWeek AS (" +
+            "    SELECT DATEADD(DAY, -7, StartOfWeek) AS StartOfWeek" +
+            "    FROM CurrentWeek" +
+            ")" +
+            "SELECT " +
+            "    SUM(CASE " +
+            "            WHEN a.creation_date >= cw.StartOfWeek AND a.creation_date < DATEADD(DAY, 7, cw.StartOfWeek) " +
+            "            THEN 1 " +
+            "            ELSE 0 " +
+            "        END) AS currentWeekCount," +
+            "    SUM(CASE " +
+            "            WHEN a.creation_date >= pw.StartOfWeek AND a.creation_date < cw.StartOfWeek " +
+            "            THEN 1 " +
+            "            ELSE 0 " +
+            "        END) AS previousWeekCount " +
+            "FROM account a, CurrentWeek cw, PreviousWeek pw " +
             "WHERE a.role = 'CUSTOMER' AND a.is_active = 1",
             nativeQuery = true)
     List<Object[]> findNewCustomerAccountCurrentAndPreviousWeek();
+
 
 }
