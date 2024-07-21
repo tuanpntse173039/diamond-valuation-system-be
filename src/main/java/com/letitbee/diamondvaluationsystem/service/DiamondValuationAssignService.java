@@ -8,6 +8,6 @@ import com.letitbee.diamondvaluationsystem.payload.Response;
 public interface DiamondValuationAssignService {
     DiamondValuationAssignDTO createDiamondValuationAssign(DiamondValuationAssignDTO diamondValuationAssignDTO);
     DiamondValuationAssignDTO updateDiamondValuationAssign(long id, DiamondValuationAssignDTO diamondValuationAssignDTO);
-    Response<DiamondValuationAssignResponse> getAllDiamondValuationAssign(int pageNo, int pageSize, String sortBy, String sortDir);
+    Response<DiamondValuationAssignResponse> getAllDiamondValuationAssign(int pageNo, int pageSize, String sortBy, String sortDir, String status);
     DiamondValuationAssignDTO getDiamondValuationAssignById(long id);
 }
