@@ -158,7 +158,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
         //check status
         if(!valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())){
-            if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
+            if(!valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
                 throw new APIException(HttpStatus.BAD_REQUEST, "Request must be changed to received first");
             }
         }
