@@ -66,9 +66,7 @@ public class PaymentServiceImpl implements PaymentService {
         Payment payment = mapToEntity(paymentDTO);
 
         if(valuationRequest.getPayment().isEmpty()) {
-            double amount = valuationRequest.getTotalServicePrice() * 0.4;
             payment.setPaytime(new Date());
-            payment.setAmount(amount);
             payment = paymentRepository.save(payment);
             valuationRequest.setStatus(RequestStatus.RECEIVED);
             valuationRequestRepository.save(valuationRequest);
@@ -79,9 +77,7 @@ public class PaymentServiceImpl implements PaymentService {
             notificationRepository.save(notification);
 
         } else {
-            double amount = valuationRequest.getTotalServicePrice() * 0.6;
             payment.setPaytime(new Date());
-            payment.setAmount(amount);
             payment = paymentRepository.save(payment);
             valuationRequest.setStatus(RequestStatus.FINISHED);
             valuationRequestRepository.save(valuationRequest);
