@@ -126,10 +126,11 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         if(valuationRequest.getStaff() == null) {
             throw new APIException(HttpStatus.BAD_REQUEST, "Staff must be assigned to valuation request first");
         }
+        float size = (float) Math.round(valuationRequestDetailDTO.getSize() * 100) / 100;
+
         if(valuationRequestDetailDTO.getSize() != 0) {
             if(recordRepository.findByValuationRequestIdAndType(valuationRequest.getId(), RecordType.RECEIPT).isPresent()) {
-                float size = (float) Math.round(valuationRequestDetailDTO.getSize() * 100) / 100;
-                valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
+                valuationRequestDetail.setSize(size);
             } else {
                 throw new APIException(HttpStatus.BAD_REQUEST, "Receipt must be created first");
             }
@@ -155,7 +156,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
         //update Service Price
         if (valuationRequestDetailDTO.isDiamond()) {
-            updateServicePrice(valuationRequestDetailDTO.getSize(), valuationRequestDetail);
+            updateServicePrice(size, valuationRequestDetail);
         }
 
         //update valuation price base on mode
