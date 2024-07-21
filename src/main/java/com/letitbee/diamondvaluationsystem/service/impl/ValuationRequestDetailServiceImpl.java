@@ -11,7 +11,10 @@ import com.letitbee.diamondvaluationsystem.payload.ValuationRequestDetailDTO;
 import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.ValuationRequestDetailService;
 import com.letitbee.diamondvaluationsystem.utils.Tools;
+import jakarta.mail.MessagingException;
+import jakarta.mail.internet.MimeMessage;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,8 +23,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 
+import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -39,6 +46,10 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private RecordRepository recordRepository;
     private NotificationRepository notificationRepository;
     private AccountRepository accountRepository;
+    private String siteURL = "https://www.hntdiamond.store/";
+
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     public ValuationRequestDetailServiceImpl(ModelMapper mapper,
                                              ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -258,9 +269,51 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             notificationConsultant.setRead(false);
             notificationConsultant.setCreationDate(new Date());
             notificationRepository.save(notificationConsultant);
+            try {
+                sendCompleteNotiForCus(siteURL, valuationRequest.getStaff().getAccount(), valuationRequest.getCustomer(), valuationRequest);
+            } catch (MessagingException | UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         } // update valuation request if its all detail status is cancel or approve
 
     }
+
+    private void sendCompleteNotiForCus(String siteURL, Account account, Customer customer, ValuationRequest valuationRequest) throws MessagingException, UnsupportedEncodingException {
+        String subject = "Your valuation request has been completed";
+        String senderName = "H&T Diamond";
+        // Format dates
+        String creationDate = new SimpleDateFormat("yyyy-MM-dd").format(valuationRequest.getCreationDate());
+        String completeDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()); // Assuming current date for completion
+        // Build email content
+        String mailContent = "<div style=\"font-family: Arial, sans-serif; background-color: #f0f0f0;\">";
+        mailContent += "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background: url('https://foreverflawlessnews.com/wp-content/uploads/2018/02/diamond.jpeg') no-repeat center center / cover; filter: blur(8px);\">";
+        mailContent += "<tr>";
+        mailContent += "<td align=\"center\" valign=\"top\" style=\"padding: 50px;\">";
+        mailContent += "<table width=\"50%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: left;\">";
+        mailContent += "<tr><td style=\"padding: 20px;\">";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">Dear " + customer.getFirstName() + " " + customer.getLastName() + ",</p>";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">Name: " + customer.getFirstName() + " " + customer.getLastName() + "</p>";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">Phone: " + customer.getPhone() + "</p>";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">Address: " + customer.getAddress() + "</p>";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">RequestId: " + valuationRequest.getId() + "</p>";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">CreationDate: " + creationDate + "</p>";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">CompleteDate: " + completeDate + "</p>";
+        mailContent += "<p style=\"margin: 0 0 20px; color: #000000;\">Your valuation request has been completed successfully.</p>";
+        mailContent += "<p style=\"margin: 0 0 20px; color: #000000;\">Thank you for choosing H&T Diamond. You can return to our home page using the link below:</p>";
+        mailContent += "<h3 style=\"margin: 0 0 20px;\"><a href=\"" + siteURL + "\" style=\"color: #0066cc; text-decoration: none;\">Click here to go to Home Page</a></h3>";
+        mailContent += "<p style=\"margin: 0; color: #000000;\">Thank you,<br>The H&T Diamond Team</p>";
+        mailContent += "</td></tr></table></td></tr></table></div>";
+
+        // Send the email
+        MimeMessage message = javaMailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message);
+        helper.setFrom("hntdiamond@gmail.com", senderName);
+        helper.setTo(account.getEmail());
+        helper.setSubject(subject);
+        helper.setText(mailContent, true);
+        javaMailSender.send(message);
+    }
+
 
     private void deleteDiamondValuationNote(ValuationRequestDetailDTO valuationRequestDetailDTO
             , ValuationRequestDetail valuationRequestDetail) {
