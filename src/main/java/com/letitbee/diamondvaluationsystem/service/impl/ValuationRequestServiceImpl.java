@@ -119,6 +119,13 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
         //get staff
         Staff staff = staffRepository.findById(valuationRequestDTO.getStaffID()).orElse(null);
         int flag = 0;
+        if (valuationRequest.getStatus().equals(RequestStatus.CANCEL)) {
+            if (valuationRequestDTO.getStaffID() != null) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "You can't assign staff when valuation request has been canceled");
+            }
+        }
+        valuationRequest.setStaff(staff);
+
         if(valuationRequest.getStaff() == null) {
             if (valuationRequestDTO.getStaffID() != null) {
                 Notification notificationDTO = new Notification();
@@ -156,7 +163,6 @@ public class ValuationRequestServiceImpl implements ValuationRequestService {
                 }
             }
         }
-        valuationRequest.setStaff(staff);
 
         //update valuation request
         valuationRequest.setFeedback(valuationRequestDTO.getFeedback());
