@@ -151,7 +151,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                     || diamondValuationNote.getCut() == null || diamondValuationNote.getFluorescence() == null || diamondValuationNote.getPolish() == null
                     || diamondValuationNote.getSymmetry() == null || diamondValuationNote.getShape() == null || diamondValuationNote.getDiamondOrigin() == null
                     || diamondValuationNote.getCutScore() <0 || diamondValuationNote.getClarityCharacteristicLink() == null || diamondValuationNote.getProportions() == null
-                    || diamondValuationNote.getClarityCharacteristic() == null) {
+                    || diamondValuationNote.getClarityCharacteristic().isEmpty()) {
                 throw new APIException(HttpStatus.BAD_REQUEST, "Diamond valuation note must be filled");
             }
         }

@@ -31,4 +31,22 @@ public interface DiamondValuationAssignRepository extends JpaRepository<DiamondV
 
     Page<DiamondValuationAssign> findAllByStatus(Pageable pageable, boolean status);
 
+    @Query(value = "SELECT " +
+            "COUNT(CASE " +
+            "        WHEN MONTH(vd.creation_date) = MONTH(GETDATE()) " +
+            "            AND YEAR(vd.creation_date) = YEAR(GETDATE()) " +
+            "        THEN vd.id " +
+            "        ELSE NULL " +
+            "    END) AS totalDiamondValuationCurrentMonth, " +
+            "COUNT(CASE " +
+            "        WHEN MONTH(vd.creation_date) = MONTH(DATEADD(MONTH, -1, GETDATE())) " +
+            "            AND YEAR(vd.creation_date) = YEAR(DATEADD(MONTH, -1, GETDATE())) " +
+            "        THEN vd.id " +
+            "        ELSE NULL " +
+            "    END) AS totalDiamondValuationPreviousMonth " +
+            "FROM diamond_valuation_assign vd " +
+            "WHERE vd.status = 1",
+            nativeQuery = true)
+    List<Object[]> findTotalDiamondValuationCurrentAndPreviousMonth();
+
 }
