@@ -82,7 +82,7 @@ public class DiamondMarketController {
             @RequestParam(name = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
             @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
-            @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir
+            @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR_DESC, required = false) String sortDir
             ) {
         return new ResponseEntity<>(diamondMarketService.getAllDiamondMarket(pageNo, pageSize, sortBy, sortDir), HttpStatus.OK);
     }

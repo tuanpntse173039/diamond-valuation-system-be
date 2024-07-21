@@ -128,6 +128,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         }
         if(valuationRequestDetailDTO.getSize() != 0) {
             if(recordRepository.findByValuationRequestIdAndType(valuationRequest.getId(), RecordType.RECEIPT).isPresent()) {
+                float size = (float) Math.round(valuationRequestDetailDTO.getSize() * 100) / 100;
                 valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
             } else {
                 throw new APIException(HttpStatus.BAD_REQUEST, "Receipt must be created first");
