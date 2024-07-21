@@ -126,11 +126,23 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         if(valuationRequest.getStaff() == null) {
             throw new APIException(HttpStatus.BAD_REQUEST, "Staff must be assigned to valuation request first");
         }
+        float size = (float) Math.round(valuationRequestDetailDTO.getSize() * 100) / 100;
+
         if(valuationRequestDetailDTO.getSize() != 0) {
             if(recordRepository.findByValuationRequestIdAndType(valuationRequest.getId(), RecordType.RECEIPT).isPresent()) {
-                valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
+                valuationRequestDetail.setSize(size);
             } else {
                 throw new APIException(HttpStatus.BAD_REQUEST, "Receipt must be created first");
+            }
+        }
+
+        if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())){
+            if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())
+            || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.VALUATING.toString())
+            || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.VALUATED.toString())
+            || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.APPROVED.toString())) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Cannot cancel valuation request detail");
+
             }
         }
         if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())){
@@ -139,10 +151,18 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                     || diamondValuationNote.getCut() == null || diamondValuationNote.getFluorescence() == null || diamondValuationNote.getPolish() == null
                     || diamondValuationNote.getSymmetry() == null || diamondValuationNote.getShape() == null || diamondValuationNote.getDiamondOrigin() == null
                     || diamondValuationNote.getCutScore() <0 || diamondValuationNote.getClarityCharacteristicLink() == null || diamondValuationNote.getProportions() == null
-                    || diamondValuationNote.getClarityCharacteristic() == null) {
+                    || diamondValuationNote.getClarityCharacteristic().isEmpty()) {
                 throw new APIException(HttpStatus.BAD_REQUEST, "Diamond valuation note must be filled");
             }
         }
+
+        //check status
+        if(!valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())){
+            if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Request must be changed to received first");
+            }
+        }
+
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
         valuationRequestDetail.setCancelReason(valuationRequestDetailDTO.getCancelReason());
@@ -154,7 +174,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
 
         //update Service Price
         if (valuationRequestDetailDTO.isDiamond()) {
-            updateServicePrice(valuationRequestDetailDTO.getSize(), valuationRequestDetail);
+            updateServicePrice(size, valuationRequestDetail);
         }
 
         //update valuation price base on mode

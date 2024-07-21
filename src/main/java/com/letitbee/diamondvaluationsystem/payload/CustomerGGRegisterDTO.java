@@ -22,7 +22,5 @@ public class CustomerGGRegisterDTO {
     private String phone;
     private String address;
     private String avatar;
-    @NotEmpty(message = "Identity document cannot be empty")
-    @Size(min = 12, max = 12, message = "Invalid identity document")
     private String identityDocument;
 }

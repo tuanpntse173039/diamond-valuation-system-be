@@ -7,24 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface ValuationRequestDetailRepository extends JpaRepository<ValuationRequestDetail, Long> {
-    @Query(value = "SELECT " +
-            "COUNT(CASE " +
-            "        WHEN MONTH(v.creation_date) = MONTH(GETDATE()) " +
-            "            AND YEAR(v.creation_date) = YEAR(GETDATE()) " +
-            "        THEN vd.id " +
-            "        ELSE NULL " +
-            "    END) AS totalDiamondValuationCurrentMonth, " +
-            "COUNT(CASE " +
-            "        WHEN MONTH(v.creation_date) = MONTH(DATEADD(MONTH, -1, GETDATE())) " +
-            "            AND YEAR(v.creation_date) = YEAR(DATEADD(MONTH, -1, GETDATE())) " +
-            "        THEN vd.id " +
-            "        ELSE NULL " +
-            "    END) AS totalDiamondValuationPreviousMonth " +
-            "FROM valuation_request_detail vd " +
-            "JOIN valuation_request v ON v.id = vd.valuation_request_id " +
-            "WHERE vd.status != 'PENDING' AND vd.status != 'CANCEL' ",
-            nativeQuery = true)
-    List<Object[]> findTotalDiamondValuationCurrentAndPreviousMonth();
 
     @Query(value = "WITH FilteredDetails AS ( " +
             "    SELECT " +

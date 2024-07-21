@@ -121,14 +121,21 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     }
 
     @Override
-    public Response<DiamondValuationAssignResponse> getAllDiamondValuationAssign(int pageNo, int pageSize, String sortBy, String sortDir) {
+    public Response<DiamondValuationAssignResponse> getAllDiamondValuationAssign(int pageNo, int pageSize, String sortBy,
+                                                                                 String sortDir, String status) {
 
         //create Pageable intance
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
 
         Pageable pageable = PageRequest.of(pageNo,pageSize, sort);
+        Page<DiamondValuationAssign> diamondValuationAssigns;
 
-        Page<DiamondValuationAssign> diamondValuationAssigns = diamondValuationAssignRepository.findAll(pageable);
+        if(status.isEmpty() || status.isBlank()) {
+             diamondValuationAssigns = diamondValuationAssignRepository.findAll(pageable);
+        } else {
+            boolean statusBoolean = Boolean.parseBoolean(status);
+            diamondValuationAssigns = diamondValuationAssignRepository.findAllByStatus(pageable, statusBoolean);
+        }
         //get content for page obj
 
         List<DiamondValuationAssign> diamondValuationAssignList = diamondValuationAssigns.getContent();

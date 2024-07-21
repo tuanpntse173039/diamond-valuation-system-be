@@ -47,8 +47,9 @@ public class DiamondValuationAssignController {
             @RequestParam(value = "pageNo", defaultValue = AppConstraint.PAGE_NO, required = false) int pageNo,
             @RequestParam(value = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
-            @RequestParam(value = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir) {
-        return ResponseEntity.ok(diamondValuationAssignService.getAllDiamondValuationAssign(pageNo, pageSize, sortBy, sortDir));
+            @RequestParam(value = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+            @RequestParam(value = "status", defaultValue = AppConstraint.STATUS, required = false) String status) {
+        return ResponseEntity.ok(diamondValuationAssignService.getAllDiamondValuationAssign(pageNo, pageSize, sortBy, sortDir, status));
     }
 
 }
