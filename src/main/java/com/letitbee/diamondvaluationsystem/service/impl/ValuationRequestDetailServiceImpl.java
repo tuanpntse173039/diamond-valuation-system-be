@@ -271,7 +271,7 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             notificationConsultant.setCreationDate(new Date());
             notificationRepository.save(notificationConsultant);
             try {
-                sendCompleteNotiForCus(siteURL, valuationRequest.getStaff().getAccount(), valuationRequest.getCustomer(), valuationRequest);
+                sendCompleteNotiForCus(siteURL, valuationRequest.getCustomer().getAccount(), valuationRequest.getCustomer(), valuationRequest);
             } catch (MessagingException | UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
