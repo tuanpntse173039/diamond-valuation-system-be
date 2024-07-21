@@ -135,6 +135,16 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 throw new APIException(HttpStatus.BAD_REQUEST, "Receipt must be created first");
             }
         }
+
+        if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())){
+            if(valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())
+            || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.VALUATING.toString())
+            || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.VALUATED.toString())
+            || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.APPROVED.toString())) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Cannot cancel valuation request detail");
+
+            }
+        }
         if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())){
             DiamondValuationNote diamondValuationNote = valuationRequestDetail.getDiamondValuationNote();
             if(diamondValuationNote.getCaratWeight() < 0 || diamondValuationNote.getClarity() == null || diamondValuationNote.getColor() == null
@@ -145,6 +155,14 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                 throw new APIException(HttpStatus.BAD_REQUEST, "Diamond valuation note must be filled");
             }
         }
+
+        //check status
+        if(!valuationRequest.getStatus().toString().equalsIgnoreCase(RequestStatus.RECEIVED.toString())){
+            if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Request must be changed to received first");
+            }
+        }
+
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
         valuationRequestDetail.setCancelReason(valuationRequestDetailDTO.getCancelReason());
