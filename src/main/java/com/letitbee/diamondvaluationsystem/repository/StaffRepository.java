@@ -19,6 +19,8 @@ public interface StaffRepository extends JpaRepository<Staff, Long> {
 
     List<Staff> findStaffByFirstNameLikeIgnoreCaseOrLastNameLikeIgnoreCase(String firstName, String lastName);
 
+    boolean existsByPhone(String phone);
+
     @Query("SELECT s " +
             "FROM Staff s " +
             "INNER JOIN  Account a ON s.account = a " +

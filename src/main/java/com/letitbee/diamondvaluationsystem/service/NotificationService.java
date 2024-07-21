@@ -8,5 +8,7 @@ public interface NotificationService {
 
     List<NotificationDTO> getAllNotificationByAccount(Long id);
 
-    NotificationDTO updateNotification(NotificationDTO notificationDTO, Long id);
+    NotificationDTO updateNotification( Long id);
+
+    NotificationDTO createNotification(NotificationDTO notificationDTO);
 }

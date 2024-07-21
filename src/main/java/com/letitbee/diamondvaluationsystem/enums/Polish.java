@@ -20,4 +20,13 @@ public enum Polish {
     public String toString() {
         return displayName;
     }
+
+    public static Polish fromString(String displayName) {
+        for (Polish shape : Polish.values()) {
+            if (shape.getDisplayName().equalsIgnoreCase(displayName)) {
+                return shape;
+            }
+        }
+        return null;
+    }
 }

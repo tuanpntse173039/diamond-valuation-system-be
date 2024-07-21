@@ -1,13 +1,15 @@
 package com.letitbee.diamondvaluationsystem.service.impl;
 
-import com.letitbee.diamondvaluationsystem.entity.Customer;
-import com.letitbee.diamondvaluationsystem.entity.Payment;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
+import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.enums.Role;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.CustomerDTO;
 import com.letitbee.diamondvaluationsystem.payload.PaymentDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
+import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
+import com.letitbee.diamondvaluationsystem.repository.NotificationRepository;
 import com.letitbee.diamondvaluationsystem.repository.PaymentRepository;
 import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
 import com.letitbee.diamondvaluationsystem.service.PaymentService;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -30,11 +33,16 @@ public class PaymentServiceImpl implements PaymentService {
     private ModelMapper mapper;
     private PaymentRepository paymentRepository;
     private ValuationRequestRepository valuationRequestRepository;
+    private NotificationRepository notificationRepository;
+    private AccountRepository accountRepository;
 
-    public PaymentServiceImpl(ModelMapper mapper, PaymentRepository paymentRepository, ValuationRequestRepository valuationRequestRepository) {
+    public PaymentServiceImpl(ModelMapper mapper, PaymentRepository paymentRepository, ValuationRequestRepository valuationRequestRepository
+    , NotificationRepository notificationRepository, AccountRepository accountRepository) {
         this.mapper = mapper;
         this.paymentRepository = paymentRepository;
         this.valuationRequestRepository = valuationRequestRepository;
+        this.notificationRepository = notificationRepository;
+        this.accountRepository = accountRepository;
     }
     @Override
     public PaymentDTO createPayment(PaymentDTO paymentDTO) {
@@ -45,22 +53,39 @@ public class PaymentServiceImpl implements PaymentService {
             throw new ResourceNotFoundException("Valuation Request", "id", valuationRequest.getId() + "");
         }
 
+        if (valuationRequest.getPayment().size() >= 2) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Can't create more than 2 payments");
+        }
+
+        for (ValuationRequestDetail valuationRequestDetail : valuationRequest.getValuationRequestDetails()) {
+            if(valuationRequestDetail.getSize() == 0) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Size can't be 0");
+            }
+        }
+
         Payment payment = mapToEntity(paymentDTO);
 
         if(valuationRequest.getPayment().isEmpty()) {
-            double amount = valuationRequest.getTotalServicePrice() * 0.4;
             payment.setPaytime(new Date());
-            payment.setAmount(amount);
             payment = paymentRepository.save(payment);
             valuationRequest.setStatus(RequestStatus.RECEIVED);
             valuationRequestRepository.save(valuationRequest);
+            Notification notification = new Notification();
+            notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+            notification.setCreationDate(new Date());
+            notification.setMessage("Valuation Request #" + valuationRequest.getId() +  " has been received");
+            notificationRepository.save(notification);
+
         } else {
-            double amount = valuationRequest.getTotalServicePrice() * 0.6;
             payment.setPaytime(new Date());
-            payment.setAmount(amount);
             payment = paymentRepository.save(payment);
             valuationRequest.setStatus(RequestStatus.FINISHED);
             valuationRequestRepository.save(valuationRequest);
+            Notification notification = new Notification();
+            notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+            notification.setCreationDate(new Date());
+            notification.setMessage("Valuation Request #" + valuationRequest.getId() +  " has been finished");
+            notificationRepository.save(notification);
         }
         return mapToDTO(payment);
     }

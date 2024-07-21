@@ -56,3 +56,4 @@ public class PostController {
         return new ResponseEntity<>("Post deleted successfully", HttpStatus.OK);
     }
 }
+

@@ -9,6 +9,6 @@ public class NotificationDTO {
     private Long id;
     private Date creationDate;
     private String message;
-    private Boolean isRead;
+    private boolean isRead;
     private Long accountId;
 }

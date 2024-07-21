@@ -93,4 +93,9 @@ public class DiamondMarketController {
         diamondMarketService.deleteDiamondMarket(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
+    @GetMapping("/crawl/supplier/{id}")
+    public ResponseEntity<String> crawl(@PathVariable(name = "id") long id) {
+        return new ResponseEntity<>(diamondMarketService.crawlDiamondMarket(id), HttpStatus.OK);
+    }
 }

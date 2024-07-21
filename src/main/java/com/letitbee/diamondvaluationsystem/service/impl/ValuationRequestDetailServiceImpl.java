@@ -37,6 +37,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
     private DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl;
     private RecordRepository recordRepository;
+    private NotificationRepository notificationRepository;
+    private AccountRepository accountRepository;
 
     public ValuationRequestDetailServiceImpl(ModelMapper mapper,
                                              ValuationRequestDetailRepository valuationRequestDetailRepository,
@@ -46,7 +48,9 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
                                              DiamondValuationAssignRepository diamondValuationAssignRepository,
                                              DiamondMarketRepository diamondMarketRepository,
                                              DiamondValuationNoteServiceImpl diamondValuationNoteServiceImpl,
-                                             RecordRepository recordRepository
+                                             RecordRepository recordRepository,
+                                                NotificationRepository notificationRepository,
+                                                AccountRepository accountRepository
     ) {
         this.mapper = mapper;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
@@ -57,6 +61,8 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         this.diamondMarketRepository = diamondMarketRepository;
         this.diamondValuationNoteServiceImpl = diamondValuationNoteServiceImpl;
         this.recordRepository = recordRepository;
+        this.notificationRepository = notificationRepository;
+        this.accountRepository = accountRepository;
     }
 
     private ValuationRequestDetail mapToEntity(ValuationRequestDetailDTO valuationRequestDetailDTO) {
@@ -114,21 +120,37 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         ValuationRequestDetail valuationRequestDetail = valuationRequestDetailRepository
                 .findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Valuation request detail", "id", id + ""));
+
         //set data to valuation request detail
         ValuationRequest valuationRequest = valuationRequestDetail.getValuationRequest();
-        valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
-//        if(valuationRequestDetail.getSize() ==  0 && valuationRequestDetailDTO.getSize() != 0) {
-//            valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
-//            valuationRequest.setReturnDate(getReturnDate(valuationRequest));
-//            valuationRequestRepository.save(valuationRequest);
-//        }
-        valuationRequest = valuationRequestDetail.getValuationRequest();
+        if(valuationRequest.getStaff() == null) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Staff must be assigned to valuation request first");
+        }
+        if(valuationRequestDetailDTO.getSize() != 0) {
+            if(recordRepository.findByValuationRequestIdAndType(valuationRequest.getId(), RecordType.RECEIPT).isPresent()) {
+                valuationRequestDetail.setSize(valuationRequestDetailDTO.getSize());
+            } else {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Receipt must be created first");
+            }
+        }
+        if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())){
+            DiamondValuationNote diamondValuationNote = valuationRequestDetail.getDiamondValuationNote();
+            if(diamondValuationNote.getCaratWeight() < 0 || diamondValuationNote.getClarity() == null || diamondValuationNote.getColor() == null
+                    || diamondValuationNote.getCut() == null || diamondValuationNote.getFluorescence() == null || diamondValuationNote.getPolish() == null
+                    || diamondValuationNote.getSymmetry() == null || diamondValuationNote.getShape() == null || diamondValuationNote.getDiamondOrigin() == null
+                    || diamondValuationNote.getCutScore() <0 || diamondValuationNote.getClarityCharacteristicLink() == null || diamondValuationNote.getProportions() == null
+                    || diamondValuationNote.getClarityCharacteristic() == null) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Diamond valuation note must be filled");
+            }
+        }
         valuationRequestDetail.setStatus(valuationRequestDetailDTO.getStatus());
         valuationRequestDetail.setResultLink(valuationRequestDetailDTO.getResultLink());
         valuationRequestDetail.setCancelReason(valuationRequestDetailDTO.getCancelReason());
+        valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
+
         //delete diamond note when know diamond is fake
         deleteDiamondValuationNote(valuationRequestDetailDTO, valuationRequestDetail);
-        valuationRequestDetail.setDiamond(valuationRequestDetailDTO.isDiamond());
+
 
         //update Service Price
         if (valuationRequestDetailDTO.isDiamond()) {
@@ -142,13 +164,31 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         //save to database
         valuationRequestDetail = valuationRequestDetailRepository.save(valuationRequestDetail);
 
+        if(valuationRequestDetailDTO.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())){
+            //send notification to manager
+            Notification notification = new Notification();
+            notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+            notification.setMessage("Request detail $" + valuationRequestDetail.getId() + " in request #" + valuationRequest.getId() + " has been canceled");
+            notification.setRead(false);
+            notification.setCreationDate(new Date());
+            notificationRepository.save(notification);
+        }
+
         if (valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.CANCEL.toString())
                 || valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSING.toString())) {
+            //change status of valuation request to valuating when status of detail is cancel or assessing
             changeValuationRequestStatusToValuating(valuationRequest);
         } else if (
                 valuationRequestDetail.getStatus().toString().equalsIgnoreCase(RequestDetailStatus.ASSESSED.toString())) {
             updateDiamondValuationNote(valuationRequestDetail);//update diamond valuation note price when status id assessed
             generateCertificate(valuationRequestDetail); // generate certificate id and certificate date;
+            //send notification to manager
+            Notification notification = new Notification();
+            notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+            notification.setMessage("Request detail $" + valuationRequestDetail.getId() + " in request #" + valuationRequest.getId() + " has been assessed");
+            notification.setRead(false);
+            notification.setCreationDate(new Date());
+            notificationRepository.save(notification);
         }
         // update valuation request if valuation request detail status is cancel or assessing
         changeValuationRequestStatusToComplete(valuationRequest); //update valuation request status to complete
@@ -186,6 +226,18 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         if (checkStatusDetail) {
             RequestStatus requestStatus = RequestStatus.COMPLETED;
             updateValuationRequestStatus(valuationRequest, requestStatus);
+            Notification notification = new Notification();
+            notification.setAccount(valuationRequest.getCustomer().getAccount());
+            notification.setMessage("Valuation request #" + valuationRequest.getId() + " has been completed");
+            notification.setRead(false);
+            notification.setCreationDate(new Date());
+            notificationRepository.save(notification);
+            Notification notificationConsultant = new Notification();
+            notificationConsultant.setAccount(valuationRequest.getStaff().getAccount());
+            notificationConsultant.setMessage("Valuation request #" + valuationRequest.getId() + " has been completed");
+            notificationConsultant.setRead(false);
+            notificationConsultant.setCreationDate(new Date());
+            notificationRepository.save(notificationConsultant);
         } // update valuation request if its all detail status is cancel or approve
 
     }
@@ -249,7 +301,6 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
             diamondValuationNoteDTO.setMaxPrice(diamondMarkets.get(diamondMarkets.size() - 1).getPrice());
             diamondValuationNoteDTO.setMinPrice(diamondMarkets.stream().findFirst().get().getPrice());
         }
-        else throw new APIException(HttpStatus.NOT_FOUND,"No diamond price list data found");
         diamondValuationNoteRepository.save(mapper.map(diamondValuationNoteDTO, DiamondValuationNote.class));
     }
 

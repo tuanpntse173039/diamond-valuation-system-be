@@ -1,5 +1,6 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
+import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
 import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.payload.*;
 import com.letitbee.diamondvaluationsystem.service.StaffService;
@@ -13,6 +14,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -63,9 +68,22 @@ public class StaffController {
             @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
             @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
+            @RequestParam(name = "status", required = false) RequestStatus status,
+            @RequestParam(name = "startDate", defaultValue = AppConstraint.START_DATE, required = false) String startDate,
+            @RequestParam(name = "endDate", defaultValue = AppConstraint.END_DATE, required = false) String endDate,
+            @RequestParam(name = "search", required = false) String searchValue,
             @PathVariable("id") Long staffId){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDate startDateLD = LocalDate.parse(startDate, formatter);
+        LocalDate endDateLD = LocalDate.parse(endDate, formatter);
+
+        LocalDateTime startOfDay = startDateLD.atStartOfDay();
+        LocalDateTime endOfDay = endDateLD.atTime(23, 59, 59);
+
+        Date start = java.sql.Timestamp.valueOf(startOfDay);
+        Date end = java.sql.Timestamp.valueOf(endOfDay);
         return new ResponseEntity<>(valuationRequestService.
-                getValuationRequestResponseByStaff(pageNo, pageSize, sortBy, sortDir,staffId), HttpStatus.OK);
+                getValuationRequestResponseByStaff(pageNo, pageSize, sortBy, sortDir,staffId,status, start, end, searchValue), HttpStatus.OK);
     }
 
 

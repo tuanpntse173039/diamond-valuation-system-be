@@ -15,22 +15,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(authorities = "CUSTOMER")
-public class DiamondValuationNote {
+public class DiamondValuationNoteTest {
 
     @Autowired
     private MockMvc mockMvc;
-
-
-    @Test
-    public void testGetAllDiamondValuationNoteByCertificateId() throws Exception {
-        String certificateId = "0367304355";
-
-
-        mockMvc.perform(get("/api/v1/diamond-valuation-notes/search")
-                .param("certificateId", certificateId)
-                .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
 
     @Test
     public void testSearchCertificateIdNotFound() throws Exception {

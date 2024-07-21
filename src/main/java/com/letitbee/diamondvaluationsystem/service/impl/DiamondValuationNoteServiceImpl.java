@@ -9,6 +9,7 @@ import com.letitbee.diamondvaluationsystem.payload.DiamondValuationNoteDTO;
 import com.letitbee.diamondvaluationsystem.repository.DiamondValuationNoteRepository;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationNoteService;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +24,7 @@ import java.util.stream.Collectors;
 @Service
 public class DiamondValuationNoteServiceImpl implements DiamondValuationNoteService {
 
-    private ModelMapper mapper;
+    private final ModelMapper mapper;
     private DiamondValuationNoteRepository diamondValuationNoteRepository;
 
     public DiamondValuationNoteServiceImpl(ModelMapper mapper, DiamondValuationNoteRepository diamondValuationNoteRepository) {

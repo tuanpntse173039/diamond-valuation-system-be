@@ -41,8 +41,11 @@ public class ServicePriceListImpl implements ServicePriceListService {
 
     @Override
     public ServicePriceListDTO createServicePriceList(ServicePriceListDTO servicePriceListDto) {
+        Service service = serviceRepository.findById(servicePriceListDto.getServiceId()).orElseThrow(() -> new ResourceNotFoundException("Service", "id", servicePriceListDto.getServiceId() + ""));
         if(servicePriceListDto.getMinSize() > servicePriceListDto.getMaxSize()) {
             throw new APIException( HttpStatus.BAD_REQUEST, "Max size must be greater than min size");
+        }else if (servicePriceListRepository.existsSizeExist(service, servicePriceListDto.getMinSize(), servicePriceListDto.getMaxSize())){
+            throw new APIException( HttpStatus.BAD_REQUEST, "Min size or max size is already existed in other range");
         }
         ServicePriceList servicePriceList = mapToEntity(servicePriceListDto);
         return mapToDto(servicePriceListRepository.save(servicePriceList));
@@ -51,13 +54,19 @@ public class ServicePriceListImpl implements ServicePriceListService {
     @Override
     public ServicePriceListDTO updateServicePriceList(long id, ServicePriceListDTO servicePriceListDto) {
         ServicePriceList servicePriceList = servicePriceListRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("ServicePriceList", "id", id + ""));
+        Service service = serviceRepository.findById(servicePriceListDto.getServiceId()).orElseThrow(() -> new ResourceNotFoundException("Service", "id", servicePriceListDto.getServiceId() + ""));
         if(servicePriceListDto.getMinSize() > servicePriceListDto.getMaxSize()) {
             throw new APIException( HttpStatus.BAD_REQUEST, "Max size must be greater than min size");
+        }
+        if (servicePriceListRepository.existsByMinSizeInRangeExcludingId(id,service , servicePriceListDto.getMinSize())
+                || servicePriceListRepository.existsByMaxSizeInRangeExcludingId(id,service ,servicePriceListDto.getMaxSize())){
+            throw new APIException( HttpStatus.BAD_REQUEST, "Min size or max size is already existed in other range");
         }
         servicePriceList.setMinSize(servicePriceListDto.getMinSize());
         servicePriceList.setMaxSize(servicePriceListDto.getMaxSize());
         servicePriceList.setInitPrice(servicePriceListDto.getInitPrice());
         servicePriceList.setUnitPrice(servicePriceListDto.getUnitPrice());
+        servicePriceList.setService(service);
         return mapToDto(servicePriceListRepository.save(servicePriceList));
     }
 

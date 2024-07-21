@@ -22,9 +22,7 @@ public interface ValuationRequestDetailRepository extends JpaRepository<Valuatio
             "    END) AS totalDiamondValuationPreviousMonth " +
             "FROM valuation_request_detail vd " +
             "JOIN valuation_request v ON v.id = vd.valuation_request_id " +
-            "WHERE ((MONTH(v.creation_date) = MONTH(GETDATE()) AND YEAR(v.creation_date) = YEAR(GETDATE())) " +
-            "OR (MONTH(v.creation_date) = MONTH(DATEADD(MONTH, -1, GETDATE())) AND YEAR(v.creation_date) = YEAR(DATEADD(MONTH, -1, GETDATE())))) " +
-            "AND vd.status != 'PENDING' AND vd.status != 'CANCEL'",
+            "WHERE vd.status != 'PENDING' AND vd.status != 'CANCEL' ",
             nativeQuery = true)
     List<Object[]> findTotalDiamondValuationCurrentAndPreviousMonth();
 

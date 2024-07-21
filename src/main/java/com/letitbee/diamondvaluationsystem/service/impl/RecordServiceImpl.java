@@ -3,6 +3,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.Record;
 import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.RecordType;
+import com.letitbee.diamondvaluationsystem.exception.APIException;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.RecordDTO;
 import com.letitbee.diamondvaluationsystem.repository.RecordRepository;
@@ -43,6 +44,20 @@ public class RecordServiceImpl implements RecordService {
         if (record.getType() == RecordType.RECEIPT) {
             valuationRequest.setReturnDate(getReturnDate(valuationRequest, record.getCreationDate()));
         }
+        if(getRecordByValuationRequestIdAndType(record.getValuationRequest().getId(), record.getType()) != null) {
+            throw new APIException(HttpStatus.BAD_REQUEST, "Record already exists");
+        }
+        if(record.getType() == RecordType.RETURN || record.getType() == RecordType.COMMITMENT || record.getType() == RecordType.SEALING) {
+            if(getRecordByValuationRequestIdAndType(record.getValuationRequest().getId(), RecordType.RECEIPT) == null) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Can't create record without receipt record");
+            }
+        }
+        if(record.getType() == RecordType.SEALING) {
+            if(getRecordByValuationRequestIdAndType(record.getValuationRequest().getId(), RecordType.RESULTS) != null ||
+                    getRecordByValuationRequestIdAndType(record.getValuationRequest().getId(), RecordType.COMMITMENT) != null) {
+                throw new APIException(HttpStatus.BAD_REQUEST, "Can't create sealing record because results or commitment record already exists");
+            }
+        }
         return mapToDTO(recordRepository.save(record));
     }
 
@@ -60,7 +75,7 @@ public class RecordServiceImpl implements RecordService {
 
     @Override
     public RecordDTO getRecord(Long id) {
-        return null;
+        return mapToDTO(recordRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Record", "id", id.toString())));
     }
 
     @Override
@@ -80,6 +95,9 @@ public class RecordServiceImpl implements RecordService {
         Record record = recordRepository.findByValuationRequestIdAndType(requestId, type).orElseThrow(()
                 -> new ResourceNotFoundException("Record", "valuationRequestId", requestId.toString()));
         return mapToDTO(record);
+    }
+    private Record getRecordByValuationRequestIdAndType(Long requestId, RecordType type) {
+        return recordRepository.findByValuationRequestIdAndType(requestId, type).orElse(null);
     }
 
     private RecordDTO mapToDTO(Record record) {

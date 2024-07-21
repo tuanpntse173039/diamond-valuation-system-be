@@ -1,35 +1,30 @@
 package com.letitbee.diamondvaluationsystem.controller;
 
-import com.letitbee.diamondvaluationsystem.entity.Account;
-import com.letitbee.diamondvaluationsystem.entity.Customer;
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.letitbee.diamondvaluationsystem.entity.RefreshToken;
-import com.letitbee.diamondvaluationsystem.entity.Staff;
-import com.letitbee.diamondvaluationsystem.enums.Role;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.letitbee.diamondvaluationsystem.payload.*;
-import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
-import com.letitbee.diamondvaluationsystem.repository.CustomerRepository;
-import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
-import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.Map;
 
 @RestController
 @RequestMapping("api/v1/auth")
 public class AuthController {
     private AccountService accountService;
-
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String clientId;
 
     public AuthController(AccountService accountService) {
         this.accountService = accountService;
@@ -45,6 +40,11 @@ public class AuthController {
     public ResponseEntity<AccountResponse> register(@RequestBody @Valid CustomerRegisterDTO customerRegisterDTO){
         AccountResponse response = accountService.register(customerRegisterDTO);
         return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+    @PostMapping("/verify-account")
+    public ResponseEntity<String> verifyAccount(@RequestParam(name = "token") String code) {
+        accountService.verifyAccount(code);
+        return ResponseEntity.ok("Account verified successfully");
     }
 
     //register Staff
@@ -83,5 +83,41 @@ public class AuthController {
         newPassword = newPassword.replaceAll("\"", "");
         accountService.resetPassword(code, newPassword);
         return ResponseEntity.ok("Password reset successfully");
+    }
+
+    @PostMapping("/google-login")
+    public ResponseEntity<LoginResponse> googleLogin(@RequestBody Map<String, String> request) {
+        String token = request.get("token");
+        System.out.println(clientId);
+        try {
+            GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(GoogleNetHttpTransport.newTrustedTransport(), JacksonFactory.getDefaultInstance())
+                    .setAudience(Collections.singletonList(clientId))
+                    .build();
+
+            GoogleIdToken idToken = verifier.verify(token);
+            if (idToken != null) {
+                GoogleIdToken.Payload payload = idToken.getPayload();
+                String email = payload.getEmail();
+                LoginResponse loginResponse = accountService.findAccountByEmail(email);
+                return ResponseEntity.ok(loginResponse);
+            } else {
+                throw new RuntimeException("Invalid ID token.");
+            }
+        }  catch (GeneralSecurityException | IOException e) {
+            throw new RuntimeException("Error verifying token", e);
+        }
+    }
+
+    @PostMapping("/google-register")
+    public ResponseEntity<AccountResponse> googleRegister(@RequestBody @Valid CustomerGGRegisterDTO customerRegisterDTO){
+        AccountResponse response = accountService.registerGoogle(customerRegisterDTO);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout(@RequestBody Map<String, String> request) {
+        Long id = Long.parseLong(request.get("accountId"));
+        accountService.logout(id);
+        return ResponseEntity.ok("Logout successfully");
     }
 }

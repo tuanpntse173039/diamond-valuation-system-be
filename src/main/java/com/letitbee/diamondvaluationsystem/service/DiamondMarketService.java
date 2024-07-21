@@ -38,4 +38,8 @@ public interface DiamondMarketService {
     void deleteDiamondMarket(long id);
 
     Response<DiamondMarketDTO> getAllDiamondMarket(int pageNo, int pageSize, String sortBy, String sortDir);
+
+
+    String crawlDiamondMarket(long id);
+
 }

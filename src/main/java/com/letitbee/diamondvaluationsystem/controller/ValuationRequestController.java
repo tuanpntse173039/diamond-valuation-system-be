@@ -16,6 +16,9 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 @Controller
@@ -76,9 +79,21 @@ public class ValuationRequestController {
             @RequestParam(name = "pageSize", defaultValue = AppConstraint.PAGE_SIZE, required = false) int pageSize,
             @RequestParam(name = "sortBy", defaultValue = AppConstraint.SORT_BY, required = false) String sortBy,
             @RequestParam(name = "sortDir", defaultValue = AppConstraint.SORT_DIR, required = false) String sortDir,
-            @RequestParam(name = "status", required = false) RequestStatus status){
+            @RequestParam(name = "status", required = false) RequestStatus status,
+            @RequestParam(name = "startDate", defaultValue = AppConstraint.START_DATE, required = false) String startDate,
+            @RequestParam(name = "endDate", defaultValue = AppConstraint.END_DATE, required = false) String endDate,
+            @RequestParam(name = "search", required = false) String searchValue){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDate startDateLD = LocalDate.parse(startDate, formatter);
+        LocalDate endDateLD = LocalDate.parse(endDate, formatter);
+
+        LocalDateTime startOfDay = startDateLD.atStartOfDay();
+        LocalDateTime endOfDay = endDateLD.atTime(23, 59, 59);
+
+        Date start = java.sql.Timestamp.valueOf(startOfDay);
+        Date end = java.sql.Timestamp.valueOf(endOfDay);
         return new ResponseEntity<>(valuationRequestService.
-                getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir,status), HttpStatus.OK);
+                getValuationRequestResponse(pageNo, pageSize, sortBy, sortDir,status, start, end, searchValue), HttpStatus.OK);
     }
 
 

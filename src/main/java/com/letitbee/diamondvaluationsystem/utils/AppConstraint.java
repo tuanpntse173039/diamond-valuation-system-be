@@ -8,7 +8,7 @@ public class AppConstraint {
     public final static String SORT_BY = "id";
     public final static String SORT_DIR = "ASC";
 
-    public final static String START_DATE = "06/04/2024";
-    public final static String END_DATE = "12/31/2099";
+    public final static String START_DATE = "2024/04/01";
+    public final static String END_DATE = "2099/12/31";
 
 }

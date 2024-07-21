@@ -18,9 +18,9 @@ public class RefreshToken {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     private Long id;
-    @Column(columnDefinition = "varchar(1000)", nullable = false,unique = true)
+    @Column(columnDefinition = "varchar(1000)")
     private String token;
-    @Column(columnDefinition = "datetime", nullable = false)
+    @Column(columnDefinition = "datetime")
     private Date expiryDate;
     @OneToOne
     @JoinColumn(name = "account_id", nullable = false)

@@ -3,15 +3,13 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 import com.letitbee.diamondvaluationsystem.entity.*;
 import com.letitbee.diamondvaluationsystem.enums.RequestDetailStatus;
 import com.letitbee.diamondvaluationsystem.enums.RequestStatus;
+import com.letitbee.diamondvaluationsystem.enums.Role;
 import com.letitbee.diamondvaluationsystem.exception.ResourceNotFoundException;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignDTO;
 import com.letitbee.diamondvaluationsystem.payload.DiamondValuationAssignResponse;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.payload.Response;
-import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
-import com.letitbee.diamondvaluationsystem.repository.StaffRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
+import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.DiamondValuationAssignService;
 import org.modelmapper.ModelMapper;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,17 +30,23 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private StaffRepository staffRepository;
+    private NotificationRepository notificationRepository;
     private ValuationRequestRepository valuationRequestRepository;
-
+    private AccountRepository accountRepository;
 
     public DiamondValuationAssignImpl(ModelMapper mapper,
                                       DiamondValuationAssignRepository diamondValuationAssignRepository,
                                       ValuationRequestDetailRepository valuationRequestDetailRepository,
-                                      StaffRepository staffRepository, ValuationRequestRepository valuationRequestRepository) {
+                                      StaffRepository staffRepository,
+                                      AccountRepository accountRepository,
+                                      NotificationRepository notificationRepository,
+                                      ValuationRequestRepository valuationRequestRepository) {
         this.mapper = mapper;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.staffRepository = staffRepository;
+        this.notificationRepository = notificationRepository;
+        this.accountRepository = accountRepository;
         this.valuationRequestRepository = valuationRequestRepository;
     }
     @Override
@@ -64,8 +68,16 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
         }
         //save to database
         diamondValuationAssign = diamondValuationAssignRepository.save(diamondValuationAssign);
+        Notification notification = new Notification();
+        notification.setMessage("You are assigned to valuate a diamond in request #" + valuationRequestDetail.getValuationRequest().getId()
+                + " with request detail @" + diamondValuationAssign.getId());
+        notification.setRead(false);
+        notification.setCreationDate(new Date());
+        notification.setAccount(staff.getAccount());
+        notificationRepository.save(notification);
         return mapToDTO(diamondValuationAssign);
     }
+
 
     @Override
     public DiamondValuationAssignDTO updateDiamondValuationAssign(long id, DiamondValuationAssignDTO diamondValuationAssignDTO) {
@@ -91,6 +103,13 @@ public class DiamondValuationAssignImpl implements DiamondValuationAssignService
                 }
             }
             if (flag == 0) {
+                Notification notification = new Notification();
+                notification.setMessage("Diamond valuation detail $" + valuationRequestDetail.getId()
+                        +  " in request #" + valuationRequestDetail.getValuationRequest().getId() + " is valuated");
+                notification.setRead(false);
+                notification.setCreationDate(new Date());
+                notification.setAccount(accountRepository.findByRole(Role.MANAGER));
+                notificationRepository.save(notification);
                 valuationRequestDetail.setStatus(RequestDetailStatus.VALUATED);
                 valuationRequestDetailRepository.save(valuationRequestDetail);
             }

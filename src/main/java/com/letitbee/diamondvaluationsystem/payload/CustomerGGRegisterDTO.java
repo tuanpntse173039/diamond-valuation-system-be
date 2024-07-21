@@ -7,13 +7,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class CustomerRegisterDTO {
-    @NotEmpty(message = "Username cannot be empty")
-    @Size(min = 6, max = 24, message = "Username must be between 6 and 24 characters")
-    private String username;
-    @NotEmpty(message = "Password cannot be empty")
-    @Size(min = 6, max = 24, message = "Password must be between 6 and 24 characters")
-    private String password;
+public class CustomerGGRegisterDTO {
     @NotEmpty(message = "Email cannot be empty")
     @Email(message = "Invalid email")
     private String email;
@@ -31,5 +25,4 @@ public class CustomerRegisterDTO {
     @NotEmpty(message = "Identity document cannot be empty")
     @Size(min = 12, max = 12, message = "Invalid identity document")
     private String identityDocument;
-
 }

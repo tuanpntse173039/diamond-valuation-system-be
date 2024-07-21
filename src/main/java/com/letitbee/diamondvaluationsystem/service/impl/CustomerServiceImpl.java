@@ -95,13 +95,16 @@ public class CustomerServiceImpl implements CustomerService {
                 orElseThrow(() -> new ResourceNotFoundException("Customer", "AccountId", id + ""));
         if (customerUpdate.getFirstName() != null) { customer.setFirstName(customerUpdate.getFirstName()); }
         if (customerUpdate.getLastName() != null) { customer.setLastName(customerUpdate.getLastName()); }
-        if (customerUpdate.getPhone() != null && !customerRepository.existsByPhone(customerUpdate.getPhone())) { customer.setPhone(customerUpdate.getPhone()); }
-        else if (customerUpdate.getPhone() != null) { throw new APIException(HttpStatus.BAD_REQUEST, "Phone number already exists"); }
+        boolean isPhoneExist = customerRepository.existsByPhone(customerUpdate.getPhone());
+        if (customerUpdate.getPhone() != null && !isPhoneExist) { customer.setPhone(customerUpdate.getPhone()); }
+        else if (isPhoneExist) { throw new APIException(HttpStatus.BAD_REQUEST, "Phone number already exists"); }
         if (customerUpdate.getAddress() != null) { customer.setAddress(customerUpdate.getAddress()); }
         if (customerUpdate.getAvatar() != null) { customer.setAvatar(customerUpdate.getAvatar()); }
         if (customerUpdate.getIdentityDocument() != null) { customer.setIdentityDocument(customerUpdate.getIdentityDocument()); }
         Account account = customer.getAccount();
-        if (customerUpdate.getNewEmail() != null) { account.setEmail(customerUpdate.getNewEmail()); }
+        boolean isEmailExist = accountRepository.existsByEmail(customerUpdate.getNewEmail());
+        if (customerUpdate.getNewEmail() != null && !isEmailExist) { account.setEmail(customerUpdate.getNewEmail()); }
+        else if(isEmailExist) { throw new APIException(HttpStatus.BAD_REQUEST, "Email already exists"); }
         customerRepository.save(customer);
         accountRepository.save(account);
         CustomerUpdate customerUpdateResponse = new CustomerUpdate();

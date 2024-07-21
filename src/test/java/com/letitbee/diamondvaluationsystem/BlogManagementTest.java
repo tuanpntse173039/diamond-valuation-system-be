@@ -2,7 +2,6 @@ package com.letitbee.diamondvaluationsystem;
 
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.letitbee.diamondvaluationsystem.entity.Post;
 import com.letitbee.diamondvaluationsystem.payload.PostDTO;
 import com.letitbee.diamondvaluationsystem.repository.PostRepository;
 import org.junit.jupiter.api.Test;
@@ -22,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @WithMockUser(authorities = {"ADMIN"})
-public class BlogManagement {
+public class BlogManagementTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -56,24 +55,28 @@ public class BlogManagement {
     @Rollback
     public void testCreateTitleExist() throws Exception {
         PostDTO postDTO = new PostDTO();
-        postDTO.setTitle("testTitle");
+        postDTO.setTitle("Checking Diamond’s Clarity After Purchase");
         postDTO.setContent("testContent");
         postDTO.setCreationDate(new Date());
         postDTO.setLastModifiedDate(new Date());
+        postDTO.setDescription("testDescription");
         postDTO.setReference("https://www.test.com");
         postDTO.setThumbnail("testThumbnail");
+        postDTO.setAuthor("testAuthor");
         String postJson = objectMapper.writeValueAsString(postDTO);
-        boolean ex = postRepository.existsByTitle(postDTO.getTitle());
-        if(ex) {
+        if(postRepository.existsByTitle(postDTO.getTitle())) {
             mockMvc.perform(post("/api/v1/posts")
                             .contentType("application/json")
                             .content(postJson))
                     .andExpect(status().isBadRequest());
+            System.out.println("Title already exist " + postRepository.findByTitle(postDTO.getTitle()).getId() + " Title: " +
+                    postRepository.findByTitle(postDTO.getTitle()).getTitle() + " Author: " + postRepository.findByTitle(postDTO.getTitle()).getAuthor());
         }else {
             mockMvc.perform(post("/api/v1/posts")
                             .contentType("application/json")
                             .content(postJson))
                     .andExpect(status().isCreated());
+            System.out.println("Post created successfully");
         }
     }
 

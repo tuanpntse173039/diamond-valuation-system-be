@@ -1,7 +1,5 @@
 package com.letitbee.diamondvaluationsystem.payload;
 
-import com.letitbee.diamondvaluationsystem.entity.DiamondImage;
-import com.letitbee.diamondvaluationsystem.entity.ValuationRequest;
 import com.letitbee.diamondvaluationsystem.enums.*;
 import lombok.Data;
 

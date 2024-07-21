@@ -17,6 +17,7 @@ import com.letitbee.diamondvaluationsystem.security.JwtTokenProvider;
 import com.letitbee.diamondvaluationsystem.service.AccountService;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.persistence.GenerationType;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -87,6 +88,9 @@ public class AccountServiceImpl implements AccountService {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             Account account = accountRepository.findByUsernameOrEmail(accountDTO.getUsernameOrEmail(), accountDTO.getUsernameOrEmail())
                     .orElseThrow(() -> new UsernameNotFoundException("User not found with username or email : " + accountDTO.getUsernameOrEmail()));
+            if(!account.getIs_active()){
+                throw new CredentialsException(HttpStatus.FORBIDDEN, "Account has been banned or not activated yet");
+            }
             LoginResponse loginResponse = new LoginResponse();
             if (account.getRole().equals(Role.CUSTOMER)) {
                 Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
@@ -118,7 +122,7 @@ public class AccountServiceImpl implements AccountService {
 
             return loginResponse;
         }catch (BadCredentialsException ex) {
-            throw new CredentialsException(HttpStatus.UNAUTHORIZED, "Invalid username or password");
+            throw new CredentialsException(HttpStatus.FORBIDDEN, "Invalid username or password");
         }
     }
 
@@ -129,6 +133,8 @@ public class AccountServiceImpl implements AccountService {
         //add check for username exists in database
         if (accountRepository.existsByUsernameOrEmail(customerRegisterDTO.getUsername(), customerRegisterDTO.getEmail())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Username or email is already taken");
+        }else if(customerRepository.existsByPhone(customerRegisterDTO.getPhone())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Phone number is already taken");
         }
 
         //save account to db
@@ -161,6 +167,7 @@ public class AccountServiceImpl implements AccountService {
         newAccount.setEmail(account.getEmail());
 
         try {
+            System.out.println(account.getVerificationCode());
             sendVerificationEmail(customerRegisterDTO, siteURL + "verify-account?token=" + account.getVerificationCode());
         } catch (MessagingException | UnsupportedEncodingException e) {
             e.printStackTrace();
@@ -168,36 +175,91 @@ public class AccountServiceImpl implements AccountService {
         return newAccount;
     }
 
-    private void sendVerificationEmail(CustomerRegisterDTO customerRegisterDTO, String siteURL) throws MessagingException, UnsupportedEncodingException {
+    @Override
+    public AccountResponse registerGoogle(CustomerGGRegisterDTO customerGGRegisterDTO) {
+        if (accountRepository.existsByEmail(customerGGRegisterDTO.getEmail())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Email is already taken");
+        }else if(customerRepository.existsByPhone(customerGGRegisterDTO.getPhone())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Phone number is already taken");
+        }
+
+        //save account to db
+        Account account = new Account();
+        account.setUsername(customerGGRegisterDTO.getEmail());
+        account.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()));
+        account.setRole(Role.CUSTOMER);
+        account.setIs_active(false);
+        account.setEmail(customerGGRegisterDTO.getEmail());
+        account.setCreationDate(new Date());
+        account.setVerificationCode(UUID.randomUUID().toString());
+        account = accountRepository.save(account);
+
+        //save customer to db
+        Customer customer = new Customer();
+        customer.setFirstName(customerGGRegisterDTO.getFirstName());
+        customer.setLastName(customerGGRegisterDTO.getLastName());
+        customer.setPhone(customerGGRegisterDTO.getPhone());
+        customer.setAddress(customerGGRegisterDTO.getAddress());
+        customer.setIdentityDocument(customerGGRegisterDTO.getIdentityDocument());
+        customer.setAvatar(customerGGRegisterDTO.getAvatar());
+        customer.setAccount(account);
+        customerRepository.save(customer);
+        //return account to client without password
+        AccountResponse newAccount = new AccountResponse();
+        newAccount.setId(account.getId());
+        newAccount.setUsername(account.getUsername());
+        newAccount.setRole(account.getRole());
+        newAccount.setIs_active(account.getIs_active());
+        newAccount.setEmail(account.getEmail());
+
+        try {
+            System.out.println(account.getVerificationCode());
+            sendVerificationEmailV2(customerGGRegisterDTO, siteURL + "verify-account?token=" + account.getVerificationCode());
+        } catch (MessagingException | UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return newAccount;
+    }
+    private void sendVerificationEmailV2(CustomerGGRegisterDTO customerRegisterDTO, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        GenericCustomerRegister(siteURL, customerRegisterDTO.getFirstName(), customerRegisterDTO.getLastName(), customerRegisterDTO.getEmail());
+    }
+
+    private void GenericCustomerRegister(String siteURL, String firstName, String lastName, String email) throws MessagingException, UnsupportedEncodingException {
         String subject = "Please verify your registration";
         String senderName = "H&T Diamond";
         String mailContent = "<div style=\"font-family: Arial, sans-serif; background-color: #f0f0f0;\">";
-        mailContent += "<table width=\"100%\" border=\"0\" cellspacing=\"0\"" +
-                " cellpadding=\"0\" style=\"background: url('https://media.istockphoto.com/photos/diamond-on-the-water-picture-id639777488?k=6&m=639777488&s=612x612&w=0&h=JWUtKTN4CUTJ4dp0tPb2yXJq6Vh6s7smkZ-ZX4sgPbM=')" +
-                " no-repeat center center / cover; filter: blur(8px);\">";
+        mailContent += "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background: url('https://media.istockphoto.com/photos/diamond-on-the-water-picture-id639777488?k=6&m=639777488&s=612x612&w=0&h=JWUtKTN4CUTJ4dp0tPb2yXJq6Vh6s7smkZ-ZX4sgPbM=') no-repeat center center / cover; filter: blur(8px);\">";
         mailContent += "<tr>";
         mailContent += "<td align=\"center\" valign=\"top\" style=\"padding: 50px;\">";
-        mailContent += "<table width=\"50%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\">";
-        mailContent += "<tr><td style=\"padding: 20px; text-align: center;\">";
-        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">Dear " + customerRegisterDTO.getFirstName() + " " + customerRegisterDTO.getLastName() + ",</p>";
+        mailContent += "<table width=\"50%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background-color: rgba(255, 255, 255, 0.8); border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); text-align: left;\">";
+        mailContent += "<tr><td style=\"padding: 20px;\">";
+        mailContent += "<p style=\"margin: 0 0 10px; color: #000000;\">Dear " + firstName + " " + lastName + ",</p>";
         mailContent += "<p style=\"margin: 0 0 20px; color: #000000;\">Thank you for registering with H&T Diamond. Please click the link below to verify your registration</p>";
         mailContent += "<h3 style=\"margin: 0 0 20px;\"><a href=\"" + siteURL + "\" style=\"color: #0066cc; text-decoration: none;\">Verify your account</a></h3>";
         mailContent += "<p style=\"margin: 0; color: #000000;\">Thank you,<br>The H&T Diamond Team</p>";
         mailContent += "</td></tr></table></td></tr></table></div>";
 
+
         MimeMessage message = javaMailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message);
         helper.setFrom("hntdiamond@gmail.com", senderName);
-        helper.setTo(customerRegisterDTO.getEmail());
+        helper.setTo(email);
         helper.setSubject(subject);
         helper.setText(mailContent, true);
         javaMailSender.send(message);
+    }
+
+
+    private void sendVerificationEmail(CustomerRegisterDTO customerRegisterDTO, String siteURL) throws MessagingException, UnsupportedEncodingException {
+        GenericCustomerRegister(siteURL, customerRegisterDTO.getFirstName(), customerRegisterDTO.getLastName(), customerRegisterDTO.getEmail());
     }
 
     @Override
     public AccountResponse registerStaff(StaffRegisterDTO staffRegisterDTO) {
         if (accountRepository.existsByUsernameOrEmail(staffRegisterDTO.getUsername(), staffRegisterDTO.getEmail())){
             throw new APIException(HttpStatus.BAD_REQUEST, "Username or email is already taken");
+        }else if(staffRepository.existsByPhone(staffRegisterDTO.getPhone())){
+            throw new APIException(HttpStatus.BAD_REQUEST, "Phone number is already taken");
         }
 
         //save account to db
@@ -207,6 +269,7 @@ public class AccountServiceImpl implements AccountService {
         account.setRole(staffRegisterDTO.getRole());
         account.setIs_active(true);
         account.setEmail(staffRegisterDTO.getEmail());
+        account.setCreationDate(new Date());
         account = accountRepository.save(account);
 
         //save customer to db
@@ -330,4 +393,61 @@ public class AccountServiceImpl implements AccountService {
         account.setIs_active(true);
         accountRepository.save(account);
     }
+
+    @Override
+    public LoginResponse findAccountByEmail(String email) {
+        try {
+            Account account = accountRepository.findByEmail(email)
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+            if(!account.getIs_active()) {
+                throw new CredentialsException(HttpStatus.FORBIDDEN, "Account has been banned or not activated yet");
+            }
+            // Create Authentication object without checking the password because Google has already authenticated the user
+            Authentication authentication = new UsernamePasswordAuthenticationToken(account.getEmail(), null, account.getAuthorities());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            LoginResponse loginResponse = new LoginResponse();
+            Customer customer = customerRepository.findCustomerByAccount_Id(account.getId());
+            loginResponse.setUserInformation(customer == null ? null : mapper.map(customer, CustomerDTO.class));
+            JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+            jwtAuthResponse.setAccessToken(jwtTokenProvider.generateToken(authentication));
+            System.out.println(jwtAuthResponse.getAccessToken());
+
+            // Handle refresh token
+            String refreshToken = null;
+            RefreshToken token = refreshTokenRepository.findByAccount(account)
+                    .orElse(new RefreshToken());
+            if (token.getToken() != null) {
+                refreshToken = token.getToken();
+                jwtAuthResponse.setRefreshToken(refreshToken);
+            } else {
+                refreshToken = UUID.randomUUID().toString();
+                token.setToken(refreshToken);
+                long currentTimeMillis = System.currentTimeMillis();
+                long expirationTimeMillis = currentTimeMillis + jwtExpirationRefreshDate;
+                Date expiryDate = new Date(expirationTimeMillis);
+                token.setExpiryDate(expiryDate);
+                token.setAccount(account);
+                refreshTokenRepository.save(token);
+                jwtAuthResponse.setRefreshToken(refreshToken);
+            }
+            loginResponse.setUserToken(jwtAuthResponse);
+
+            return loginResponse;
+        } catch (UsernameNotFoundException ex) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
+        }
+    }
+
+    @Override
+    public void logout(Long id) {
+        Account account = accountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Account", "id", String.valueOf(id)));
+        RefreshToken token = refreshTokenRepository.findByAccount(account)
+                .orElseThrow(() -> new ResourceNotFoundException("RefreshToken", "account", String.valueOf(account.getId())));
+        token.setToken(null);
+        token.setExpiryDate(null);
+        refreshTokenRepository.save(token);
+    }
+
 }

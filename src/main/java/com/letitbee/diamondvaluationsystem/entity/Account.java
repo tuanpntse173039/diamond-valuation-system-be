@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 //import org.springframework.security.core.GrantedAuthority;
 //import org.springframework.security.core.userdetails.UserDetails;
 
@@ -26,13 +28,13 @@ public class Account  {
     )
     private Long id;
 
-    @Column(nullable = false, columnDefinition = "nvarchar(50)",unique = true)
+    @Column(columnDefinition = "nvarchar(50)")
     private String username;
-    @Column(nullable = false, columnDefinition = "nvarchar(50)")
+    @Column(columnDefinition = "text")
     private String password;
     @Column(columnDefinition = "bit default 1")
     private Boolean is_active;
-    @Column(columnDefinition = "varchar(100)", nullable = false)
+    @Column(columnDefinition = "varchar(100)", nullable = false, unique = true)
     private String email;
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -57,4 +59,7 @@ public class Account  {
     )
     private Set<Notification> notifications = new HashSet<>();
 
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singletonList(new SimpleGrantedAuthority(role.name()));
+    }
 }

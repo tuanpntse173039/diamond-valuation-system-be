@@ -20,4 +20,13 @@ public enum Symmetry {
     public String toString() {
         return displayName;
     }
+
+    public static Symmetry fromString(String displayName) {
+        for (Symmetry symmetry : Symmetry.values()) {
+            if (symmetry.getDisplayName().equalsIgnoreCase(displayName)) {
+                return symmetry;
+            }
+        }
+        return null;
+    }
 }
