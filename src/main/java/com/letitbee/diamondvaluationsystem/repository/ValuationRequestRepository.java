@@ -74,10 +74,10 @@ public interface ValuationRequestRepository extends JpaRepository<ValuationReque
             "where r.type = :typeOfRecord and r.valuationRequest = :valuationRequest ")
     Date findCreatedDateByTypeOfRecord(RecordType typeOfRecord, ValuationRequest valuationRequest);
 
-    @Query("SELECT YEAR(v.creationDate), MONTH(v.creationDate), SUM(v.totalServicePrice) " +
-            "FROM ValuationRequest v " +
-            "GROUP BY YEAR(v.creationDate), MONTH(v.creationDate)")
-    List<Object[]> findMonthlyTotalServicePriceByMonths();
+//    @Query("SELECT YEAR(v.creationDate), MONTH(v.creationDate), SUM(v.totalServicePrice) " +
+//            "FROM ValuationRequest v " +
+//            "GROUP BY YEAR(v.creationDate), MONTH(v.creationDate)")
+//    List<Object[]> findMonthlyTotalServicePriceByMonths();
 
     @Query("SELECT YEAR(v.creationDate), MONTH(v.creationDate), COUNT(v.id) " +
             "FROM ValuationRequest v " +

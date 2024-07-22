@@ -2,10 +2,7 @@ package com.letitbee.diamondvaluationsystem.service.impl;
 
 import com.letitbee.diamondvaluationsystem.entity.DiamondValuationAssign;
 import com.letitbee.diamondvaluationsystem.payload.*;
-import com.letitbee.diamondvaluationsystem.repository.AccountRepository;
-import com.letitbee.diamondvaluationsystem.repository.DiamondValuationAssignRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestDetailRepository;
-import com.letitbee.diamondvaluationsystem.repository.ValuationRequestRepository;
+import com.letitbee.diamondvaluationsystem.repository.*;
 import com.letitbee.diamondvaluationsystem.service.DashboardService;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +17,22 @@ public class DashboardServiceImpl implements DashboardService {
     private ValuationRequestDetailRepository valuationRequestDetailRepository;
     private AccountRepository accountRepository;
     private DiamondValuationAssignRepository diamondValuationAssignRepository;
+    private PaymentRepository paymentRepository;
 
     public DashboardServiceImpl(ValuationRequestRepository valuationRequestRepository,
                                  ValuationRequestDetailRepository valuationRequestDetailRepository,
-                                 AccountRepository accountRepository, DiamondValuationAssignRepository diamondValuationAssignRepository) {
+                                 AccountRepository accountRepository, DiamondValuationAssignRepository diamondValuationAssignRepository,
+                                 PaymentRepository paymentRepository) {
         this.valuationRequestRepository = valuationRequestRepository;
         this.valuationRequestDetailRepository = valuationRequestDetailRepository;
         this.accountRepository = accountRepository;
         this.diamondValuationAssignRepository = diamondValuationAssignRepository;
+        this.paymentRepository = paymentRepository;
     }
 
     @Override
     public List<DashboardMonthlyData> getPriceMonthlyData() {
-        List<Object[]> results = valuationRequestRepository.findMonthlyTotalServicePriceByMonths();
+        List<Object[]> results = paymentRepository.findMonthlyTotalServicePriceByMonths();
         // Get all years from the database that have data
         Set<Integer> yearsWithData = results.stream()
                 .map(result -> (Integer) result[0])
@@ -152,7 +152,7 @@ public class DashboardServiceImpl implements DashboardService {
     @Override
     public DashboardOverall getOverall() {
         int currentMonth = LocalDate.now().getMonth().getValue();
-        List<Object[]> resultPriceService = valuationRequestRepository.findTotalServicePriceCurrentAndPreviousMonth();
+        List<Object[]> resultPriceService = paymentRepository.findTotalServicePriceCurrentAndPreviousMonth();
         List<Object[]> resultAppointment = valuationRequestRepository.findTotalAppointmentCurrentAndPreviousMonth();
         List<Object[]> resultTopValuation = diamondValuationAssignRepository.findTotalDiamondValuationCurrentAndPreviousMonth();
         List<Object[]> resultNewCustomer = accountRepository.findNewCustomerAccountCurrentAndPreviousWeek();

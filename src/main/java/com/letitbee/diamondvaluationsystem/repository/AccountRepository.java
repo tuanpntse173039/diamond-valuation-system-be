@@ -28,7 +28,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     Account findByRole(Role role);
 
     @Query(value = "WITH CurrentWeek AS (" +
-            "    SELECT DATEADD(DAY, -((DATEPART(WEEKDAY, GETDATE()) + @@DATEFIRST - 2) % 7), GETDATE()) AS StartOfWeek" +
+            "    SELECT DATEADD(DAY, -((DATEPART(WEEKDAY, GETDATE()) + @@DATEFIRST - 2) % 7), CAST(GETDATE() AS DATE)) AS StartOfWeek" +
             "), PreviousWeek AS (" +
             "    SELECT DATEADD(DAY, -7, StartOfWeek) AS StartOfWeek" +
             "    FROM CurrentWeek" +
@@ -48,6 +48,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
             "WHERE a.role = 'CUSTOMER' AND a.is_active = 1",
             nativeQuery = true)
     List<Object[]> findNewCustomerAccountCurrentAndPreviousWeek();
+
 
 
 }

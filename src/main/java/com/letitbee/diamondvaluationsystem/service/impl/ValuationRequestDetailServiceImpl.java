@@ -283,9 +283,9 @@ public class ValuationRequestDetailServiceImpl implements ValuationRequestDetail
         String subject = "Your valuation request has been completed";
         String senderName = "H&T Diamond";
         // Format dates
-        String creationDate = new SimpleDateFormat("yyyy-MM-dd").format(valuationRequest.getCreationDate());
-        String completeDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date()); // Assuming current date for completion
-        // Build email content
+        String creationDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(valuationRequest.getCreationDate());
+        String completeDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
+
         String mailContent = "<div style=\"font-family: Arial, sans-serif; background-color: #f0f0f0;\">";
         mailContent += "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" style=\"background: url('https://foreverflawlessnews.com/wp-content/uploads/2018/02/diamond.jpeg') no-repeat center center / cover; filter: blur(8px);\">";
         mailContent += "<tr>";
